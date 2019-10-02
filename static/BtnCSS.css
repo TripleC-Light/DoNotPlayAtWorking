@@ -1,0 +1,21 @@
+.cSendMsgBtn{
+	font-family: 'Noto Sans TC', sans-serif;
+	width: 80px;
+	height: 32px;
+	border: 3px solid #F00;
+	border-left: 0px solid #F00;
+	border-radius: 0px 10px 10px 0px;
+	background-color: #FFF;
+	margin-left: -4px;
+	font-size: 20px;
+	color: #F00;
+	text-align: center;
+	display: inline-block;
+    user-select: none;
+}
+.cSendMsgBtn:hover{
+	background-color: #DDD;
+}
+.cSendMsgBtn:active{
+    font-weight: bold;
+}

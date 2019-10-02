@@ -1,0 +1,11 @@
+2019/9/20
+取得最終顯示在畫面上的屬性
+window.getComputedStyle(document.getElementById('frame_' + myID)).getPropertyValue('width')
+var _width=obj.getBoundingClientRect().width #6??性：top, left, bottom, right, width, height
+
+2019/09/22
+如何使用replace取代全部字元, 用/將欲取代之字元框起, 後面再加上g即可
+_msg = _msg.replace(/>/g, "");
+
+2019/910/1
+jquery css預設都是hide?

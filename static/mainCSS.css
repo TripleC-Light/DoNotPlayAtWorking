@@ -1,0 +1,74 @@
+@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+
+.cBody{
+    font-family: 'Noto Sans TC', sans-serif;
+    background: #EEE;
+}
+
+div {
+    border: 1px solid #AAA;
+}
+
+table, tr, td{
+    border: 0px solid #AAA;
+}
+
+.cMainMap{
+	position: relative;
+	width: 1400px;
+	height: 700px;
+	border: 1px solid #555;
+    border-radius: 10px;
+    box-shadow: 10px 10px 5px rgba(10, 10, 10, 0.8);
+	display: flex;
+	align-items: flex-end;
+	cursor: pointer;
+/*    animation-name:startAnima;
+    animation-duration:2s;*/
+}
+.cMainMap:active{
+	cursor: crosshair;
+}
+/*@keyframes startAnima{
+    from{
+		width: 0px;
+		height: 0px;
+    }
+    to{
+		width: 1400px;
+		height: 700px;
+    }
+}*/
+
+
+.cSendMsgInput{
+    font-family: 'Noto Sans TC', sans-serif;
+	width: 400px;
+    height: 30px;
+    border: 3px solid #F00;
+	border-radius: 10px 0px 0px 10px;
+    padding-left: 10px;
+    font-size: 20px;
+	display: inline-block;
+}
+
+.cSysInfo{
+    font-family: 'Noto Sans TC', sans-serif;
+    width: 30%;
+    height: 120px;
+    border: 0px solid #F00;
+    border-radius: 0px 10px 0px 0px;
+    background-color:rgba(255, 255, 255, 0.0); 
+    margin-bottom: 70px;
+    margin-left: 70px;
+    padding: 5px 15px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: bolder;
+    color: #000;
+    overflow: auto;
+    word-wrap: break-word;
+    user-select: none;
+    z-index: 1000;
+}
+
