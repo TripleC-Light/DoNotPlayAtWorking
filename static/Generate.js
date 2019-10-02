@@ -22,13 +22,20 @@ class Generate{
 						this.state = 'finish';
 					}else{
 						console.log('ID:' + this.ID);
-						this.state = 'createPilot';
+						this.state = 'createPilotInServer';
 					}
 				}
 				break;
 
-			case 'createPilot':
-				console.log('createPilot');
+			case 'createPilotInServer':
+				console.log('createPilotInServer');
+				var _positionMode = 'auto';
+				// var _positionMode = [35, 350];
+				WS.send('createPilot@' + _positionMode);
+				this.state = 'createPilot';
+
+			case 'createPilotInWeb':
+				console.log('createPilotInWeb');
 				var _new = {
 					id : this.ID,
 					width: 70,
@@ -38,7 +45,7 @@ class Generate{
 				};
 				this.newObj(parent, _new);
 				var _mainMap = document.getElementById(parent);
-				WS.send('createPilot@' + _mainMap.getBoundingClientRect().left + ',' + _mainMap.getBoundingClientRect().top);
+				// WS.send('createPilot@' + _mainMap.getBoundingClientRect().left + ',' + _mainMap.getBoundingClientRect().top);
 				this.state = 'finish';
 				break;
 			case 'finish':
@@ -96,6 +103,11 @@ class Generate{
 		name.setAttribute("class", "cPilotName");
 		name.innerHTML = obj.id;
 		parent.appendChild(name);
+		var parentBound = parent.getBoundingClientRect();
+		var nameBound = name.getBoundingClientRect();
+		var _leftOffset = (parent.getBoundingClientRect().width-name.getBoundingClientRect().width)/2;
+		name.style.left = _leftOffset + 'px';
+		name.style.top = parent.getBoundingClientRect().height + 'px';
 	}
 	_createHp( parentObj, id){
 		var parent = document.getElementById(parentObj);

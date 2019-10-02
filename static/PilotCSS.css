@@ -2,6 +2,7 @@
 	position: absolute;
     border: 0px solid #F00;
     width: 70px;
+    height: 70px;
 }
 .cPilot{
     position: relative;
@@ -26,12 +27,12 @@
     height: 20px;
     border: 0px solid #000;
     border-radius: 5px;
-    background-color:rgba(255, 255, 255, 0.1);
-    margin-top: 3px;
     color: #00F;
     font-size: 15px;
+    font-weight: bolder;
     vertical-align: top;
     user-select: none;
+    position: absolute;
 }
 .cPilotmsg{
     top: 0px;

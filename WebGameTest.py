@@ -22,7 +22,7 @@ class IndexHandler(tornado.web.RequestHandler):
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     global gCharacterList
 
-    def check_origin(self, origin):  # 允许WebSocket的跨域请求
+    def check_origin(self, origin):     # 允許跨來源資源共用
         return True
 
     def allow_draft76(self):        # for iOS 5.0 Safari
@@ -45,12 +45,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         _returnInfo = ''
         if _cmd == 'createPilot':
             _data = _tmp[1]
-            _originalPoint = _data
-            _originalPoint = _originalPoint.split(',')
+            _positionMode = _data
             robot = Object()
             robot.id = gMyID
             robot.name = str(robot.id)
-            _XY = setInitPosition(_originalPoint, robot)
+            _XY = setInitPosition(_positionMode, robot)
             robot.X = _XY[0]
             robot.Y = _XY[1]
             robot.targetX = _XY[0]
@@ -169,27 +168,37 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         self.write_message(_returnInfo)
 
-def setInitPosition(originalPoint, robot):
+def setInitPosition(positionMode, robot):
     global gMapSize
     _collisionState = (True, 0)
     _tryCount = 0
     _XY = []
     while _collisionState[0]:
-        _XY = [0, 0]
-        print(gMapSize)
-        print(originalPoint)
-        _XY[0] = random.randint(robot.width/2, gMapSize[0]-(robot.width/2)) + round(float(originalPoint[0]))
-        _XY[1] = random.randint(robot.height/2, gMapSize[1]-(robot.height/2)) + round(float(originalPoint[1]))
+        if positionMode == 'auto':
+            _XY = [0, 0]
+            _XY[0] = random.randint((robot.width/2), gMapSize[0]-(robot.width/2))
+            _XY[1] = random.randint((robot.height/2), gMapSize[1]-(robot.height/2))
+        else:
+            positionMode = positionMode.split(',')
+            print(positionMode)
+            _XY = [int(positionMode[0]), int(positionMode[1])]
+            print(_XY)
+
         robot.X = _XY[0]
         robot.Y = _XY[1]
         robot.targetX = _XY[0]
         robot.targetY = _XY[1]
-        _collisionState = rectCollision(robot, gCharacterList)
-        _tryCount += 1
-        if _tryCount > 1000:
-            _XY = [-100, -100]
-            print('Already try 1000 times to find a good position but the map has no position to put Pilot')
-            break
+
+        if positionMode == 'auto':
+            _collisionState = rectCollision(robot, gCharacterList)
+            _tryCount += 1
+            if _tryCount > 1000:
+                _XY = [-100, -100]
+                print('Already try 1000 times to find a good position but the map has no position to put Pilot')
+                break
+        else:
+            _collisionState = (False, 0)
+
     print('Try select a new position in ' + str(_tryCount) + ' times')
     return _XY
 

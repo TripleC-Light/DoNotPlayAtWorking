@@ -90,12 +90,9 @@
 			var _url = location.href;
 			var _ws = '';
 			_url = _url.split('://');
-			console.log(_url[0]);
 			if( _url[0]=='https' ){
-				console.log('wss');
 				_ws = 'wss';
 			}else{
-				console.log('ws');
 				_ws = 'ws';
 			}
 			_url = _url[1].split('/');
