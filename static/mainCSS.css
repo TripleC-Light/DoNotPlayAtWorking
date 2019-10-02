@@ -20,25 +20,24 @@ table, tr, td{
 	border: 1px solid #555;
     border-radius: 10px;
     box-shadow: 10px 10px 5px rgba(10, 10, 10, 0.8);
-	display: flex;
+	display: none;
 	align-items: flex-end;
 	cursor: pointer;
-/*    animation-name:startAnima;
-    animation-duration:2s;*/
+    animation-name:startAnima;
+    animation-timing-function:ease-out;
+    animation-duration:5s;
 }
 .cMainMap:active{
 	cursor: crosshair;
 }
-/*@keyframes startAnima{
+@keyframes startAnima{
     from{
-		width: 0px;
-		height: 0px;
+        opacity: 0;
     }
     to{
-		width: 1400px;
-		height: 700px;
+        opacity: 1;
     }
-}*/
+}
 
 
 .cSendMsgInput{

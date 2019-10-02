@@ -13,9 +13,6 @@
 
 	<title>上班不要玩 v1.0</title>
 	<script language=javascript>
-		// On Line Test or Not
-		var onLineMode = new Boolean(false);
-		onLineMode = false;
 		// Public Variable
 		var gameStart = new Boolean(false);
 		var mouseDownState = new Boolean(false);
@@ -38,7 +35,6 @@
 		// System setting
 		var milliSecondPerFrame = 50;
 		var countTimes = 0;
-		// var showMsgInMilliSecond = 1000;
 
         $(document).ready(function (){
 			if(isMobileOrNot()){
@@ -62,13 +58,14 @@
 			attackState = false;
 			connectState = false;
 			Com.showMsgInMilliSecond = 1000;
-			createWebSocket(onLineMode);
+			createWebSocket();
 			startGame();
 		}
 
 		function startGame(){
 			if(gameStart){
 				gameStart = false;
+				startGameStep = 'checkWebSocket';
 				document.getElementById('iStartFlag').innerHTML = '開始';
 				WS.close();
 			}else{
@@ -81,22 +78,14 @@
 					startWebConnection();
 					setMap('0-0');
 					getNewData();
+					document.getElementById('iMainMap').style.display = 'flex';
 					document.getElementById('iStartFlag').innerHTML = '結束';
 				}
 			}
 		}
 
-		function createWebSocket(onLineMode){
-			var _url = location.href;
-			var _ws = '';
-			_url = _url.split('://');
-			if( _url[0]=='https' ){
-				_ws = 'wss';
-			}else{
-				_ws = 'ws';
-			}
-			_url = _url[1].split('/');
-			WS = new WebSocket(_ws + "://" + _url[0] + "/ws");
+		function createWebSocket(){
+			WS = new WebSocket(Com.webSocketURL());
 		}
 
 		function checkWebSocket(){

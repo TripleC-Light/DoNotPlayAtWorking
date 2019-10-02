@@ -48,6 +48,19 @@ class Common{
 		y = y-_mainMapBounding.top;
 		return ([Math.round(x),Math.round(y)]);
 	}
+
+	webSocketURL(){	
+		var _url = location.href;
+		var _ws = '';
+		_url = _url.split('://');
+		if( _url[0]=='https' ){
+			_ws = 'wss';
+		}else{
+			_ws = 'ws';
+		}
+		_url = _url[1].split('/');
+		return( _ws + "://" + _url[0] + "/ws" );
+	}
 }
 
 
