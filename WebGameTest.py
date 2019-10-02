@@ -38,6 +38,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         global gCharacterList
         global gMyID
         global gPilotListInJSON
+        global gMapSize
 
         _tmp = CMDfromWEB.split('@')
         _cmd = _tmp[0]
@@ -137,8 +138,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         _mapObjInJSON.update({'region': line[1]})
                     elif _type == 'size':
                         _description = line[1].split(',')
-                        _mapSize = [int(_description[0]), int(_description[1])]
-                        _mapObjInJSON.update({'size': _mapSize})
+                        gMapSize = [int(_description[0]), int(_description[1])]
+                        _mapObjInJSON.update({'size': gMapSize})
                     elif _type == 'background':
                         _mapObjInJSON.update({'background': './static/map/background/' + line[1]})
                     elif _type == 'mapObj':
@@ -169,13 +170,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.write_message(_returnInfo)
 
 def setInitPosition(originalPoint, robot):
+    global gMapSize
     _collisionState = (True, 0)
     _tryCount = 0
     _XY = []
     while _collisionState[0]:
         _XY = [0, 0]
-        _XY[0] = random.randint(1+(robot.width/2), 600-(robot.width/2)) - robot.width/2 + round(float(originalPoint[0]))
-        _XY[1] = random.randint(1+(robot.height/2), 600-(robot.height/2)) - robot.height/2 + round(float(originalPoint[1]))
+        print(gMapSize)
+        print(originalPoint)
+        _XY[0] = random.randint(robot.width/2, gMapSize[0]-(robot.width/2)) + round(float(originalPoint[0]))
+        _XY[1] = random.randint(robot.height/2, gMapSize[1]-(robot.height/2)) + round(float(originalPoint[1]))
         robot.X = _XY[0]
         robot.Y = _XY[1]
         robot.targetX = _XY[0]

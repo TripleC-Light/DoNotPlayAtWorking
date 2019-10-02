@@ -33,6 +33,7 @@ class Generate{
 					id : this.ID,
 					width: 70,
 					height: 70,
+					name: this.ID,
 					pic: ""
 				};
 				this.newObj(parent, _new);
@@ -60,7 +61,7 @@ class Generate{
 		this._createMsg(_frameID, obj.id);
 		this._createMsgArrow(_frameID, obj.id);
 		this._createMain(_frameID, obj.id);
-		this._createName(_frameID, obj.id);
+		this._createName(_frameID, obj);
 		this._createHp(_frameID, obj.id);
 		this._shapeMain(obj.id, obj.pic);
 	}
@@ -88,12 +89,12 @@ class Generate{
 		msgArrow.setAttribute("class", "cPilotMsgArrow");
 		parent.appendChild(msgArrow);
 	}
-	_createName( parentObj, id){
+	_createName( parentObj, obj){
 		var parent = document.getElementById(parentObj);
 		var name = document.createElement("div");
-		name.setAttribute("id", 'name_' + id);
+		name.setAttribute("id", 'name_' + obj.id);
 		name.setAttribute("class", "cPilotName");
-		name.innerHTML = id;
+		name.innerHTML = obj.id;
 		parent.appendChild(name);
 	}
 	_createHp( parentObj, id){

@@ -1,16 +1,17 @@
 .cPilotFrame{
 	position: absolute;
-    border: 2px solid #F00;
+    border: 0px solid #F00;
+    width: 70px;
 }
 .cPilot{
     position: relative;
-    border: 1px solid #00F;
+    border: 0px solid #00F;
     background-size: contain;
     background-repeat: no-repeat;
 }
 .cPilotHP{
     top: -10px;
-    left: 3px;
+    left: 0px;
     height: 5px;
     width: 100px;
     border: 0px solid #000;
@@ -24,15 +25,18 @@
 .cPilotName{
     height: 20px;
     border: 0px solid #000;
+    border-radius: 5px;
+    background-color:rgba(255, 255, 255, 0.1);
+    margin-top: 3px;
     color: #00F;
     font-size: 15px;
     vertical-align: top;
     user-select: none;
 }
 .cPilotmsg{
-/*    top: 0px;
-    left: 0px;*/
-    max-width: 250px;
+    top: 0px;
+    left: 0px;
+    width: 250px;
     border: 2px solid #F00;
 	border-radius: 8px;
     padding: 5px;
@@ -41,6 +45,8 @@
     font-size: 15px;
     text-align: left;
     word-wrap: break-word;
+    /*word-break: break-all;*/
+    /*word-break: normal;*/
     user-select: none;
     display: none;
     position: absolute;
@@ -49,8 +55,8 @@
 .cPilotMsgArrow{
     width: 0px;
     height: 0px;
-    top: -25px;
-    left: 48px;
+    top: -20px;
+    left: 31px;
     border-color: #F00 transparent transparent transparent; 
     border-style: solid; 
     border-width: 7px; 

@@ -87,17 +87,19 @@
 		}
 
 		function createWebSocket(onLineMode){
-			if(onLineMode){
-				var _url = location.href;
-				_url = _url.split('//');
-				_url = _url[1].split('/');
-				_url = _url[0];
-				console.log(_url);
-				WS = new WebSocket("ws://" + _url + "/ws");
+			var _url = location.href;
+			var _ws = '';
+			_url = _url.split('://');
+			console.log(_url[0]);
+			if( _url[0]=='https' ){
+				console.log('wss');
+				_ws = 'wss';
 			}else{
-				connectState = true;
-				WS = new WebSocket("ws://localhost:8888/ws");
+				console.log('ws');
+				_ws = 'ws';
 			}
+			_url = _url[1].split('/');
+			WS = new WebSocket(_ws + "://" + _url[0] + "/ws");
 		}
 
 		function checkWebSocket(){
@@ -153,11 +155,12 @@
 								myPilot = e;
 							}
 							syncPilotObj(e);
+							showPilot(e);
 		        			updatePilotXY(e);
 	        				updatePilotHP(e);
-	        				// updatePilotMsg(e);
-	        				// updatePic(e);
-	        				// deleteOfflinePilot(e);
+	        				updatePilotMsg(e);
+	        				updatePic(e);
+	        				deleteOfflinePilot(e);
 						});
 	        			// console.log(_pilotData);
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + Com.countFPS();
@@ -209,41 +212,56 @@
 				Create.newObj( 'iMainMap', e);
 			}
 		}
-		function updatePilotXY(e){
+		function showPilot(e){
 			var _pilotFrame = $('#frame_' + e.id);
-			var _pilotFrameBound = _pilotFrame[0].getBoundingClientRect();
-			var _pilotBound = $('#' + e.id)[0].getBoundingClientRect();
-			_pilotFrame.css({'left': e.X-(_pilotFrameBound.width/2)});
-			_pilotFrame.css({'top' : _pilotFrameBound.top - (_pilotBound.top-e.Y) - (_pilotBound.height/2)});
 			_pilotFrame.css('visibility','visible');
 			$('#name_' + e.id).css('visibility','visible');
 			if( e.id==myID ){
 				_pilotFrame.css('zIndex',999);
 			}
 		}
+		function updatePilotXY(e){
+			var _pilotFrame = $('#frame_' + e.id);
+			var _pilotFrameBound = _pilotFrame[0].getBoundingClientRect();
+			var _pilotBound = $('#' + e.id)[0].getBoundingClientRect();
+			_pilotFrame.css({'left': e.X-(_pilotFrameBound.width/2)});
+			_pilotFrame.css({'top' : _pilotFrameBound.top - (_pilotBound.top-e.Y) - (_pilotBound.height/2)});
+		}
 		function updatePilotHP(e){
 			var _HPlengthInPx = 70;
-			var _damage = Math.round(_HPlengthInPx/100);
+			var _HPmax = 10;
+			var _damage = Math.round(_HPlengthInPx/_HPmax);
 			var _pilotHP = $('#HP_' + e.id);
 			_pilotHP.css('display','inline-block');
 			_pilotHP.width((e.HP*_damage));
 			_pilotHP.css('visibility','visible');
 		}
 		function updatePilotMsg(e){
-			var _pilotFrame = $('#frame_' + e.id);
 			var _msg = $('#msg_'+e.id);
+			var _msgArrow = $('#msgArrow_'+e.id);
 			if(e.msg!=''){
-				var _pilotFrameBound = _pilotFrame[0].getBoundingClientRect();
-				var _msgArrow = $('#msgArrow_'+e.id);
-				var _msgBound = _msg[0].getBoundingClientRect();
-				_msg.css('top', (0-_msgBound.height-25));
-				_msg.css('left', (0-((_msgBound.width-_pilotFrameBound.width)/2)));
-				_pilotFrame.css('visibility','visible');
-				_msg.css('display','inline-block');
-				_msgArrow.css('display','block');
+				var _srtLength = StrLen(e.msg);
+				var _oneENcharLenInPX = 12;
+				var _oneTWcharLenInPX = 7.6;
+				var _strLenInPX = (_srtLength[0]*(_oneTWcharLenInPX*2)) + (_srtLength[1]*_oneENcharLenInPX);
+				var _textAlign = '';
+				if( _strLenInPX<250 ){
+					_textAlign = 'center';
+				}else{
+					_strLenInPX = 250;
+					_textAlign = 'left';
+				}
+				_msg.width(_strLenInPX);
+				_msg.css('textAlign', _textAlign);
 				_msg[0].innerHTML = e.msg;
+				_msg.css('display','inline-block');
+				var _pilotFrameBound = $('#frame_' + e.id)[0].getBoundingClientRect();
+				var _msgBound = _msg[0].getBoundingClientRect();
+				_msg.css({'top':(0-_msgBound.height-20)});
+				_msg.css('left', (0-((_msgBound.width-_pilotFrameBound.width)/2)));
+				_msgArrow.css('display','block');
 			}else{
-				_pilotFrame.css('visibility','hidden');
+				_msgArrow.css('display','none');
 				_msg.css('display','none');
 				_msg[0].innerHTML = '';
 			}
@@ -255,10 +273,8 @@
 				if( attackState ){
 					_attackStr = 'attack_';
 					_pilotObj.style.width = '105px';
-					if( e.direction=='right' ){
-						_pilotObj.style.left = 10 + 'px';
-					}else{
-						_pilotObj.style.left = '-' + 17.5 + 'px';
+					if( e.direction=='left' ){
+						_pilotObj.style.left = '-' + 35 + 'px';
 					}
 				}else{
 					_pilotObj.style.left = '0px';
@@ -268,10 +284,8 @@
 				if( e.attack!=0){
 					_attackStr = 'attack_';
 					_pilotObj.style.width = '105px';
-					if( e.direction=='right' ){
-						_pilotObj.style.left = 17.5 + 'px';
-					}else{
-						_pilotObj.style.left = '-' + 17.5 + 'px';
+					if( e.direction=='left' ){
+						_pilotObj.style.left = '-' + 35 + 'px';
 					}
 				}else{
 					_pilotObj.style.left = '0px';
@@ -284,8 +298,8 @@
 		function deleteOfflinePilot(e){
 			if( e.connectTimeOut==0 ){
 				var _pilotFrameObj = document.getElementById('frame_' + e.id);
-			　　 var _parentObj = document.getElementById('iMainMap');
-			　　 _parentObj.removeChild(_pilotFrameObj);
+				var _parentObj = document.getElementById('iMainMap');
+				_parentObj.removeChild(_pilotFrameObj);
 				for(var i=0; i<allObj.length; i++){
 					if( allObj[i].id == e.id ){
 						allObj.splice(i,1);
@@ -306,13 +320,27 @@
 			_msg = _msg.replace(/@/g,'');
 			_msg = _msg.replace(/;/g,'');
 			if( _msg != '' ){
-				if(_msg.length>100){
+				if(_msg.length>300){
 					console.log('Too long:' + _msg.length);
-					_msg = '話太長了我記不起來, 可以縮短到100字以內嗎?';
+					_msg = '話太長了我記不起來, 可以縮短到300字以內嗎?';
 				}
 				document.getElementById("iSendMsgInput").value = '';
 				WS.send('sendMsg@' + myID + ';' + _msg);
 			}
+		}
+
+		function StrLen(sString){
+			var _enStr = 0;
+			var _twStr = 0;
+			var s = sString;
+			for (var i=0; i<s.length; i++){
+				if (s.substr(i,1).charCodeAt(0)>255){
+					_twStr += 1;
+				}else{
+					_enStr += 1;
+				}
+			}
+			return ([_twStr, _enStr]);
 		}
 
 		function setTargetXY(_mouseClick){
