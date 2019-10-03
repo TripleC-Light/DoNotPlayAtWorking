@@ -56,7 +56,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 robot.targetX = _XY[0]
                 robot.targetY = _XY[1]
                 robot.connectTimeOut = time.time()
-                # robot.pic = './static/pilot/robot/right.gif'
                 gCharacterList.append(robot)
                 addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
                 _pilotInJSON = robot.__dict__
@@ -251,6 +250,7 @@ def updateAll():
         _pilotList = []
         for _pilot in gCharacterList:
             if _pilot.type == 'pilot':
+                # _pilot.HIT = False
                 updatePosition(_pilot)
                 if (_pilot.attack != 0) and ((time.time()-_pilot.attack) > _attackTime):
                     _pilot.attack = 0
@@ -271,7 +271,10 @@ def updateAll():
                         _pilot.attack = 0
                         for _beHitPilot in gCharacterList:
                             if _beHitPilot.id == _weapenCollision[1]:
-                                _beHitPilot.HP -= 1
+                                _beHitPilot.HIT = True
+                                _damage = _pilot.ATK - _beHitPilot.DEF
+                                if _damage > 0:
+                                    _beHitPilot.HP -= _damage
                                 break
                         print(_weapenCollision[1])
 

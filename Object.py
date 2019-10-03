@@ -4,8 +4,9 @@ class Object:
         self.id = ''
         self.name = ''
         self.HP = 10
-        self.ATK = 0
+        self.ATK = 1
         self.DEF = 0
+        self.HIT = False
         self.width = 70
         self.height = 70
         self.X = 0

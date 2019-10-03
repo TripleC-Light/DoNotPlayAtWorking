@@ -224,6 +224,9 @@
 			_pilotHP.css('display','inline-block');
 			_pilotHP.width((e.HP*_damage));
 			_pilotHP.css('visibility','visible');
+			if( e.HIT ){
+				shake(e, 5);
+			}
 		}
 		function updatePilotMsg(e){
 			var _msg = $('#msg_'+e.id);
@@ -340,6 +343,21 @@
 				}
 			}
 		}
+
+		function shake(obj, shakeLevel){
+			var _obj = document.getElementById('frame_' + obj.id);
+			var _X = _obj.style.left;
+			_X = parseInt(_X.replace('px'));
+			console.log(_X);
+			_X += shakeLevel;
+			_obj.style.left = _X + 'px';
+			console.log(_X);
+			setTimeout(function(){
+				_X -= shakeLevel;
+				_obj.style.left = _X + 'px';
+			},30);
+		}
+
 		function mouseDown(){
 			mouseDownState = true;
 		}

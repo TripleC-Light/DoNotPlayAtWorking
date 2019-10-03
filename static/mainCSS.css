@@ -23,21 +23,21 @@ table, tr, td{
 	display: none;
 	align-items: flex-end;
 	cursor: pointer;
-    animation-name:startAnima;
+/*    animation-name:startAnima;
     animation-timing-function:ease-out;
-    animation-duration:5s;
+    animation-duration:5s;*/
 }
 .cMainMap:active{
 	cursor: crosshair;
 }
-@keyframes startAnima{
+/*@keyframes startAnima{
     from{
         opacity: 0;
     }
     to{
         opacity: 1;
     }
-}
+}*/
 
 
 .cSendMsgInput{
