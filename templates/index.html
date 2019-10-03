@@ -129,6 +129,12 @@
 	        			Create.ID = _returnData[1];
 	        			myID = Create.ID;
 	        			break;
+	        			
+	        		case 'newPilot':
+	        			var _pilotData = JSON.parse(_returnData[1]);
+	        			myPilot = _pilotData;
+	        			Create.pilotObj = myPilot;
+	        			break;
 
 	        		case 'NewData':
 	        			var _onLineNum = 0
@@ -137,9 +143,6 @@
 	        			serverTime = _pilotData.serverTime;
 						_pilotData.list.forEach(function(e) {
 							_onLineNum += 1;
-							if( e.id == myID ){
-								myPilot = e;
-							}
 							syncPilotObj(e);
 							showPilot(e);
 		        			updatePilotXY(e);

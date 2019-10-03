@@ -50,15 +50,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             robot.id = gMyID
             robot.name = str(robot.id)
             _XY = setInitPosition(_positionMode, robot)
-            robot.X = _XY[0]
-            robot.Y = _XY[1]
-            robot.targetX = _XY[0]
-            robot.targetY = _XY[1]
-            robot.connectTimeOut = time.time()
-            # robot.pic = './static/pilot/robot/right.gif'
-            gCharacterList.append(robot)
-            addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
-            _returnInfo = returnMsg()
+            if _XY != [-1, -1]:
+                robot.X = _XY[0]
+                robot.Y = _XY[1]
+                robot.targetX = _XY[0]
+                robot.targetY = _XY[1]
+                robot.connectTimeOut = time.time()
+                # robot.pic = './static/pilot/robot/right.gif'
+                gCharacterList.append(robot)
+
+                _pilotInJSON = robot.__dict__
+                _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
+
+                # addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
+                # _returnInfo = returnMsg()
 
         elif _cmd == 'getNewData':
             _data = _tmp[1]
@@ -195,7 +200,7 @@ def setInitPosition(positionMode, robot):
             if _tryCount > 1000:
                 _XY = [-100, -100]
                 print('Already try 1000 times to find a good position but the map has no position to put Pilot')
-                break
+                return [-1, -1]
         else:
             _collisionState = (False, 0)
 

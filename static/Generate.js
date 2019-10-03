@@ -3,19 +3,18 @@ class Generate{
 		this.state = 'getID';
 		this.FSMtrigTime = 50;
 		this.ID = '';
+		this.pilotObj = '';
 	}
 
 	pilot(parent, allObj){
 		switch(this.state){
 			case 'getID':
-				console.log('getID');
 				this.ID = '';
 				WS.send('getID');
 				this.state = 'checkID';
 				break;
 
 			case 'checkID':
-				console.log('checkID');
 				if(this.ID!=''){
 					if(idExist(myID, allObj)){
 						console.log('ID:' + this.ID + ' already exist');
@@ -28,30 +27,24 @@ class Generate{
 				break;
 
 			case 'createPilotInServer':
-				console.log('createPilotInServer');
 				var _positionMode = 'auto';
 				// var _positionMode = [35, 350];
 				WS.send('createPilot@' + _positionMode);
-				this.state = 'createPilot';
+				this.state = 'createPilotInWeb';
+				// this.state = 'createPilot';
+				break;
 
 			case 'createPilotInWeb':
-				console.log('createPilotInWeb');
-				var _new = {
-					id : this.ID,
-					width: 70,
-					height: 70,
-					name: this.ID,
-					pic: ""
-				};
-				this.newObj(parent, _new);
-				var _mainMap = document.getElementById(parent);
-				// WS.send('createPilot@' + _mainMap.getBoundingClientRect().left + ',' + _mainMap.getBoundingClientRect().top);
-				this.state = 'finish';
+				if( this.pilotObj!='' ){
+					this.newObj(parent, this.pilotObj);
+					var _mainMap = document.getElementById(parent);
+					this.state = 'finish';
+				}
 				break;
 			case 'finish':
-				console.log('finish');
 				break;
 		}
+		console.log(this.state);
 		if( this.state != 'finish' ){
 				var thisVar = this;
 				setTimeout(function(){
