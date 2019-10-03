@@ -58,12 +58,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 robot.connectTimeOut = time.time()
                 # robot.pic = './static/pilot/robot/right.gif'
                 gCharacterList.append(robot)
-
+                addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
                 _pilotInJSON = robot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
-
-                # addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
-                # _returnInfo = returnMsg()
 
         elif _cmd == 'getNewData':
             _data = _tmp[1]
