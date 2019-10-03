@@ -7,12 +7,24 @@ class Common{
 		this.FPScount = 0;
 		this.gameFPS = 0;
 		this.tmpFPS = 0;
+		this.oldSysTimeForRecycle = 0;
+		this.recycleObjInMilliSecond = 0;
 	}
 
 	timeToUpdateMsg(){
 		var _sysTime = new Date().getTime();
 		if( (_sysTime-this.oldSysTimeForMsg)>this.showMsgInMilliSecond ){
 			this.oldSysTimeForMsg = _sysTime;
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	timeToRecycleObj(){
+		var _sysTime = new Date().getTime();
+		if( (_sysTime-this.oldSysTimeForRecycle)>this.recycleObjInMilliSecond ){
+			this.oldSysTimeForRecycle = _sysTime;
 			return true;
 		}else{
 			return false;

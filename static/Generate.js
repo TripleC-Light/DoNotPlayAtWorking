@@ -44,7 +44,7 @@ class Generate{
 			case 'finish':
 				break;
 		}
-		console.log(this.state);
+		console.log('Create Pilot state: ' + this.state);
 		if( this.state != 'finish' ){
 				var thisVar = this;
 				setTimeout(function(){
@@ -63,7 +63,7 @@ class Generate{
 		this._createMain(_frameID, obj.id);
 		this._createName(_frameID, obj);
 		this._createHp(_frameID, obj.id);
-		this._shapeMain(obj.id, obj.pic);
+		this._shapeMain(obj, obj.pic);
 	}
 
 	_createFrame( parentObj, id){
@@ -116,9 +116,10 @@ class Generate{
 		pilot.setAttribute("class", "cPilot");
 		parent.appendChild(pilot);
 	}
-	_shapeMain(id, pic){
-		var _main = new Object(id);
-		_main.reBorn();
-		allObj[allObj.length] = _main;
+	_shapeMain(obj, pic){
+		var _obj = document.getElementById(obj.id);
+		_obj.style.width = obj.width + 'px';
+		_obj.style.height = obj.height + 'px';
+		allObj[allObj.length] = obj;
 	}
 }

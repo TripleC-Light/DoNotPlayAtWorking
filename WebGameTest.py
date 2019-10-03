@@ -64,6 +64,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif _cmd == 'getNewData':
             _data = _tmp[1]
             _id = _data
+            print(_id)
             for _pilot in gCharacterList:
                 if str(_pilot.id) == _id:
                     _pilot.connectTimeOut = time.time()
@@ -246,11 +247,13 @@ def updateAll():
                         _pilot.msgTimeCount -= 1
                         if _pilot.msgTimeCount == 0:
                             _pilot.msg = ''
+        for _pilot in gCharacterList:
+            if _pilot.type == 'pilot':
+                _pilot.HIT = False
 
         _pilotList = []
         for _pilot in gCharacterList:
             if _pilot.type == 'pilot':
-                # _pilot.HIT = False
                 updatePosition(_pilot)
                 if (_pilot.attack != 0) and ((time.time()-_pilot.attack) > _attackTime):
                     _pilot.attack = 0
@@ -271,12 +274,12 @@ def updateAll():
                         _pilot.attack = 0
                         for _beHitPilot in gCharacterList:
                             if _beHitPilot.id == _weapenCollision[1]:
+                                print(_weapenCollision[1])
                                 _beHitPilot.HIT = True
                                 _damage = _pilot.ATK - _beHitPilot.DEF
                                 if _damage > 0:
                                     _beHitPilot.HP -= _damage
                                 break
-                        print(_weapenCollision[1])
 
                 if (time.time() - _pilot.connectTimeOut) > _offlineTime:
                     if _pilot.connectTimeOut == 0:
@@ -285,6 +288,8 @@ def updateAll():
                         print('delete: ' + str(_pilot.id))
                     _pilot.connectTimeOut = 0
 
+        for _pilot in gCharacterList:
+            if _pilot.type == 'pilot':
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON.update({'list': _pilotList})

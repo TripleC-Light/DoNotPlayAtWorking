@@ -8,7 +8,6 @@
 	<link rel="stylesheet" type="text/css" href="./static/PilotCSS.css">
 
 	<script type="text/javascript" src="/static/common.js"></script>
-	<script type="text/javascript" src="/static/Object.js"></script>
 	<script type="text/javascript" src="/static/Generate.js"></script>
 
 	<title>上班不要玩 v1.0</title>
@@ -58,6 +57,7 @@
 			attackState = false;
 			connectState = false;
 			Com.showMsgInMilliSecond = 1000;
+			Com.recycleObjInMilliSecond = 5000;
 			createWebSocket();
 			startGame();
 		}
@@ -110,6 +110,19 @@
 				if(Com.timeToUpdateMsg()){
 					WS.send('getMsg');
 				}
+				// if(Com.timeToRecycleObj()){
+				// 	allObj.forEach(function(e) {
+				// 		if( e.type=='pilot' ){
+				// 			if( (serverTime-e.connectTimeOut)>10 ){
+				// 				console.log('Delete by cycle system: ' + e.id);
+				// 				// console.log('serverTime: ' + serverTime + ', e.connectTimeOut:' + e.connectTimeOut);
+				// 				// console.log('---------------------------------------------------');
+				// 				e.connectTimeOut = 0;
+				// 				deleteOfflinePilot(e);
+				// 			}
+				// 		}
+				// 	});
+				// }
 				WS.send('getNewData@' + myID);
 				setTimeout(function(){
 					getNewData();
@@ -141,7 +154,18 @@
 	        			var _pilotDataInJSON = _returnData[1];
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
+
+
 						_pilotData.list.forEach(function(e) {
+
+							allObj.some(function(webObj) {
+								if( webObj.id == e.id ){
+									webObj.connectTimeOut = e.connectTimeOut;
+									// console.log('XserverTime: ' + serverTime + ', e.connectTimeOut:' + webObj.connectTimeOut);
+									return true;
+								}
+							});
+
 							_onLineNum += 1;
 							syncPilotObj(e);
 							showPilot(e);
@@ -151,6 +175,19 @@
 	        				updatePic(e);
 	        				deleteOfflinePilot(e);
 						});
+
+						// var _webPilotNum = 0;
+						// allObj.forEach(function(e) {
+						// 	if( e.type == 'pilot' ){
+						// 		if( (serverTime-e.connectTimeOut)>5 ){
+						// 			console.log(e.id);
+						// 			e.connectTimeOut = 0;
+						// 			deleteOfflinePilot(e);
+						// 		}
+						// 	}
+						// });
+
+
 	        			// console.log(_pilotData);
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + Com.countFPS();
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
@@ -225,7 +262,7 @@
 			_pilotHP.width((e.HP*_damage));
 			_pilotHP.css('visibility','visible');
 			if( e.HIT ){
-				shake(e, 5);
+				shake(e, 10);
 			}
 		}
 		function updatePilotMsg(e){
@@ -259,11 +296,11 @@
 			}
 		}
 		function updatePic(e){
-			var _attackStr = '';
+			var _actionStr = '';
 			var _pilotObj = document.getElementById(e.id);
 			if( e.id==myID){
 				if( attackState ){
-					_attackStr = 'attack_';
+					_actionStr = 'attack_';
 					_pilotObj.style.width = '105px';
 					if( e.direction=='left' ){
 						_pilotObj.style.left = '-' + 35 + 'px';
@@ -274,7 +311,7 @@
 				}
 			}else{
 				if( e.attack!=0){
-					_attackStr = 'attack_';
+					_actionStr = 'attack_';
 					_pilotObj.style.width = '105px';
 					if( e.direction=='left' ){
 						_pilotObj.style.left = '-' + 35 + 'px';
@@ -284,7 +321,10 @@
 					_pilotObj.style.width = '70px';
 				}
 			}
-			_pilotObj.style.backgroundImage = "url('./static/pilot/" + e.pic + "/" + _attackStr + e.direction + ".gif')";
+			if( e.HIT ){
+				_actionStr = 'beHIT_';
+			}
+			_pilotObj.style.backgroundImage = "url('./static/pilot/" + e.pic + "/" + _actionStr + e.direction + ".gif')";
 			_pilotObj.style.visibility = 'visible';
 		}
 		function deleteOfflinePilot(e){
@@ -292,6 +332,7 @@
 				var _pilotFrameObj = document.getElementById('frame_' + e.id);
 				var _parentObj = document.getElementById('iMainMap');
 				_parentObj.removeChild(_pilotFrameObj);
+				console.log('Delete: ' + e.id);
 				for(var i=0; i<allObj.length; i++){
 					if( allObj[i].id == e.id ){
 						allObj.splice(i,1);
@@ -348,10 +389,8 @@
 			var _obj = document.getElementById('frame_' + obj.id);
 			var _X = _obj.style.left;
 			_X = parseInt(_X.replace('px'));
-			console.log(_X);
 			_X += shakeLevel;
 			_obj.style.left = _X + 'px';
-			console.log(_X);
 			setTimeout(function(){
 				_X -= shakeLevel;
 				_obj.style.left = _X + 'px';
