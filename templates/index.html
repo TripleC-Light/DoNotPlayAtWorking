@@ -410,16 +410,18 @@
 				keyUpState = true;
 			}
 		}
-
+		function addEnemy(){
+			
+		}
 	</script>
 </head>
 <body class="cBody" onkeydown="keyDown(event)" onkeyup="keyUp(event)">
 <center>
 	<div id='iStartFlag' onclick="startGame()" style='border:1px solid #F00;width:80px;display:inline-block;'>開始</div>
 	<div onclick="Create.pilot('iMainMap',allObj)" style='border:1px solid #F00;width:80px;display:inline-block;'>加入</div>
+	<div onclick="addEnemy()" style='border:1px solid #F00;width:80px;display:inline-block;'>敵人</div>
 	<div style='border:0px solid #F00;display:inline-block;'>　線上人數:<span id='iOnlineNum'>0</span></div>
 	<div id='iDebug' style='border:0px solid #F00;display:inline-block;'></span></div>
-	
 	<div id="iMainMap"
 		 onclick="setTargetXY(mouseClick)" 
 		 onmousedown="mouseDown()" 

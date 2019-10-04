@@ -36,7 +36,7 @@ class Generate{
 			case 'createPilotInWeb':
 				if( this.pilotObj!='' ){
 					this.newObj(parent, this.pilotObj);
-					var _mainMap = document.getElementById(parent);
+					// var _mainMap = document.getElementById(parent);
 					this.state = 'finish';
 				}
 				break;
