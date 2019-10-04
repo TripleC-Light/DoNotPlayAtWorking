@@ -64,7 +64,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif _cmd == 'getNewData':
             _data = _tmp[1]
             _id = _data
-            print(_id)
             for _pilot in gCharacterList:
                 if str(_pilot.id) == _id:
                     _pilot.connectTimeOut = time.time()

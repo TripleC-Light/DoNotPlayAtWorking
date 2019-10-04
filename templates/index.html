@@ -158,13 +158,13 @@
 
 						_pilotData.list.forEach(function(e) {
 
-							allObj.some(function(webObj) {
-								if( webObj.id == e.id ){
-									webObj.connectTimeOut = e.connectTimeOut;
-									// console.log('XserverTime: ' + serverTime + ', e.connectTimeOut:' + webObj.connectTimeOut);
-									return true;
-								}
-							});
+							// allObj.some(function(webObj) {
+							// 	if( webObj.id == e.id ){
+							// 		webObj.connectTimeOut = e.connectTimeOut;
+							// 		// console.log('XserverTime: ' + serverTime + ', e.connectTimeOut:' + webObj.connectTimeOut);
+							// 		return true;
+							// 	}
+							// });
 
 							_onLineNum += 1;
 							syncPilotObj(e);
@@ -174,6 +174,33 @@
 	        				updatePilotMsg(e);
 	        				updatePic(e);
 	        				deleteOfflinePilot(e);
+						});
+
+
+
+						allObj.forEach(function(_allObj){
+							if( _allObj.type == 'pilot' ){
+								_exitOnServer = new Boolean(false);
+								_exitOnServer = false;
+								_pilotData.list.some(function(e){
+									if( _allObj.id==e.id ){
+										// _onLineNum += 1;
+										// syncPilotObj(e);
+										// showPilot(e);
+					     //    			updatePilotXY(e);
+				      //   				updatePilotHP(e);
+				      //   				updatePilotMsg(e);
+				      //   				updatePic(e);
+				      //   				deleteOfflinePilot(e);
+				        				_exitOnServer = true;
+				        				return true;
+									}
+								});
+								if( !_exitOnServer ){
+									_allObj.connectTimeOut = 0;
+									deleteOfflinePilot(_allObj);
+								}
+							}
 						});
 
 						// var _webPilotNum = 0;
@@ -188,7 +215,6 @@
 						// });
 
 
-	        			// console.log(_pilotData);
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + Com.countFPS();
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
 	        			break;
