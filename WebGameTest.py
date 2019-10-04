@@ -56,6 +56,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 robot.targetX = _XY[0]
                 robot.targetY = _XY[1]
                 robot.connectTimeOut = time.time()
+                robot.width = random.randint(20, 150)
+                robot.height = robot.width
                 gCharacterList.append(robot)
                 addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
                 _pilotInJSON = robot.__dict__

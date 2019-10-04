@@ -1,18 +1,15 @@
 .cPilotFrame{
 	position: absolute;
-    border: 0px solid #F00;
-    width: 70px;
-    height: 70px;
+    border: 1px solid #F00;
 }
 .cPilot{
     position: relative;
-    border: 0px solid #00F;
+    border: 1px solid #00F;
     background-size: contain;
     background-repeat: no-repeat;
 }
 .cPilotHP{
     top: -10px;
-    left: 0px;
     height: 5px;
     width: 100px;
     border: 0px solid #000;
@@ -20,7 +17,7 @@
     background-color: #0F0;
     color: #000;
     user-select: none;
-    display: none;
+/*    display: none;*/
     position: absolute;
 }
 .cPilotName{
@@ -57,7 +54,7 @@
     width: 0px;
     height: 0px;
     top: -20px;
-    left: 31px;
+/*    left: 31px;*/
     border-color: #F00 transparent transparent transparent; 
     border-style: solid; 
     border-width: 7px; 

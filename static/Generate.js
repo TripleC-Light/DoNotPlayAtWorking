@@ -31,7 +31,6 @@ class Generate{
 				// var _positionMode = [35, 350];
 				WS.send('createPilot@' + _positionMode);
 				this.state = 'createPilotInWeb';
-				// this.state = 'createPilot';
 				break;
 
 			case 'createPilotInWeb':
@@ -57,7 +56,7 @@ class Generate{
 
 	newObj( parentObj, obj){
 		var _frameID = 'frame_' + obj.id;
-		this._createFrame(parentObj, obj.id);
+		this._createFrame(parentObj, obj);
 		this._createMsg(_frameID, obj.id);
 		this._createMsgArrow(_frameID, obj.id);
 		this._createMain(_frameID, obj.id);
@@ -66,12 +65,13 @@ class Generate{
 		this._shapeMain(obj, obj.pic);
 	}
 
-	_createFrame( parentObj, id){
-		var _id = id;
+	_createFrame( parentObj, obj){
 		var parent = document.getElementById(parentObj);
 		var pilotFrame = document.createElement("div");
-		pilotFrame.setAttribute("id", 'frame_' + _id);
+		pilotFrame.setAttribute("id", 'frame_' + obj.id);
 		pilotFrame.setAttribute("class", "cPilotFrame");
+		pilotFrame.style.width = obj.width + 'px';
+		pilotFrame.style.height = obj.height + 'px';
 		parent.appendChild(pilotFrame);
 		pilotFrame.style.visibility = 'hidden'
 	}
@@ -88,6 +88,9 @@ class Generate{
 		msgArrow.setAttribute("id", 'msgArrow_' + id);
 		msgArrow.setAttribute("class", "cPilotMsgArrow");
 		parent.appendChild(msgArrow);
+		var parentBound = parent.getBoundingClientRect();
+		var _leftOffset = (parentBound.width/2) - 3.5;
+		msgArrow.style.left = _leftOffset + 'px';
 	}
 	_createName( parentObj, obj){
 		var parent = document.getElementById(parentObj);
@@ -98,9 +101,9 @@ class Generate{
 		parent.appendChild(name);
 		var parentBound = parent.getBoundingClientRect();
 		var nameBound = name.getBoundingClientRect();
-		var _leftOffset = (parent.getBoundingClientRect().width-name.getBoundingClientRect().width)/2;
+		var _leftOffset = (parentBound.width-nameBound.width)/2;
 		name.style.left = _leftOffset + 'px';
-		name.style.top = parent.getBoundingClientRect().height + 'px';
+		name.style.top = parentBound.height + 'px';
 	}
 	_createHp( parentObj, id){
 		var parent = document.getElementById(parentObj);
@@ -108,6 +111,10 @@ class Generate{
 		hp.setAttribute("id", 'HP_' + id);
 		hp.setAttribute("class", "cPilotHP");
 		parent.appendChild(hp);
+		var parentBound = parent.getBoundingClientRect();
+		var hpBound = hp.getBoundingClientRect();
+		var _leftOffset = (parentBound.width-hpBound.width)/2;
+		hp.style.left = _leftOffset + 'px';
 	}
 	_createMain( parentObj, id){
 		var parent = document.getElementById(parentObj);

@@ -110,19 +110,6 @@
 				if(Com.timeToUpdateMsg()){
 					WS.send('getMsg');
 				}
-				// if(Com.timeToRecycleObj()){
-				// 	allObj.forEach(function(e) {
-				// 		if( e.type=='pilot' ){
-				// 			if( (serverTime-e.connectTimeOut)>10 ){
-				// 				console.log('Delete by cycle system: ' + e.id);
-				// 				// console.log('serverTime: ' + serverTime + ', e.connectTimeOut:' + e.connectTimeOut);
-				// 				// console.log('---------------------------------------------------');
-				// 				e.connectTimeOut = 0;
-				// 				deleteOfflinePilot(e);
-				// 			}
-				// 		}
-				// 	});
-				// }
 				WS.send('getNewData@' + myID);
 				setTimeout(function(){
 					getNewData();
@@ -155,17 +142,7 @@
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
 
-
 						_pilotData.list.forEach(function(e) {
-
-							// allObj.some(function(webObj) {
-							// 	if( webObj.id == e.id ){
-							// 		webObj.connectTimeOut = e.connectTimeOut;
-							// 		// console.log('XserverTime: ' + serverTime + ', e.connectTimeOut:' + webObj.connectTimeOut);
-							// 		return true;
-							// 	}
-							// });
-
 							_onLineNum += 1;
 							syncPilotObj(e);
 							showPilot(e);
@@ -175,23 +152,12 @@
 	        				updatePic(e);
 	        				deleteOfflinePilot(e);
 						});
-
-
-
 						allObj.forEach(function(_allObj){
 							if( _allObj.type == 'pilot' ){
 								_exitOnServer = new Boolean(false);
 								_exitOnServer = false;
 								_pilotData.list.some(function(e){
 									if( _allObj.id==e.id ){
-										// _onLineNum += 1;
-										// syncPilotObj(e);
-										// showPilot(e);
-					     //    			updatePilotXY(e);
-				      //   				updatePilotHP(e);
-				      //   				updatePilotMsg(e);
-				      //   				updatePic(e);
-				      //   				deleteOfflinePilot(e);
 				        				_exitOnServer = true;
 				        				return true;
 									}
@@ -202,19 +168,6 @@
 								}
 							}
 						});
-
-						// var _webPilotNum = 0;
-						// allObj.forEach(function(e) {
-						// 	if( e.type == 'pilot' ){
-						// 		if( (serverTime-e.connectTimeOut)>5 ){
-						// 			console.log(e.id);
-						// 			e.connectTimeOut = 0;
-						// 			deleteOfflinePilot(e);
-						// 		}
-						// 	}
-						// });
-
-
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + Com.countFPS();
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
 	        			break;
@@ -280,7 +233,7 @@
 			_pilotFrame.css({'top' : _pilotFrameBound.top - (_pilotBound.top-e.Y) - (_pilotBound.height/2)});
 		}
 		function updatePilotHP(e){
-			var _HPlengthInPx = 70;
+			var _HPlengthInPx = 100;
 			var _HPmax = 10;
 			var _damage = Math.round(_HPlengthInPx/_HPmax);
 			var _pilotHP = $('#HP_' + e.id);
@@ -327,24 +280,24 @@
 			if( e.id==myID){
 				if( attackState ){
 					_actionStr = 'attack_';
-					_pilotObj.style.width = '105px';
+					_pilotObj.style.width = (e.width*1.5) + 'px';
 					if( e.direction=='left' ){
-						_pilotObj.style.left = '-' + 35 + 'px';
+						_pilotObj.style.left = '-' + (e.width/2) + 'px';
 					}
 				}else{
 					_pilotObj.style.left = '0px';
-					_pilotObj.style.width = '70px';
+					_pilotObj.style.width = e.width + 'px';
 				}
 			}else{
 				if( e.attack!=0){
 					_actionStr = 'attack_';
-					_pilotObj.style.width = '105px';
+					_pilotObj.style.width = (e.width*1.5) + 'px';
 					if( e.direction=='left' ){
-						_pilotObj.style.left = '-' + 35 + 'px';
+						_pilotObj.style.left = '-' + (e.width/2) + 'px';
 					}
 				}else{
 					_pilotObj.style.left = '0px';
-					_pilotObj.style.width = '70px';
+					_pilotObj.style.width = e.width + 'px';
 				}
 			}
 			if( e.HIT ){
