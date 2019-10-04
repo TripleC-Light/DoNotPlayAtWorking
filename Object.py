@@ -6,6 +6,7 @@ class Object:
         self.HP = 10
         self.ATK = 1
         self.DEF = 0
+        self.speed = 350
         self.HIT = False
         self.width = 70
         self.height = 70

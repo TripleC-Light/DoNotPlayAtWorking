@@ -97,7 +97,7 @@ class Generate{
 		var name = document.createElement("div");
 		name.setAttribute("id", 'name_' + obj.id);
 		name.setAttribute("class", "cPilotName");
-		name.innerHTML = obj.id;
+		name.innerHTML = obj.name;
 		parent.appendChild(name);
 		var parentBound = parent.getBoundingClientRect();
 		var nameBound = name.getBoundingClientRect();

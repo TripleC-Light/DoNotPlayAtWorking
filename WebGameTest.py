@@ -100,6 +100,35 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if str(_pilot.id) == _id:
                     _pilot.attack = time.time()
                     break
+        elif _cmd == 'createEnemy':
+            for _i in range(5):
+                print('createEnemy' + str(_i))
+                _tmp = math.modf(time.time())
+                _tmp = _tmp[0] * 10000000
+                _tmp = math.modf(_tmp)
+                _tmp = int(_tmp[1]) + random.randint(0, 1000)
+
+                enemy = Object()
+                enemy.id = _tmp
+                enemy.name = 'Zombie No.' + str(_i)
+                _XY = setInitPosition('auto', enemy)
+                if _XY != [-1, -1]:
+                    enemy.type = 'enemy'
+                    enemy.pic = 'zombie'
+                    enemy.speed = 100
+                    enemy.X = _XY[0]
+                    enemy.Y = _XY[1]
+                    print('X:' + str(enemy.X) + ', Y:' + str(enemy.Y))
+                    # enemy.targetX = _XY[0]
+                    # enemy.targetY = _XY[1]
+                    enemy.targetX = random.randint(70, 1000)
+                    enemy.targetY = random.randint(70, 600)
+                    print('targetX:' + str(enemy.targetX) + ', targetY:' + str(enemy.targetY))
+                    enemy.connectTimeOut = time.time()
+                    enemy.width = random.randint(20, 150)
+                    enemy.height = enemy.width
+                    gCharacterList.append(enemy)
+                    addNewMsgToBox('系統公告', '新玩家 ' + enemy.name + '進入遊戲')
 
         elif _cmd == 'sendMsg':
             _data = _tmp[1]
@@ -248,13 +277,14 @@ def updateAll():
                         _pilot.msgTimeCount -= 1
                         if _pilot.msgTimeCount == 0:
                             _pilot.msg = ''
+
         for _pilot in gCharacterList:
-            if _pilot.type == 'pilot':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                 _pilot.HIT = False
 
         _pilotList = []
         for _pilot in gCharacterList:
-            if _pilot.type == 'pilot':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                 updatePosition(_pilot)
                 if (_pilot.attack != 0) and ((time.time()-_pilot.attack) > _attackTime):
                     _pilot.attack = 0
@@ -283,20 +313,21 @@ def updateAll():
                                 break
 
                 if (time.time() - _pilot.connectTimeOut) > _offlineTime:
-                    if _pilot.connectTimeOut == 0:
+                    if _pilot.type == 'pilot' and _pilot.connectTimeOut == 0:
                         addNewMsgToBox('系統公告', _pilot.name + ' 離開遊戲')
                         gCharacterList.remove(_pilot)
                         print('delete: ' + str(_pilot.id))
-                    _pilot.connectTimeOut = 0
+                        _pilot.connectTimeOut = 0
 
         for _pilot in gCharacterList:
-            if _pilot.type == 'pilot':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON.update({'list': _pilotList})
         time.sleep(gFrameTime)
 
 def updatePosition(pilot):
+    global gFrameTime
     global gPilotStep
     global gCharacterList
 
@@ -307,6 +338,7 @@ def updatePosition(pilot):
     if distance(_P1, _P2) < 1:
         return True
     else:
+        gPilotStep = pilot.speed * gFrameTime
         _step = gPilotStep
         _d = round(distance(_P1, _P2))
         _howManyTimesToGo = round(_d / _step)

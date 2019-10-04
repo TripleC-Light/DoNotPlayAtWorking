@@ -141,7 +141,7 @@
 	        			var _pilotDataInJSON = _returnData[1];
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
-
+	        			// console.log(_pilotData.list);
 						_pilotData.list.forEach(function(e) {
 							_onLineNum += 1;
 							syncPilotObj(e);
@@ -163,6 +163,7 @@
 									}
 								});
 								if( !_exitOnServer ){
+									console.log('_allObj.name');
 									_allObj.connectTimeOut = 0;
 									deleteOfflinePilot(_allObj);
 								}
@@ -411,7 +412,7 @@
 			}
 		}
 		function addEnemy(){
-			
+			WS.send('createEnemy');
 		}
 	</script>
 </head>
