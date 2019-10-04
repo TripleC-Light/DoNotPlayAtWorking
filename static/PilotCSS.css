@@ -43,6 +43,8 @@
     font-size: 15px;
     text-align: left;
     word-wrap: break-word;
+    /*word-break: break-all;*/
+    /*word-break: normal;*/
     user-select: none;
     display: none;
     position: absolute;
