@@ -234,14 +234,18 @@
 			_pilotFrame.css({'top' : _pilotFrameBound.top - (_pilotBound.top-e.Y) - (_pilotBound.height/2)});
 		}
 		function updatePilotHP(e){
-			var _HPlengthInPx = 100;
+			var _HPlengthInPx = 50;
 			var _HPmax = 10;
 			var _damage = Math.round(_HPlengthInPx/_HPmax);
 			var _pilotHP = $('#HP_' + e.id);
 			_pilotHP.css('display','inline-block');
 			_pilotHP.width((e.HP*_damage));
-			// _pilotHP.css('visibility','visible');
-			_pilotHP.css('visibility','hidden');
+			_pilotHP.css('visibility','visible');
+			// _pilotHP.css('visibility','hidden');
+			// console.log(_pilotHP.width());
+			if( _pilotHP.width()<20 ){
+				_pilotHP.css('background-color','#F00');
+			}
 			if( e.HIT ){
 				shake(e, 10);
 			}

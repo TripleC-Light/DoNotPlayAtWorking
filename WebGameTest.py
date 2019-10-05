@@ -56,8 +56,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 robot.targetX = _XY[0]
                 robot.targetY = _XY[1]
                 robot.connectTimeOut = time.time()
-                # robot.width = random.randint(20, 150)
-                robot.width = random.randint(20, 20)
+                robot.width = random.randint(20, 150)
                 robot.height = robot.width
                 gCharacterList.append(robot)
                 addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
@@ -102,7 +101,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     _pilot.attack = time.time()
                     break
         elif _cmd == 'createEnemy':
-            for _i in range(50):
+            for _i in range(3):
                 print('createEnemy' + str(_i))
                 _tmp = math.modf(time.time())
                 _tmp = _tmp[0] * 10000000
@@ -111,7 +110,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
                 enemy = Object()
                 enemy.id = _tmp
-                enemy.name = 'Zombie No.' + str(_i)
+                enemy.name = enemy.id
                 _XY = setInitPosition('auto', enemy)
                 if _XY != [-1, -1]:
                     enemy.type = 'enemy'
@@ -119,17 +118,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     enemy.speed = 50
                     enemy.X = _XY[0]
                     enemy.Y = _XY[1]
-                    print('X:' + str(enemy.X) + ', Y:' + str(enemy.Y))
                     # enemy.targetX = _XY[0]
                     # enemy.targetY = _XY[1]
                     enemy.targetX = random.randint(70, 1000)
                     enemy.targetY = random.randint(70, 600)
-                    print('targetX:' + str(enemy.targetX) + ', targetY:' + str(enemy.targetY))
                     enemy.connectTimeOut = time.time()
-                    enemy.width = random.randint(5, 5)
+                    enemy.width = random.randint(70, 70)
                     enemy.height = enemy.width
                     gCharacterList.append(enemy)
-                    addNewMsgToBox('系統公告', '新玩家 ' + enemy.name + '進入遊戲')
 
         elif _cmd == 'sendMsg':
             _data = _tmp[1]
@@ -314,29 +310,33 @@ def updateAll():
                         _pilot.attack = 0
                         for _beHitPilot in gCharacterList:
                             if _beHitPilot.id == _weapenCollision[1]:
-                                print(_weapenCollision[1])
+                                print('Be HIT: ' + str(_weapenCollision[1]))
                                 _beHitPilot.HIT = True
                                 _damage = _pilot.ATK - _beHitPilot.DEF
                                 if _damage > 0:
                                     _beHitPilot.HP -= _damage
+                                    if _beHitPilot.HP <= 0:
+                                        _beHitPilot.connectTimeOut = 1
                                 break
 
                 if (time.time() - _pilot.connectTimeOut) > _offlineTime:
-                    if _pilot.type == 'pilot':
+                    if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                         if _pilot.connectTimeOut == 0:
-                            addNewMsgToBox('系統公告', _pilot.name + ' 離開遊戲')
+                            addNewMsgToBox('系統公告', str(_pilot.name) + ' 離開遊戲')
                             gCharacterList.remove(_pilot)
                             print('delete: ' + str(_pilot.id))
                         _pilot.connectTimeOut = 0
 
         for _pilot in gCharacterList:
             if _pilot.type == 'pilot' or _pilot.type == 'enemy':
+                if _pilot.type == 'enemy' and _pilot.connectTimeOut != 0:
+                    _pilot.connectTimeOut = time.time()
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON.update({'list': _pilotList})
 
         _exeTime = time.time()-_startTime
-        print(round((_exeTime*1000), 2))
+        # print(round((_exeTime*1000), 2))
         time.sleep(gFrameTime)
 
 def updatePosition(pilot):
