@@ -73,14 +73,35 @@ class Common{
 		_url = _url[1].split('/');
 		return( _ws + "://" + _url[0] + "/ws" );
 	}
-}
 
-
-function idExist(id, objList){
-	for(var i=0; i<objList.length; i++){
-		if(id==objList[i].id){
-			return true;
+	strLen(sString){
+		var _enStr = 0;
+		var _twStr = 0;
+		var s = sString;
+		for (var i=0; i<s.length; i++){
+			if (s.substr(i,1).charCodeAt(0)>255){
+				_twStr += 1;
+			}else{
+				_enStr += 1;
+			}
 		}
+		return ([_twStr, _enStr]);
 	}
-	return false;
+
+	strLenInPX(_msg){
+		var _srtLength = this.strLen(_msg);
+		var _oneENcharLenInPX = 12;
+		var _oneTWcharLenInPX = 7.6;
+		var _strLenInPX = (_srtLength[0]*(_oneTWcharLenInPX*2)) + (_srtLength[1]*_oneENcharLenInPX);
+		return _strLenInPX;
+	}
+
+	idExist(id, objList){
+		for(var i=0; i<objList.length; i++){
+			if(id==objList[i].id){
+				return true;
+			}
+		}
+		return false;
+	}
 }

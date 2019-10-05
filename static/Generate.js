@@ -16,7 +16,7 @@ class Generate{
 
 			case 'checkID':
 				if(this.ID!=''){
-					if(idExist(myID, allObj)){
+					if(Com.idExist(myID, allObj)){
 						console.log('ID:' + this.ID + ' already exist');
 						this.state = 'finish';
 					}else{
@@ -36,7 +36,6 @@ class Generate{
 			case 'createPilotInWeb':
 				if( this.pilotObj!='' ){
 					this.newObj(parent, this.pilotObj);
-					// var _mainMap = document.getElementById(parent);
 					this.state = 'finish';
 				}
 				break;
