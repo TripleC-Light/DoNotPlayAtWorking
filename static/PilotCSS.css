@@ -30,6 +30,7 @@
     vertical-align: top;
     user-select: none;
     position: absolute;
+    display: none;
 }
 .cPilotmsg{
     top: 0px;

@@ -240,7 +240,8 @@
 			var _pilotHP = $('#HP_' + e.id);
 			_pilotHP.css('display','inline-block');
 			_pilotHP.width((e.HP*_damage));
-			_pilotHP.css('visibility','visible');
+			// _pilotHP.css('visibility','visible');
+			_pilotHP.css('visibility','hidden');
 			if( e.HIT ){
 				shake(e, 10);
 			}
