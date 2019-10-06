@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import tornado.ioloop
 import tornado.web
-import tornado.httpclient
-import os
 import webbrowser
-import serial
-import requests
+import os
 import time
-import serial.tools.list_ports
 import random
 import threading
 import math
@@ -25,7 +21,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
         return True
 
-    def allow_draft76(self):        # for iOS 5.0 Safari
+    def allow_draft76(self):            # for iOS 5.0 Safari
         return True
 
     def open(self):
@@ -46,21 +42,21 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         if _cmd == 'createPilot':
             _data = _tmp[1]
             _positionMode = _data
-            robot = Object()
-            robot.id = gMyID
-            robot.name = str(robot.id)
-            _XY = setInitPosition(_positionMode, robot)
+            _pilot = Object()
+            _pilot.id = gMyID
+            _pilot.name = str(_pilot.id)
+            _XY = setInitPosition(_positionMode, _pilot)
             if _XY != [-1, -1]:
-                robot.X = _XY[0]
-                robot.Y = _XY[1]
-                robot.targetX = _XY[0]
-                robot.targetY = _XY[1]
-                robot.connectTimeOut = time.time()
-                robot.width = random.randint(20, 150)
-                robot.height = robot.width
-                gCharacterList.append(robot)
-                addNewMsgToBox('系統公告', '新玩家 ' + robot.name + '進入遊戲')
-                _pilotInJSON = robot.__dict__
+                _pilot.X = _XY[0]
+                _pilot.Y = _XY[1]
+                _pilot.targetX = _XY[0]
+                _pilot.targetY = _XY[1]
+                _pilot.connectTimeOut = time.time()
+                _pilot.width = random.randint(20, 150)
+                _pilot.height = _pilot.width
+                gCharacterList.append(_pilot)
+                addNewMsgToBox('系統公告', '新玩家 ' + _pilot.name + '進入遊戲')
+                _pilotInJSON = _pilot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
 
         elif _cmd == 'getNewData':
