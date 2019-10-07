@@ -10,6 +10,7 @@ import math
 import tornado.websocket
 from Object import Object
 import json
+import myFunction as myFunc
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -70,11 +71,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
 
         elif _cmd == 'getID':
-            _tmp = math.modf(time.time())
-            _tmp = _tmp[0] * 10000000
-            _tmp = math.modf(_tmp)
-            _tmp = int(_tmp[1])
-            gMyID = id(self) + _tmp
+            # _tmp = math.modf(time.time())
+            # _tmp = math.modf(time.time())
+            # _tmp = _tmp[0] * 10000000
+            # _tmp = math.modf(_tmp)
+            # _tmp = int(_tmp[1])
+            # gMyID = id(self) + _tmp
+            # print('New ID= ' + str(gMyID))
+            # _returnInfo = 'ID@' + str(gMyID)
+            gMyID = myFunc.getUniqueID()
             print('New ID= ' + str(gMyID))
             _returnInfo = 'ID@' + str(gMyID)
 
