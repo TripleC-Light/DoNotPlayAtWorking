@@ -9,21 +9,21 @@ class Generate{
 	pilot(parent, allObj){
 		switch(this.state){
 			case 'getID':
-				this.ID = '';
-				WS.send('getID');
+				// this.ID = '';
+				// WS.send('getID');
 				this.state = 'checkID';
 				break;
 
 			case 'checkID':
-				if(this.ID!=''){
-					if(Com.idExist(myID, allObj)){
-						console.log('ID:' + this.ID + ' already exist');
-						this.state = 'finish';
-					}else{
-						console.log('ID:' + this.ID);
+				// if(this.ID!=''){
+				// 	if(Com.idExist(myID, allObj)){
+				// 		console.log('ID:' + this.ID + ' already exist');
+				// 		this.state = 'finish';
+				// 	}else{
+				// 		console.log('ID:' + this.ID);
 						this.state = 'createPilotInServer';
-					}
-				}
+				// 	}
+				// }
 				break;
 
 			case 'createPilotInServer':

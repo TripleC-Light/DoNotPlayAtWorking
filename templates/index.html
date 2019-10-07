@@ -125,15 +125,11 @@
 	        	var _returnData = e.data;
 	        	_returnData = _returnData.split('@');
 	        	var _CMD = _returnData[0];
-	        	switch(_CMD){
-	        		case 'ID':
-	        			Create.ID = _returnData[1];
-	        			myID = Create.ID;
-	        			break;
-	        			
+	        	switch(_CMD){	        			
 	        		case 'newPilot':
 	        			var _pilotData = JSON.parse(_returnData[1]);
 	        			myPilot = _pilotData;
+	        			myID = _pilotData.id;
 	        			Create.pilotObj = myPilot;
 	        			break;
 
@@ -167,9 +163,8 @@
 									}
 								});
 								if( !_exitOnServer ){
-									console.log('_allObj.name');
 									_allObj.connectTimeOut = 0;
-									deleteOfflinePilot(_allObj);
+									_objCtrl.deleteOfflinePilot(_allObj);
 								}
 							}
 						});
@@ -198,7 +193,7 @@
 							_mainMap.css('background-image','url(' + _map.background + ')');
 							_map.ObjList.forEach(function(e) {
 		        				if( !Com.idExist(e.id, allObj) ){
-									Create.newObj( 'iMainMap', e);
+									Create.newObj('iMainMap', e);
 			        				var _objFrame = $('#frame_'+e.id);
 									_objFrame.css({'left':e.X-(e.width/2), 'top':e.Y-(e.height/2)});
 			        				var _obj = $('#'+e.id);
