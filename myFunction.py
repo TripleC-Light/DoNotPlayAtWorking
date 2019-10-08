@@ -1,5 +1,6 @@
 import uuid
 import time
+import json
 
 def getUniqueID():
     # _getUID = False
@@ -31,3 +32,30 @@ def rectCollision(pilot, objList):
                 return _returnState, _id
     print(time.time()-_start)
     return _returnState, _id
+
+class MsgCtrl:
+    def __init__(self):
+        self.box = [['系統公告', '遊戲開始']]
+        self.maxNum = 6
+
+    def add(self, _name, _msg):
+        if len(self.box) >= self.maxNum:
+            _tmp = self.box[1:]
+            self.box = _tmp
+        self.box.append([_name, _msg])
+
+    def returnToWeb(self):
+        _returnDataInJSON = {'list': self.box}
+        _returnData = 'SysMsg@' + json.dumps(_returnDataInJSON)
+        return _returnData
+
+    def filter(self, _msg):
+        _msg = _msg.replace('\t', "")
+        _msg = _msg.replace('\T', "")
+        _msg = _msg.replace('\\', "")
+        _msg = _msg.replace('@', '')
+        _msg = _msg.replace(';', '')
+        _msg = _msg.replace('"', '\'')
+        _msg = _msg.replace('>', "")
+        _msg = _msg.replace('<', "")
+        return _msg

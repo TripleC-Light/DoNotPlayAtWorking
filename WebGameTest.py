@@ -35,6 +35,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         global gObjList
         global gPilotListInJSON
         global gMapSize
+        global gMsgCtrl
 
         _setInitPositionFail = [-1, -1]
         _tmp = CMDfromWEB.split('@')
@@ -56,7 +57,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilot.width = random.randint(20, 150)
                 _pilot.height = _pilot.width
                 gObjList.append(_pilot)
-                addNewMsgToBox('系統公告', '新玩家 ' + _pilot.name + '進入遊戲')
+                gMsgCtrl.add('系統公告', '新玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
 
@@ -117,16 +118,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _tmp = _data.split(';')
             _id = _tmp[0]
             _msg = _tmp[1]
-            _msg = legalMsg(_msg)
+            _msg = gMsgCtrl.filter(_msg)
             for _pilot in gObjList:
                 if str(_pilot.id) == _id:
                     _pilot.msgTimeCount = 5
                     _pilot.msg = _msg
-                    addNewMsgToBox(_pilot.name, _msg)
+                    gMsgCtrl.add(_pilot.name, _msg)
                     break
 
         elif _cmd == 'getMsg':
-            _returnInfo = returnMsg()
+            _returnInfo = gMsgCtrl.returnToWeb()
 
         elif _cmd == 'setMap':
             _reserveList = []
@@ -210,35 +211,11 @@ def setInitPosition(positionMode, mapSize, obj):
     print('Try select a new position in ' + str(_tryCount) + ' times')
     return _XY
 
-def addNewMsgToBox(_name, _msg):
-    global gMsgBox
-    if len(gMsgBox) >= 6:
-        _tmp = gMsgBox[1:]
-        gMsgBox = _tmp
-    gMsgBox.append([_name, _msg])
-
-def returnMsg():
-    global gMsgBox
-    _returnInfoInJSON = {'list': gMsgBox}
-    _returnInfo = 'SysMsg@' + json.dumps(_returnInfoInJSON)
-    return _returnInfo
-
-def legalMsg(_msg):
-    print(_msg)
-    _msg = _msg.replace('\t', "")
-    _msg = _msg.replace('\T', "")
-    _msg = _msg.replace('\\', "")
-    _msg = _msg.replace('@', '')
-    _msg = _msg.replace(';', '')
-    _msg = _msg.replace('"', '\'')
-    _msg = _msg.replace('>', "")
-    _msg = _msg.replace('<', "")
-    return _msg
-
 def updateAll():
     global gTimeCounter
     global gFrameTime
     global gPilotListInJSON
+    global gMsgCtrl
 
     _msgUpdateTime = 1  # second
     _attackTime = 0.1   # second
@@ -301,7 +278,8 @@ def updateAll():
                 if (time.time() - _pilot.connectTimeOut) > _offlineTime:
                     if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                         if _pilot.connectTimeOut == 0:
-                            addNewMsgToBox('系統公告', str(_pilot.name) + ' 離開遊戲')
+                            # addNewMsgToBox('系統公告', str(_pilot.name) + ' 離開遊戲')
+                            gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
                             gObjList.remove(_pilot)
                             print('delete: ' + str(_pilot.id))
                         _pilot.connectTimeOut = 0
@@ -354,27 +332,6 @@ def updatePosition(pilot):
                 pilot.targetY = pilot.Y
         return False
 
-# def myFunc.rectCollision(pilot, gObjList):
-#     _id = 0
-#     _margin = 0
-#     _returnState = False
-#     for ind, _obj in enumerate(gObjList):
-#         if pilot.id != _obj.id:
-#             _minX1 = pilot.X - pilot.width / 2 + _margin
-#             _maxX1 = pilot.X + pilot.width / 2 - _margin
-#             _minY1 = pilot.Y - pilot.height / 2 + _margin
-#             _maxY1 = pilot.Y + pilot.height / 2 - _margin
-#             _minX2 = _obj.X - _obj.width / 2 + _margin
-#             _maxX2 = _obj.X + _obj.width / 2 - _margin
-#             _minY2 = _obj.Y - _obj.height / 2 + _margin
-#             _maxY2 = _obj.Y + _obj.height / 2 - _margin
-#             if _maxX1 > _minX2 and _maxX2 > _minX1 and _maxY1 > _minY2 and _maxY2 > _minY1:
-#                 _returnState = True
-#                 _id = gObjList[ind].id
-#                 return _returnState, _id
-#
-#     return _returnState, _id
-
 def distance(P1, P2):
     _dX = P1[0] - P2[0]
     _dY = P1[1] - P2[1]
@@ -388,19 +345,19 @@ if __name__ == "__main__":
     global gFrameTime           # Frame per second
     global gPilotVilocity       # pixel / s
     global gPilotStep           # Pixel per frame
-    global gMsgBox
-    ## global gMyID
+    # global gMsgBox
+    global gMsgCtrl
 
     try:
-        ## gMyID = 0
         gObjList = []
         gTimeCounter = 0
         gFrameTime = 0.05
         gPilotVilocity = 350
         gPilotStep = gPilotVilocity * gFrameTime
-        gMsgBox = []
+        # gMsgBox = []
         gPilotList = []
         gPilotListInJSON = {}
+        gMsgCtrl = myFunc.MsgCtrl()
 
         # 建立一個子執行緒
         t = threading.Thread(target=updateAll)
