@@ -6,7 +6,6 @@ import os
 import time
 import random
 import threading
-import math
 import tornado.websocket
 from Object import Object
 import json
@@ -17,8 +16,6 @@ class IndexHandler(tornado.web.RequestHandler):
         self.render('index.html')
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    global gObjList
-
     def check_origin(self, origin):     # 允許跨來源資源共用
         return True
 
@@ -56,19 +53,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilot.connectTimeOut = time.time()
                 _pilot.width = random.randint(20, 150)
                 _pilot.height = _pilot.width
-                gObjList.append(_pilot)
-                gMsgCtrl.add('系統公告', '新玩家 ' + _pilot.name + '進入遊戲')
+                gObjList[_pilot.id] = _pilot
+                gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
 
         elif _cmd == 'getNewData':
             _data = _tmp[1]
             _id = _data
-            for _pilot in gObjList:
-                if str(_pilot.id) == _id:
-                    _pilot.connectTimeOut = time.time()
-                    break
-            gPilotListInJSON.update({'serverTime': time.time()})
+            if _id in gObjList:
+                gObjList[_id].connectTimeOut = time.time()
+            gPilotListInJSON['serverTime'] = time.time()
             _returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
 
         elif _cmd == 'move':
@@ -77,18 +72,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _id = _tmp[0]
             _XY = _tmp[1]
             _XY = _XY.split(',')
-            for _pilot in gObjList:
-                if str(_pilot.id) == _id:
-                    _pilot.targetX = int(_XY[0])
-                    _pilot.targetY = int(_XY[1])
-                    break
+            gObjList[_id].targetX = int(_XY[0])
+            gObjList[_id].targetY = int(_XY[1])
 
         elif _cmd == 'attack':
             _id = _tmp[1]
-            for _pilot in gObjList:
-                if str(_pilot.id) == _id:
-                    _pilot.attack = time.time()
-                    break
+            gObjList[_id].attack = time.time()
 
         elif _cmd == 'createEnemy':
             _setInitPositionFail = [-1, -1]
@@ -101,7 +90,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if _XY != _setInitPositionFail:
                     enemy.type = 'enemy'
                     enemy.pic = 'zombie'
-                    enemy.speed = 50
+                    enemy.speed = 30
                     enemy.X = _XY[0]
                     enemy.Y = _XY[1]
                     # enemy.targetX = _XY[0]
@@ -111,7 +100,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     enemy.connectTimeOut = time.time()
                     enemy.width = random.randint(70, 70)
                     enemy.height = enemy.width
-                    gObjList.append(enemy)
+                    gObjList[enemy.id] = enemy
 
         elif _cmd == 'sendMsg':
             _data = _tmp[1]
@@ -119,21 +108,18 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _id = _tmp[0]
             _msg = _tmp[1]
             _msg = gMsgCtrl.filter(_msg)
-            for _pilot in gObjList:
-                if str(_pilot.id) == _id:
-                    _pilot.msgTimeCount = 5
-                    _pilot.msg = _msg
-                    gMsgCtrl.add(_pilot.name, _msg)
-                    break
+            gObjList[_id].msgTimeCount = 5
+            gObjList[_id].msg = _msg
+            gMsgCtrl.add(gObjList[_id].name, _msg)
 
         elif _cmd == 'getMsg':
             _returnInfo = gMsgCtrl.returnToWeb()
 
         elif _cmd == 'setMap':
-            _reserveList = []
+            _reserveList = {}
             for _mapObj in gObjList:
-                if _mapObj.type != 'mapObj':
-                    _reserveList.append(_mapObj)
+                if gObjList[_mapObj].type != 'mapObj':
+                    _reserveList[_mapObj] = _mapObj
             gObjList = _reserveList.copy()
 
             _data = _tmp[1]
@@ -149,13 +135,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     _type = line[0]
 
                     if _type == 'region':
-                        _mapObjInJSON.update({'region': line[1]})
+                        _mapObjInJSON['region'] = line[1]
                     elif _type == 'size':
                         _description = line[1].split(',')
                         gMapSize = [int(_description[0]), int(_description[1])]
-                        _mapObjInJSON.update({'size': gMapSize})
+                        _mapObjInJSON['size'] = gMapSize
                     elif _type == 'background':
-                        _mapObjInJSON.update({'background': './static/map/background/' + line[1]})
+                        _mapObjInJSON['background'] = './static/map/background/' + line[1]
                     elif _type == 'mapObj':
                         _obj = Object()
                         _description = line[1].split(',')
@@ -163,7 +149,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         _X = int(_description[1])
                         _Y = int(_description[2])
                         _obj.type = 'mapObj'
-                        _obj.id = _mapObjID
+                        _obj.id = myFunc.getUniqueID()
                         _obj.name = str(_obj.id)
                         _obj.X = _X
                         _obj.Y = _Y
@@ -174,10 +160,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                             _obj.width = 70
                             _obj.height = 70
                             _obj.pic = './static/map/obj/' + _pic + '.png'
-                        gObjList.append(_obj)
+                        gObjList[_obj.id] = _obj
                         _mapObjList.append(_obj.__dict__)
                         _mapObjID += 1
-            _mapObjInJSON.update({'ObjList': _mapObjList})
+            _mapObjInJSON['ObjList'] = _mapObjList
             _objToJSON = json.dumps(_mapObjInJSON)
             _returnInfo = 'setMap@' + _objToJSON
 
@@ -216,81 +202,83 @@ def updateAll():
     global gFrameTime
     global gPilotListInJSON
     global gMsgCtrl
+    global gObjList
 
     _msgUpdateTime = 1  # second
     _attackTime = 0.1   # second
     _offlineTime = 5    # second
-    while True:
+    while 1:
         _startTime = time.time()
         gTimeCounter += 1
         if (gTimeCounter * gFrameTime) > _msgUpdateTime:
             gTimeCounter = 0
-            for _pilot in gObjList:
-                if _pilot.type == 'pilot':
-                    if _pilot.msgTimeCount > 0:
-                        _pilot.msgTimeCount -= 1
-                        if _pilot.msgTimeCount == 0:
-                            _pilot.msg = ''
+            for _pilot in list(gObjList.keys()):
+                if gObjList[_pilot].type == 'pilot':
+                    if gObjList[_pilot].msgTimeCount > 0:
+                        gObjList[_pilot].msgTimeCount -= 1
+                        if gObjList[_pilot].msgTimeCount == 0:
+                            gObjList[_pilot].msg = ''
 
-                if _pilot.type == 'enemy':
-                    _targetPilot = _pilot
+                if gObjList[_pilot].type == 'enemy':
+                    _targetPilot = gObjList[_pilot]
                     while _targetPilot.type != 'pilot':
-                        _targetPilot = random.choice(gObjList)
-                    _pilot.targetX = _targetPilot.X
-                    _pilot.targetY = _targetPilot.Y
+                        _targetPilot = gObjList[random.choice(list(gObjList.keys()))]
+                    gObjList[_pilot].targetX = _targetPilot.X
+                    gObjList[_pilot].targetY = _targetPilot.Y
 
-        for _pilot in gObjList:
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                _pilot.HIT = False
+        for _pilot in list(gObjList.keys()):
+            if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
+                gObjList[_pilot].HIT = False
+
 
         _pilotList = []
-        for _pilot in gObjList:
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                updatePosition(_pilot)
-                if (_pilot.attack != 0) and ((time.time()-_pilot.attack) > _attackTime):
-                    _pilot.attack = 0
+        for _pilot in list(gObjList.keys()):
+            if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
+                updatePosition(gObjList[_pilot])
+                if (gObjList[_pilot].attack != 0) and ((time.time()-gObjList[_pilot].attack) > _attackTime):
+                    gObjList[_pilot].attack = 0
 
-                if _pilot.attack != 0:
+                if gObjList[_pilot].attack != 0:
                     _weapen = Object()
-                    _weapen.id = _pilot.id
-                    _weapen.width = _pilot.width/2
-                    _weapen.height = _pilot.height
-                    if _pilot.direction == 'right':
-                        _weapen.X = _pilot.X + _pilot.width/2 + _weapen.width/2
-                        _weapen.Y = _pilot.Y
+                    _weapen.id = gObjList[_pilot].id
+                    _weapen.width = gObjList[_pilot].width/2
+                    _weapen.height = gObjList[_pilot].height
+                    if gObjList[_pilot].direction == 'right':
+                        _weapen.X = gObjList[_pilot].X + gObjList[_pilot].width/2 + _weapen.width/2
+                        _weapen.Y = gObjList[_pilot].Y
                     else:
-                        _weapen.X = _pilot.X - _pilot.width/2 - _weapen.width/2
-                        _weapen.Y = _pilot.Y
+                        _weapen.X = gObjList[_pilot].X - gObjList[_pilot].width/2 - _weapen.width/2
+                        _weapen.Y = gObjList[_pilot].Y
                     _weapenCollision = myFunc.rectCollision(_weapen, gObjList)
                     if _weapenCollision[0]:
-                        _pilot.attack = 0
+                        gObjList[_pilot].attack = 0
                         for _beHitPilot in gObjList:
-                            if _beHitPilot.id == _weapenCollision[1]:
+                            if gObjList[_beHitPilot].id == _weapenCollision[1]:
                                 print('Be HIT: ' + str(_weapenCollision[1]))
-                                _beHitPilot.HIT = True
-                                _damage = _pilot.ATK - _beHitPilot.DEF
+                                gObjList[_beHitPilot].HIT = True
+                                _damage = gObjList[_pilot].ATK - gObjList[_beHitPilot].DEF
                                 if _damage > 0:
-                                    _beHitPilot.HP -= _damage
-                                    if _beHitPilot.HP <= 0:
-                                        _beHitPilot.connectTimeOut = 1
+                                    gObjList[_beHitPilot].HP -= _damage
+                                    if gObjList[_beHitPilot].HP <= 0:
+                                        gObjList[_beHitPilot].connectTimeOut = 1
                                 break
 
-                if (time.time() - _pilot.connectTimeOut) > _offlineTime:
-                    if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                        if _pilot.connectTimeOut == 0:
-                            # addNewMsgToBox('系統公告', str(_pilot.name) + ' 離開遊戲')
-                            gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
-                            gObjList.remove(_pilot)
-                            print('delete: ' + str(_pilot.id))
-                        _pilot.connectTimeOut = 0
+                if (time.time() - gObjList[_pilot].connectTimeOut) > _offlineTime:
+                    if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
+                        if gObjList[_pilot].connectTimeOut == 0:
+                            gMsgCtrl.add('系統公告', str(gObjList[_pilot].name) + ' 離開遊戲')
+                            del gObjList[_pilot]
+                            print('delete: ' + str(_pilot))
+                        else:
+                            gObjList[_pilot].connectTimeOut = 0
 
-        for _pilot in gObjList:
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                if _pilot.type == 'enemy' and _pilot.connectTimeOut != 0:
-                    _pilot.connectTimeOut = time.time()
-                _pilotList.append(_pilot.__dict__)
+        for _pilot in list(gObjList.keys()):
+            if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
+                if gObjList[_pilot].type == 'enemy' and gObjList[_pilot].connectTimeOut != 0:
+                    gObjList[_pilot].connectTimeOut = time.time()
+                _pilotList.append(gObjList[_pilot].__dict__)
 
-        gPilotListInJSON.update({'list': _pilotList})
+        gPilotListInJSON['list'] = _pilotList
 
         _exeTime = time.time()-_startTime
         # print(round((_exeTime*1000), 2))
@@ -305,12 +293,12 @@ def updatePosition(pilot):
     _P2 = [pilot.targetX, pilot.targetY]
     _dX = _P1[0] - _P2[0]
     _dY = _P1[1] - _P2[1]
-    if distance(_P1, _P2) < 1:
+    if myFunc.distance(_P1, _P2) < 1:
         return True
     else:
         gPilotStep = pilot.speed * gFrameTime
         _step = gPilotStep
-        _d = round(distance(_P1, _P2))
+        _d = round(myFunc.distance(_P1, _P2))
         _howManyTimesToGo = round(_d / _step)
         if _howManyTimesToGo == 0:
             pilot.X = pilot.targetX
@@ -332,11 +320,6 @@ def updatePosition(pilot):
                 pilot.targetY = pilot.Y
         return False
 
-def distance(P1, P2):
-    _dX = P1[0] - P2[0]
-    _dY = P1[1] - P2[1]
-    return math.sqrt((_dX ** 2) + (_dY ** 2))
-
 if __name__ == "__main__":
     global gObjList
     global gPilotList
@@ -345,23 +328,20 @@ if __name__ == "__main__":
     global gFrameTime           # Frame per second
     global gPilotVilocity       # pixel / s
     global gPilotStep           # Pixel per frame
-    # global gMsgBox
     global gMsgCtrl
 
     try:
-        gObjList = []
+        gObjList = {}
         gTimeCounter = 0
         gFrameTime = 0.05
         gPilotVilocity = 350
         gPilotStep = gPilotVilocity * gFrameTime
-        # gMsgBox = []
         gPilotList = []
         gPilotListInJSON = {}
         gMsgCtrl = myFunc.MsgCtrl()
 
-        # 建立一個子執行緒
+        # 建立執行緒並執行
         t = threading.Thread(target=updateAll)
-        # 執行該子執行緒
         t.start()
 
         handlers = [[r'/index', IndexHandler],
@@ -382,4 +362,3 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         print('再見！')
-
