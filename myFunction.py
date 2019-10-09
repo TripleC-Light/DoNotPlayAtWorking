@@ -18,16 +18,16 @@ def rectCollision(pilot, _objListD):
     _margin = 5
     _returnState = False
     _ObjIDs = list(_objListD.keys())
+    _minX1 = pilot.X - pilot.W / 2 + _margin
+    _maxX1 = pilot.X + pilot.W / 2 - _margin
+    _minY1 = pilot.Y - pilot.H / 2 + _margin
+    _maxY1 = pilot.Y + pilot.H / 2 - _margin
     for _key in _ObjIDs:
         if pilot.id != _objListD[_key].id:
-            _minX1 = pilot.X - pilot.width / 2 + _margin
-            _maxX1 = pilot.X + pilot.width / 2 - _margin
-            _minY1 = pilot.Y - pilot.height / 2 + _margin
-            _maxY1 = pilot.Y + pilot.height / 2 - _margin
-            _minX2 = _objListD[_key].X - _objListD[_key].width / 2 + _margin
-            _maxX2 = _objListD[_key].X + _objListD[_key].width / 2 - _margin
-            _minY2 = _objListD[_key].Y - _objListD[_key].height / 2 + _margin
-            _maxY2 = _objListD[_key].Y + _objListD[_key].height / 2 - _margin
+            _minX2 = _objListD[_key].X - _objListD[_key].W / 2 + _margin
+            _maxX2 = _objListD[_key].X + _objListD[_key].W / 2 - _margin
+            _minY2 = _objListD[_key].Y - _objListD[_key].H / 2 + _margin
+            _maxY2 = _objListD[_key].Y + _objListD[_key].H / 2 - _margin
             if _maxX1 > _minX2 and _maxX2 > _minX1 and _maxY1 > _minY2 and _maxY2 > _minY1:
                 _returnState = True
                 _id = _objListD[_key].id

@@ -136,6 +136,8 @@
 	        		case 'NewData':
 	        			var _onLineNum = 0
 	        			var _pilotDataInJSON = _returnData[1];
+	        			console.log(_pilotDataInJSON.length)
+	        			// console.log(_pilotDataInJSON)
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
 	        			// console.log(_pilotData.list);
@@ -154,6 +156,7 @@
 						});
 						allObj.forEach(function(_allObj){
 							if( _allObj.type == 'pilot' ){
+								console.log(_allObj);
 								_exitOnServer = new Boolean(false);
 								_exitOnServer = false;
 								_pilotData.list.some(function(e){
@@ -163,7 +166,7 @@
 									}
 								});
 								if( !_exitOnServer ){
-									_allObj.connectTimeOut = 0;
+									_allObj.timeOut = 0;
 									_objCtrl.deleteOfflinePilot(_allObj);
 								}
 							}
@@ -195,7 +198,7 @@
 		        				if( !Com.idExist(e.id, allObj) ){
 									Create.newObj('iMainMap', e);
 			        				var _objFrame = $('#frame_'+e.id);
-									_objFrame.css({'left':e.X-(e.width/2), 'top':e.Y-(e.height/2)});
+									_objFrame.css({'left':e.X-(e.W/2), 'top':e.Y-(e.H/2)});
 			        				var _obj = $('#'+e.id);
 			        				_obj.css('background-image','url(' + e.pic + ')');
 			        				_obj.css('visibility','visible');

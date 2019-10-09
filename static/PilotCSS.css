@@ -1,10 +1,10 @@
 .cPilotFrame{
 	position: absolute;
-    border: 0px solid #F00;
+    border: 1px solid #F00;
 }
 .cPilot{
     position: relative;
-    border: 0px solid #00F;
+    border: 1px solid #00F;
     background-size: contain;
     background-repeat: no-repeat;
 }

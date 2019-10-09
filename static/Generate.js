@@ -9,21 +9,11 @@ class Generate{
 	pilot(parent, allObj){
 		switch(this.state){
 			case 'getID':
-				// this.ID = '';
-				// WS.send('getID');
 				this.state = 'checkID';
 				break;
 
 			case 'checkID':
-				// if(this.ID!=''){
-				// 	if(Com.idExist(myID, allObj)){
-				// 		console.log('ID:' + this.ID + ' already exist');
-				// 		this.state = 'finish';
-				// 	}else{
-				// 		console.log('ID:' + this.ID);
-						this.state = 'createPilotInServer';
-				// 	}
-				// }
+				this.state = 'createPilotInServer';
 				break;
 
 			case 'createPilotInServer':
@@ -69,8 +59,8 @@ class Generate{
 		var pilotFrame = document.createElement("div");
 		pilotFrame.setAttribute("id", 'frame_' + obj.id);
 		pilotFrame.setAttribute("class", "cPilotFrame");
-		pilotFrame.style.width = obj.width + 'px';
-		pilotFrame.style.height = obj.height + 'px';
+		pilotFrame.style.width = obj.W + 'px';
+		pilotFrame.style.height = obj.H + 'px';
 		parent.appendChild(pilotFrame);
 		pilotFrame.style.visibility = 'hidden'
 	}
@@ -124,8 +114,8 @@ class Generate{
 	}
 	_shapeMain(obj, pic){
 		var _obj = document.getElementById(obj.id);
-		_obj.style.width = obj.width + 'px';
-		_obj.style.height = obj.height + 'px';
+		_obj.style.width = obj.W + 'px';
+		_obj.style.height = obj.H + 'px';
 		allObj[allObj.length] = obj;
 	}
 }

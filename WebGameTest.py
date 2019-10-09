@@ -48,11 +48,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             if _XY != _setInitPositionFail:
                 _pilot.X = _XY[0]
                 _pilot.Y = _XY[1]
-                _pilot.targetX = _XY[0]
-                _pilot.targetY = _XY[1]
-                _pilot.connectTimeOut = time.time()
-                _pilot.width = random.randint(20, 150)
-                _pilot.height = _pilot.width
+                _pilot.tX = _XY[0]
+                _pilot.tY = _XY[1]
+                _pilot.timeOut = round(time.time(), 3)
+                _pilot.W = random.randint(20, 150)
+                _pilot.H = _pilot.W
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -62,7 +62,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _data = _tmp[1]
             _id = _data
             if _id in gObjList:
-                gObjList[_id].connectTimeOut = time.time()
+                gObjList[_id].timeOut = round(time.time(), 3)
             gPilotListInJSON['serverTime'] = time.time()
             _returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
 
@@ -72,8 +72,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _id = _tmp[0]
             _XY = _tmp[1]
             _XY = _XY.split(',')
-            gObjList[_id].targetX = int(_XY[0])
-            gObjList[_id].targetY = int(_XY[1])
+            gObjList[_id].tX = int(_XY[0])
+            gObjList[_id].tY = int(_XY[1])
 
         elif _cmd == 'attack':
             _id = _tmp[1]
@@ -81,7 +81,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'createEnemy':
             _setInitPositionFail = [-1, -1]
-            for _i in range(3):
+            for _i in range(100):
                 print('createEnemy' + str(_i))
                 enemy = Object()
                 enemy.id = myFunc.getUniqueID()
@@ -90,16 +90,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if _XY != _setInitPositionFail:
                     enemy.type = 'enemy'
                     enemy.pic = 'zombie'
-                    enemy.speed = 30
+                    enemy.SP = 30
                     enemy.X = _XY[0]
                     enemy.Y = _XY[1]
-                    # enemy.targetX = _XY[0]
-                    # enemy.targetY = _XY[1]
-                    enemy.targetX = random.randint(70, 1000)
-                    enemy.targetY = random.randint(70, 600)
-                    enemy.connectTimeOut = time.time()
-                    enemy.width = random.randint(70, 70)
-                    enemy.height = enemy.width
+                    # enemy.tX = _XY[0]
+                    # enemy.tY = _XY[1]
+                    enemy.tX = random.randint(70, 1000)
+                    enemy.tY = random.randint(70, 600)
+                    enemy.timeOut = round(time.time(), 3)
+                    enemy.W = random.randint(7, 7)
+                    enemy.H = enemy.W
                     gObjList[enemy.id] = enemy
 
         elif _cmd == 'sendMsg':
@@ -153,12 +153,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         _obj.name = str(_obj.id)
                         _obj.X = _X
                         _obj.Y = _Y
-                        _obj.targetX = _X
-                        _obj.targetY = _Y
+                        _obj.tX = _X
+                        _obj.tY = _Y
                         if _pic == 'bud':
                             _obj.HP = 1000
-                            _obj.width = 70
-                            _obj.height = 70
+                            _obj.W = 70
+                            _obj.H = 70
                             _obj.pic = './static/map/obj/' + _pic + '.png'
                         gObjList[_obj.id] = _obj
                         _mapObjList.append(_obj.__dict__)
@@ -176,15 +176,17 @@ def setInitPosition(positionMode, mapSize, obj):
     while _collisionState[0]:
         if positionMode == 'auto':
             _XY = [0, 0]
-            _XY[0] = random.randint((obj.width/2), mapSize[0]-(obj.width/2))
-            _XY[1] = random.randint((obj.height/2), mapSize[1]-(obj.height/2))
+            _XY[0] = random.randint((obj.W/2), mapSize[0]-(obj.W/2))
+            _XY[1] = random.randint((obj.H/2), mapSize[1]-(obj.H/2))
         else:
             _initPoint = positionMode.split(',')
             _XY = [int(_initPoint[0]), int(_initPoint[1])]
+
         obj.X = _XY[0]
         obj.Y = _XY[1]
-        obj.targetX = _XY[0]
-        obj.targetY = _XY[1]
+        obj.tX = _XY[0]
+        obj.tY = _XY[1]
+
         if positionMode == 'auto':
             _collisionState = myFunc.rectCollision(obj, gObjList)
             _tryCount += 1
@@ -223,13 +225,12 @@ def updateAll():
                     _targetPilot = gObjList[_pilot]
                     while _targetPilot.type != 'pilot':
                         _targetPilot = gObjList[random.choice(list(gObjList.keys()))]
-                    gObjList[_pilot].targetX = _targetPilot.X
-                    gObjList[_pilot].targetY = _targetPilot.Y
+                    gObjList[_pilot].tX = _targetPilot.X
+                    gObjList[_pilot].tY = _targetPilot.Y
 
         for _pilot in list(gObjList.keys()):
             if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
                 gObjList[_pilot].HIT = False
-
 
         _pilotList = []
         for _pilot in list(gObjList.keys()):
@@ -241,13 +242,13 @@ def updateAll():
                 if gObjList[_pilot].attack != 0:
                     _weapen = Object()
                     _weapen.id = gObjList[_pilot].id
-                    _weapen.width = gObjList[_pilot].width/2
-                    _weapen.height = gObjList[_pilot].height
-                    if gObjList[_pilot].direction == 'right':
-                        _weapen.X = gObjList[_pilot].X + gObjList[_pilot].width/2 + _weapen.width/2
+                    _weapen.W = gObjList[_pilot].W/2
+                    _weapen.H = gObjList[_pilot].H
+                    if gObjList[_pilot].dir == 'right':
+                        _weapen.X = gObjList[_pilot].X + gObjList[_pilot].W/2 + _weapen.W/2
                         _weapen.Y = gObjList[_pilot].Y
                     else:
-                        _weapen.X = gObjList[_pilot].X - gObjList[_pilot].width/2 - _weapen.width/2
+                        _weapen.X = gObjList[_pilot].X - gObjList[_pilot].W/2 - _weapen.W/2
                         _weapen.Y = gObjList[_pilot].Y
                     _weapenCollision = myFunc.rectCollision(_weapen, gObjList)
                     if _weapenCollision[0]:
@@ -256,26 +257,26 @@ def updateAll():
                             if gObjList[_beHitPilot].id == _weapenCollision[1]:
                                 print('Be HIT: ' + str(_weapenCollision[1]))
                                 gObjList[_beHitPilot].HIT = True
-                                _damage = gObjList[_pilot].ATK - gObjList[_beHitPilot].DEF
+                                _damage = gObjList[_pilot].AT - gObjList[_beHitPilot].DEF
                                 if _damage > 0:
                                     gObjList[_beHitPilot].HP -= _damage
                                     if gObjList[_beHitPilot].HP <= 0:
-                                        gObjList[_beHitPilot].connectTimeOut = 1
+                                        gObjList[_beHitPilot].timeOut = 1
                                 break
 
-                if (time.time() - gObjList[_pilot].connectTimeOut) > _offlineTime:
+                if (time.time() - gObjList[_pilot].timeOut) > _offlineTime:
                     if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
-                        if gObjList[_pilot].connectTimeOut == 0:
+                        if gObjList[_pilot].timeOut == 0:
                             gMsgCtrl.add('系統公告', str(gObjList[_pilot].name) + ' 離開遊戲')
                             del gObjList[_pilot]
                             print('delete: ' + str(_pilot))
                         else:
-                            gObjList[_pilot].connectTimeOut = 0
+                            gObjList[_pilot].timeOut = 0
 
         for _pilot in list(gObjList.keys()):
             if gObjList[_pilot].type == 'pilot' or gObjList[_pilot].type == 'enemy':
-                if gObjList[_pilot].type == 'enemy' and gObjList[_pilot].connectTimeOut != 0:
-                    gObjList[_pilot].connectTimeOut = time.time()
+                if gObjList[_pilot].type == 'enemy' and gObjList[_pilot].timeOut != 0:
+                    gObjList[_pilot].timeOut = round(time.time(), 3)
                 _pilotList.append(gObjList[_pilot].__dict__)
 
         gPilotListInJSON['list'] = _pilotList
@@ -290,34 +291,34 @@ def updatePosition(pilot):
     global gObjList
 
     _P1 = [pilot.X, pilot.Y]
-    _P2 = [pilot.targetX, pilot.targetY]
+    _P2 = [pilot.tX, pilot.tY]
     _dX = _P1[0] - _P2[0]
     _dY = _P1[1] - _P2[1]
     if myFunc.distance(_P1, _P2) < 1:
         return True
     else:
-        gPilotStep = pilot.speed * gFrameTime
+        gPilotStep = pilot.SP * gFrameTime
         _step = gPilotStep
         _d = round(myFunc.distance(_P1, _P2))
         _howManyTimesToGo = round(_d / _step)
         if _howManyTimesToGo == 0:
-            pilot.X = pilot.targetX
-            pilot.Y = pilot.targetY
+            pilot.X = pilot.tX
+            pilot.Y = pilot.tY
         else:
-            if pilot.targetX > pilot.X:
-                pilot.direction = 'right'
-            elif pilot.targetX < pilot.X:
-                pilot.direction = 'left'
+            if pilot.tX > pilot.X:
+                pilot.dir = 'right'
+            elif pilot.tX < pilot.X:
+                pilot.dir = 'left'
             pilot.X = round(pilot.X - (_dX / _howManyTimesToGo))
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.X = round(pilot.X + (_dX / _howManyTimesToGo))
-                pilot.targetX = pilot.X
-                pilot.targetY = pilot.Y
+                pilot.tX = pilot.X
+                pilot.tY = pilot.Y
             pilot.Y = round(pilot.Y - (_dY / _howManyTimesToGo))
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.Y = round(pilot.Y + (_dY / _howManyTimesToGo))
-                pilot.targetX = pilot.X
-                pilot.targetY = pilot.Y
+                pilot.tX = pilot.X
+                pilot.tY = pilot.Y
         return False
 
 if __name__ == "__main__":
@@ -339,6 +340,7 @@ if __name__ == "__main__":
         gPilotList = []
         gPilotListInJSON = {}
         gMsgCtrl = myFunc.MsgCtrl()
+
 
         # 建立執行緒並執行
         t = threading.Thread(target=updateAll)

@@ -80,29 +80,29 @@ class ObjCtrl{
 		var _width = 0;
 		if( e.id==myID && attackState ){
 			_actionStr = 'attack_';
-			this.pilot.width(e.width*1.5);
-			if( e.direction=='left' ){
-				this.pilot.css('left',0-(e.width/2));
+			this.pilot.width(e.W*1.5);
+			if( e.dir=='left' ){
+				this.pilot.css('left',0-(e.W/2));
 			}
 		}else if( e.attack!=0 ){
 			_actionStr = 'attack_';
-			this.pilot.width(e.width*1.5);
-			if( e.direction=='left' ){
-				this.pilot.css('left',0-(e.width/2));
+			this.pilot.width(e.W*1.5);
+			if( e.dir=='left' ){
+				this.pilot.css('left',0-(e.W/2));
 			}
 		}else{
 			this.pilot.css('left',0);
-			this.pilot.width(e.width);
+			this.pilot.width(e.W);
 		}
 		if( e.HIT ){
 			_actionStr = 'beHIT_';
 		}
-		this.pilot.css('backgroundImage',"url('./static/pilot/" + e.pic + "/" + _actionStr + e.direction + ".gif')");
+		this.pilot.css('backgroundImage',"url('./static/pilot/" + e.pic + "/" + _actionStr + e.dir + ".gif')");
 		this.pilot.css('visibility','visible');
 	}
 
 	deleteOfflinePilot(e){
-		if( e.connectTimeOut==0 ){
+		if( e.timeOut==0 ){
 			var _pilotFrameObj = document.getElementById('frame_' + e.id);
 			var _parentObj = document.getElementById('iMainMap');
 			_parentObj.removeChild(_pilotFrameObj);
