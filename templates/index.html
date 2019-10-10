@@ -136,8 +136,6 @@
 	        		case 'NewData':
 	        			var _onLineNum = 0
 	        			var _pilotDataInJSON = _returnData[1];
-	        			console.log(_pilotDataInJSON.length)
-	        			// console.log(_pilotDataInJSON)
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
 	        			// console.log(_pilotData.list);
@@ -156,7 +154,7 @@
 						});
 						allObj.forEach(function(_allObj){
 							if( _allObj.type == 'pilot' ){
-								console.log(_allObj);
+								// console.log(_allObj);
 								_exitOnServer = new Boolean(false);
 								_exitOnServer = false;
 								_pilotData.list.some(function(e){
@@ -234,7 +232,7 @@
 		}
 
 		function setTargetXY(_mouseClick){
-			if(gameStart){
+			if(gameStart && myID!=''){
 				if(mouseDownState || _mouseClick){
 					targetXY = Com.getXYinMap('iMainMap');
 					WS.send('move@' + myID + ';' + targetXY);
@@ -254,7 +252,7 @@
 			}
 		}
 		function keyDown(e){
-			if( keyUpState ){
+			if( keyUpState && myID!='' ){
 				keyUpState = false;
 				var _z = 90;
 				var _space = 32;

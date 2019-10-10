@@ -35,13 +35,16 @@ class ObjCtrl{
 		var _HPmax = 10;
 		var _damage = Math.round(_HPlengthInPx/_HPmax);
 		var _pilotHP = $('#HP_' + e.id);
+		// console.log(e.id + ':' + e.HP + ', L=' + e.HP*_damage);
 		_pilotHP.css('display','inline-block');
 		_pilotHP.width((e.HP*_damage));
 		_pilotHP.css('visibility','visible');
 		// _pilotHP.css('visibility','hidden');
 		// console.log(_pilotHP.width());
-		if( _pilotHP.width()<20 ){
+		if( _pilotHP.width()<(_HPlengthInPx/5) ){
 			_pilotHP.css('background-color','#F00');
+		}else if( _pilotHP.width()<(_HPlengthInPx/2) ){
+			_pilotHP.css('background-color','#FFC90E');
 		}
 		if( e.HIT ){
 			this.shake(e, 10);
@@ -102,7 +105,7 @@ class ObjCtrl{
 	}
 
 	deleteOfflinePilot(e){
-		if( e.timeOut==0 ){
+		if( e.timeOut==0 || e.HP<=0){
 			var _pilotFrameObj = document.getElementById('frame_' + e.id);
 			var _parentObj = document.getElementById('iMainMap');
 			_parentObj.removeChild(_pilotFrameObj);
@@ -111,6 +114,9 @@ class ObjCtrl{
 				if( this.allObj[i].id == e.id ){
 					this.allObj.splice(i,1);
 				}
+			}
+			if( e.id==myID ){
+				myID = '';
 			}
 			return true;
 		}
