@@ -205,20 +205,11 @@ def updateAll():
 
     _offlineTime = 5    # second
     _timeCtrl = myFunc.TimeCtrl()
-    _timeCtrl.attackTime = 0.5   # second
+    _timeCtrl.attackTime = 0.1   # second
 
     while 1:
         _timeCtrl.sysTime = time.time()
         # _timeCtrl.showFPS()
-
-        if _timeCtrl.oneSecondTimeOut():
-            for _pilot in list(gObjList.keys()):
-                if gObjList[_pilot].type == 'enemy':
-                    _targetPilot = gObjList[_pilot]
-                    while _targetPilot.type != 'pilot':
-                        _targetPilot = gObjList[random.choice(list(gObjList.keys()))]
-                    gObjList[_pilot].tX = _targetPilot.X
-                    gObjList[_pilot].tY = _targetPilot.Y
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
@@ -256,12 +247,6 @@ def updateAll():
                                             gObjList[_beHitPilot].HP -= _damage
                                     break
 
-                if _timeCtrl.oneSecondTimeOut():
-                    if _pilot.msgTimeCount > 0:
-                        _pilot.msgTimeCount -= 1
-                        if _pilot.msgTimeCount == 0:
-                            _pilot.msg = ''
-
                 if (_timeCtrl.sysTime - _pilot.timeOut) > _offlineTime:
                     if _pilot.timeOut == 0:
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
@@ -276,6 +261,40 @@ def updateAll():
                     print('Game Over: ' + str(_id))
                 elif _pilot.HP <= 0:
                     _pilot.HP = -999
+
+        if _timeCtrl.oneSecondTimeOut():
+            for _pilot in list(gObjList.keys()):
+
+                if gObjList[_pilot].msgTimeCount > 0:
+                    gObjList[_pilot].msgTimeCount -= 1
+                    if gObjList[_pilot].msgTimeCount == 0:
+                        gObjList[_pilot].msg = ''
+
+                if gObjList[_pilot].type == 'enemy':
+                    _targetPilot = gObjList[_pilot]
+                    while _targetPilot.type != 'pilot':
+                        _targetPilot = gObjList[random.choice(list(gObjList.keys()))]
+                    gObjList[_pilot].tX = _targetPilot.X
+                    gObjList[_pilot].tY = _targetPilot.Y
+
+                    _weapen = Object()
+                    _weapen.id = gObjList[_pilot].id
+                    _weapen.W = gObjList[_pilot].W / 2
+                    _weapen.H = gObjList[_pilot].H
+                    if gObjList[_pilot].dir == 'right':
+                        _weapen.X = gObjList[_pilot].X + gObjList[_pilot].W / 2 + _weapen.W / 2
+                        _weapen.Y = gObjList[_pilot].Y
+                    else:
+                        _weapen.X = gObjList[_pilot].X - gObjList[_pilot].W / 2 - _weapen.W / 2
+                        _weapen.Y = gObjList[_pilot].Y
+                    _weapenCollision = myFunc.rectCollision(_weapen, gObjList)
+
+                    if _weapenCollision[0]:
+                        for _beHitPilot in gObjList:
+                            for _beHitID in _weapenCollision[1]:
+                                if gObjList[_beHitPilot].type == 'pilot' and gObjList[_beHitPilot].id == _beHitID:
+                                    gObjList[_pilot].attack = _timeCtrl.sysTime
+
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
@@ -314,16 +333,12 @@ def updatePosition(pilot):
                 pilot.X = round(pilot.X + (_dX / _howManyTimesToGo))
                 pilot.tX = pilot.X
                 pilot.tY = pilot.Y
-                if pilot.type == 'enemy':
-                    pilot.attack = time.time()
 
             pilot.Y = round(pilot.Y - (_dY / _howManyTimesToGo))
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.Y = round(pilot.Y + (_dY / _howManyTimesToGo))
                 pilot.tX = pilot.X
                 pilot.tY = pilot.Y
-                if pilot.type == 'enemy':
-                    pilot.attack = time.time()
         return False
 
 if __name__ == "__main__":
