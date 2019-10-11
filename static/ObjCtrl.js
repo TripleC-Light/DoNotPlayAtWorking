@@ -105,7 +105,8 @@ class ObjCtrl{
 	}
 
 	deleteOfflinePilot(e){
-		if( e.timeOut==0 || e.HP<=0){
+		if( e.timeOut==0){
+			console.log(e.id)
 			var _pilotFrameObj = document.getElementById('frame_' + e.id);
 			var _parentObj = document.getElementById('iMainMap');
 			_parentObj.removeChild(_pilotFrameObj);
@@ -117,6 +118,13 @@ class ObjCtrl{
 			}
 			if( e.id==myID ){
 				myID = '';
+			}
+			return true;
+		}
+
+		if( e.HP<=0 ){
+			if( e.type=='pilot' ){
+				this.pilot.css('backgroundImage',"url('./static/pilot/item/coffin.gif')");
 			}
 			return true;
 		}

@@ -83,7 +83,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'createEnemy':
             _getInitPositionFail = [-1, -1]
-            for _i in range(2):
+            for _i in range(5):
                 print('createEnemy' + str(_i))
                 enemy = Object()
                 enemy.id = myFunc.getUniqueID()
@@ -95,12 +95,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     enemy.SP = 30 * gFrameTime
                     enemy.X = _XY[0]
                     enemy.Y = _XY[1]
-                    # enemy.tX = _XY[0]
-                    # enemy.tY = _XY[1]
-                    enemy.tX = random.randint(70, 1000)
-                    enemy.tY = random.randint(70, 600)
+                    enemy.tX = _XY[0]
+                    enemy.tY = _XY[1]
                     enemy.timeOut = round(time.time(), 3)
-                    enemy.W = random.randint(70, 70)
+                    enemy.W = random.randint(20, 150)
                     enemy.H = enemy.W
                     gObjList[enemy.id] = enemy
 
@@ -205,7 +203,7 @@ def updateAll():
 
     _offlineTime = 5    # second
     _timeCtrl = myFunc.TimeCtrl()
-    _timeCtrl.attackTime = 0.1   # second
+    _timeCtrl.attackTime = 0.5   # second
 
     while 1:
         _timeCtrl.sysTime = time.time()
@@ -257,7 +255,8 @@ def updateAll():
 
                 if _pilot.HP == -999:
                     gMsgCtrl.add('系統公告', str(_pilot.name) + ' 死亡')
-                    del gObjList[_id]
+                    if _pilot.type != 'pilot':
+                        del gObjList[_id]
                     print('Game Over: ' + str(_id))
                 elif _pilot.HP <= 0:
                     _pilot.HP = -999
@@ -271,9 +270,12 @@ def updateAll():
                         gObjList[_pilot].msg = ''
 
                 if gObjList[_pilot].type == 'enemy':
-                    _targetPilot = gObjList[_pilot]
-                    while _targetPilot.type != 'pilot':
-                        _targetPilot = gObjList[random.choice(list(gObjList.keys()))]
+                    _allDistance = {}
+                    for _id in gObjList:
+                        if gObjList[_id].type == 'pilot':
+                            _allDistance[_id] = int(myFunc.distance([gObjList[_pilot].X, gObjList[_pilot].Y], [gObjList[_id].X, gObjList[_id].Y]))
+                    _mostCloseID = min(_allDistance, key=_allDistance.get)
+                    _targetPilot = gObjList[_mostCloseID]
                     gObjList[_pilot].tX = _targetPilot.X
                     gObjList[_pilot].tY = _targetPilot.Y
 
@@ -294,7 +296,6 @@ def updateAll():
                             for _beHitID in _weapenCollision[1]:
                                 if gObjList[_beHitPilot].type == 'pilot' and gObjList[_beHitPilot].id == _beHitID:
                                     gObjList[_pilot].attack = _timeCtrl.sysTime
-
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
