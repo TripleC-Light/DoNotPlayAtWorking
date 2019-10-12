@@ -272,12 +272,16 @@ def updateAll():
                 if gObjList[_pilot].type == 'enemy':
                     _allDistance = {}
                     for _id in gObjList:
-                        if gObjList[_id].type == 'pilot':
+                        if gObjList[_id].type == 'pilot' and gObjList[_id].HP > 0:
                             _allDistance[_id] = int(myFunc.distance([gObjList[_pilot].X, gObjList[_pilot].Y], [gObjList[_id].X, gObjList[_id].Y]))
-                    _mostCloseID = min(_allDistance, key=_allDistance.get)
-                    _targetPilot = gObjList[_mostCloseID]
-                    gObjList[_pilot].tX = _targetPilot.X
-                    gObjList[_pilot].tY = _targetPilot.Y
+                    if len(_allDistance) == 0:
+                        gObjList[_pilot].tX = random.randint(0, gMapSize[0])
+                        gObjList[_pilot].tY = random.randint(0, gMapSize[1])
+                    else:
+                        _mostCloseID = min(_allDistance, key=_allDistance.get)
+                        _targetPilot = gObjList[_mostCloseID]
+                        gObjList[_pilot].tX = _targetPilot.X
+                        gObjList[_pilot].tY = _targetPilot.Y
 
                     _weapen = Object()
                     _weapen.id = gObjList[_pilot].id
@@ -333,12 +337,12 @@ def updatePosition(pilot):
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.X = round(pilot.X + (_dX / _howManyTimesToGo))
                 pilot.tX = pilot.X
-                pilot.tY = pilot.Y
+                # pilot.tY = pilot.Y
 
             pilot.Y = round(pilot.Y - (_dY / _howManyTimesToGo))
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.Y = round(pilot.Y + (_dY / _howManyTimesToGo))
-                pilot.tX = pilot.X
+                # pilot.tX = pilot.X
                 pilot.tY = pilot.Y
         return False
 
