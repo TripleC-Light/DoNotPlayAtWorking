@@ -9,7 +9,7 @@ class ObjCtrl{
 
 	syncPilotObj(e){
 		if( !Com.idExist(e.id, this.allObj) ){
-			console.log('Create new pilot in map: ' + e.id);
+			console.log('Create pilot in web: ' + e.id);
 			Create.newObj( 'iMainMap', e);
 		}
 		this.frameBound = $('#frame_' + e.id)[0].getBoundingClientRect();
@@ -31,20 +31,25 @@ class ObjCtrl{
 	}
 
 	updatePilotHP(e){
+		/*--- if use jquery width will not update, I don't know why ---*/
 		var _HPlengthInPx = 50;
 		var _HPmax = 10;
 		var _damage = Math.round(_HPlengthInPx/_HPmax);
-		var _pilotHP = $('#HP_' + e.id);
+		var _pilotHP = document.getElementById('HP_' + e.id);
 		// console.log(e.id + ':' + e.HP + ', L=' + e.HP*_damage);
-		_pilotHP.css('display','inline-block');
-		_pilotHP.width((e.HP*_damage));
-		_pilotHP.css('visibility','visible');
-		// _pilotHP.css('visibility','hidden');
-		// console.log(_pilotHP.width());
-		if( _pilotHP.width()<(_HPlengthInPx/5) ){
-			_pilotHP.css('background-color','#F00');
-		}else if( _pilotHP.width()<(_HPlengthInPx/2) ){
-			_pilotHP.css('background-color','#FFC90E');
+		_pilotHP.style.display = 'inline-block';
+		_pilotHP.style.visibility = 'visible';
+		if( (e.HP*_damage)<0 ){
+			_pilotHP.style.width = '0px';
+		}else{
+			_pilotHP.style.width = e.HP*_damage + 'px';
+		}
+		// console.log(_pilotHP.style.width);
+		if( _pilotHP.style.width<(_HPlengthInPx/5) ){
+			_pilotHP.style.backgroundColor = '#F00';
+		}else if( _pilotHP.style.width<(_HPlengthInPx/2) ){
+			_pilotHP.style.backgroundColor = '#FFC90E';
+
 		}
 		if( e.HIT ){
 			this.shake(e, 10);

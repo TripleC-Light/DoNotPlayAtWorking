@@ -83,7 +83,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'createEnemy':
             _getInitPositionFail = [-1, -1]
-            for _i in range(5):
+            for _i in range(1):
                 print('createEnemy' + str(_i))
                 enemy = Object()
                 enemy.id = myFunc.getUniqueID()
@@ -203,7 +203,7 @@ def updateAll():
 
     _offlineTime = 5    # second
     _timeCtrl = myFunc.TimeCtrl()
-    _timeCtrl.attackTime = 0.5   # second
+    _timeCtrl.attackTime = 0.1   # second
 
     while 1:
         _timeCtrl.sysTime = time.time()
@@ -254,10 +254,14 @@ def updateAll():
                         _pilot.timeOut = 0
 
                 if _pilot.HP == -999:
-                    gMsgCtrl.add('系統公告', str(_pilot.name) + ' 死亡')
                     if _pilot.type != 'pilot':
+                        print('Game Over: ' + str(_pilot.id))
                         del gObjList[_id]
-                    print('Game Over: ' + str(_id))
+                    else:
+                        gMsgCtrl.add('系統公告', str(_pilot.name) + ' HP歸零')
+                        _pilot.HP = -1000
+                elif _pilot.HP == -1000:
+                    _pilot.HP = -1000
                 elif _pilot.HP <= 0:
                     _pilot.HP = -999
 
@@ -298,7 +302,7 @@ def updateAll():
                     if _weapenCollision[0]:
                         for _beHitPilot in gObjList:
                             for _beHitID in _weapenCollision[1]:
-                                if gObjList[_beHitPilot].type == 'pilot' and gObjList[_beHitPilot].id == _beHitID:
+                                if gObjList[_beHitPilot].type == 'pilot' and gObjList[_beHitPilot].id == _beHitID and gObjList[_beHitPilot].HP > 0:
                                     gObjList[_pilot].attack = _timeCtrl.sysTime
 
         for _id in list(gObjList.keys()):
@@ -337,12 +341,10 @@ def updatePosition(pilot):
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.X = round(pilot.X + (_dX / _howManyTimesToGo))
                 pilot.tX = pilot.X
-                # pilot.tY = pilot.Y
 
             pilot.Y = round(pilot.Y - (_dY / _howManyTimesToGo))
             if myFunc.rectCollision(pilot, gObjList)[0]:
                 pilot.Y = round(pilot.Y + (_dY / _howManyTimesToGo))
-                # pilot.tX = pilot.X
                 pilot.tY = pilot.Y
         return False
 

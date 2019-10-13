@@ -1,6 +1,6 @@
 class Generate{
 	constructor(){
-		this.state = 'getID';
+		this.state = 'createPilotInServer';
 		this.FSMtrigTime = 50;
 		this.ID = '';
 		this.pilotObj = '';
@@ -8,13 +8,13 @@ class Generate{
 
 	pilot(parent, allObj){
 		switch(this.state){
-			case 'getID':
-				this.state = 'checkID';
-				break;
+			// case 'getID':
+			// 	this.state = 'checkID';
+			// 	break;
 
-			case 'checkID':
-				this.state = 'createPilotInServer';
-				break;
+			// case 'checkID':
+			// 	this.state = 'createPilotInServer';
+			// 	break;
 
 			case 'createPilotInServer':
 				var _positionMode = 'auto';
@@ -39,7 +39,7 @@ class Generate{
 					thisVar.pilot(parent, allObj);
 				}, this.FSMtrigTime);
 		}else{
-			this.state = 'getID';
+			this.state = 'createPilotInServer';
 		}
 	}
 

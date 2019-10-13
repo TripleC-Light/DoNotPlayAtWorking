@@ -139,6 +139,7 @@
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
 	        			// console.log(_pilotData.list);
+
 						_pilotData.list.forEach(function(e) {
 							_onLineNum += 1;
 							_objCtrl = new ObjCtrl(e);
@@ -151,10 +152,13 @@
 	        				_objCtrl.updatePic(e);
 	        				_objCtrl.deleteOfflinePilot(e);
 	        				allObj = _objCtrl.allObj;
+	        				if( e.id == myID ){
+	        					myPilot = e;
+	        				}
 						});
+
 						allObj.forEach(function(_allObj){
-							if( _allObj.type == 'pilot' ){
-								// console.log(_allObj);
+							if( _allObj.type == 'pilot' || _allObj.type == 'enemy'){
 								_exitOnServer = new Boolean(false);
 								_exitOnServer = false;
 								_pilotData.list.some(function(e){
@@ -233,9 +237,12 @@
 
 		function setTargetXY(_mouseClick){
 			if(gameStart && myID!=''){
-				if(mouseDownState || _mouseClick){
-					targetXY = Com.getXYinMap('iMainMap');
-					WS.send('move@' + myID + ';' + targetXY);
+				// console.log(myPilot);
+				if( myPilot.HP > 0 ){
+					if(mouseDownState || _mouseClick){
+						targetXY = Com.getXYinMap('iMainMap');
+						WS.send('move@' + myID + ';' + targetXY);
+					}
 				}
 			}
 		}
