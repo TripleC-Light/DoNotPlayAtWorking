@@ -60,6 +60,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilotInJSON = _pilot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
 
+        elif _cmd == 'reBorn':
+            _id = _tmp[1]
+            gObjList[_id].HP = 10
+
         elif _cmd == 'getNewData':
             _data = _tmp[1]
             _id = _data

@@ -135,13 +135,18 @@
 
 	        		case 'NewData':
 	        			var _onLineNum = 0
+	        			var _enemyNum = 0;
 	        			var _pilotDataInJSON = _returnData[1];
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
 	        			// console.log(_pilotData.list);
 
 						_pilotData.list.forEach(function(e) {
-							_onLineNum += 1;
+							if( e.type == 'pilot' ){
+								_onLineNum += 1;
+							}else if( e.type == 'enemy' ){
+								_enemyNum += 1;
+							}
 							_objCtrl = new ObjCtrl(e);
 							_objCtrl.allObj = allObj;
 							_objCtrl.syncPilotObj(e);
@@ -175,6 +180,7 @@
 						});
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + Com.countFPS();
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
+	        			$('#iEnemyNum')[0].innerHTML = _enemyNum;
 	        			break;
 
 	        		case 'SysMsg':
@@ -283,14 +289,20 @@
 		function addEnemy(){
 			WS.send('createEnemy');
 		}
+
+		function reBorn(){
+			WS.send('reBorn@' + myID);
+		}
 	</script>
 </head>
 <body class="cBody" onkeydown="keyDown(event)" onkeyup="keyUp(event)">
 <center>
-	<div id='iStartFlag' onclick="startGame()" style='border:1px solid #F00;width:80px;display:inline-block;'>開始</div>
-	<div onclick="Create.pilot('iMainMap',allObj)" style='border:1px solid #F00;width:80px;display:inline-block;'>加入</div>
-	<div onclick="addEnemy()" style='border:1px solid #F00;width:80px;display:inline-block;'>敵人</div>
-	<div style='border:0px solid #F00;display:inline-block;'>　線上人數:<span id='iOnlineNum'>0</span></div>
+	<div id='iStartFlag' onclick="startGame()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>開始</div>
+	<div onclick="Create.pilot('iMainMap',allObj)" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>加入</div>
+	<div onclick="addEnemy()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>敵人</div>
+	<div onclick="reBorn()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>復活</div>
+	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　線上玩家:<span id='iOnlineNum'>0</span></div>
+	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　敵人:<span id='iEnemyNum'>0</span></div>
 	<div id='iDebug' style='border:0px solid #F00;display:inline-block;'></span></div>
 	<div id="iMainMap"
 		 onclick="setTargetXY(mouseClick)" 
