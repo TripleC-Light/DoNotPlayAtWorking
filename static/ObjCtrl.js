@@ -29,7 +29,7 @@ class ObjCtrl{
 		this.frame.css({'left': e.X-(this.frameBound.width/2)});
 		this.frame.css({'top' : this.frameBound.top - (this.pilotBound.top-e.Y) - (this.pilotBound.height/2)});
 	}
-
+	
 	updatePilotHP(e){
 		/*--- if use jquery width will not update, I don't know why ---*/
 		var _HPlengthInPx = 50;
