@@ -85,8 +85,8 @@ class TimeCtrl:
             return False
 
     def showFPS(self):
-        _FPS = round(1/(self.sysTime-self.lastSysTime+0.0001), 3)
-        print('FPS: ' + str(_FPS))
+        _FPS = round(1/(self.sysTime-self.lastSysTime+0.0001), 2)
+        # print('FPS: ' + str(_FPS))
         self.lastSysTime = self.sysTime
         return _FPS
 

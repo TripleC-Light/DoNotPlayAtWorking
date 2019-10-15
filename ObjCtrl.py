@@ -115,7 +115,7 @@ class ObjCtrl:
 
     def _getAlldistance(self, _pilot1):
         _allDistance = {}
-        for _id in self.objList:
+        for _id in list(self.objList.keys()):
             _pilot2 = self.objList[_id]
             if _pilot2.type == 'pilot' and _pilot2.HP > 0:
                 _allDistance[_id] = int(myFunc.distance([_pilot1.X, _pilot1.Y], [_pilot2.X, _pilot2.Y]))

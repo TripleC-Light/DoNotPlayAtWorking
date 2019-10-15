@@ -191,7 +191,7 @@ def updateAll():
         _objCtrl.objList = gObjList
         _objCtrl.clearBeHIT()
         _pilotList = []
-        for _id in gObjList:
+        for _id in list(gObjList.keys()):
             _deleteState = False
             _pilot = gObjList[_id]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy':
@@ -218,13 +218,13 @@ def updateAll():
                     del gObjList[_id]
 
         if _timeCtrl.oneSecondTimeOut():
-            for _id in gObjList:
+            for _id in list(gObjList.keys()):
                 _pilot = gObjList[_id]
                 _objCtrl.msgTimeOutCheck(_pilot)
                 _objCtrl.enemyAutoCtrl(_pilot)
                 _objCtrl.enemyTimeReflash(_pilot)
 
-        for _id in gObjList:
+        for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy':
                 _pilotList.append(_pilot.__dict__)
