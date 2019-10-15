@@ -10,6 +10,7 @@ import tornado.websocket
 from Object import Object
 import json
 import myFunction as myFunc
+import objCtrl as objCtrl
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -193,7 +194,7 @@ def getInitPosition(positionMode, mapSize, obj):
             _tryCount += 1
             if _tryCount > 1000:
                 _XY = [-100, -100]
-                print('Already try 1000 times to find a position but the map has no position to put Pilot')
+                print('Error: Already try 1000 times to find a position')
                 return [-1, -1]
         else:
             _collisionState = (False, 0)
@@ -213,10 +214,7 @@ def updateAll():
         _timeCtrl.sysTime = time.time()
         # _timeCtrl.showFPS()
 
-        for _id in list(gObjList.keys()):
-            _pilot = gObjList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                _pilot.HIT = False
+        objCtrl.clearBeHITstate(gObjList)
 
         _pilotList = []
         for _id in list(gObjList.keys()):
@@ -242,7 +240,7 @@ def updateAll():
                         for _beHitPilot in gObjList:
                             for _beHitID in _weapenCollision[1]:
                                 if gObjList[_beHitPilot].id == _beHitID:
-                                    gObjList[_beHitPilot].HIT = True
+                                    gObjList[_beHitPilot].beHIT = True
                                     _damage = _pilot.AT - gObjList[_beHitPilot].DEF
                                     if _damage > 0:
                                         if gObjList[_beHitPilot].HP > 0:

@@ -39,6 +39,12 @@ def distance(P1, P2):
     _dY = P1[1] - P2[1]
     return math.sqrt((_dX ** 2) + (_dY ** 2))
 
+# def clearBeHITstate(_gObjList):
+#     for _id in list(_gObjList.keys()):
+#         _pilot = _gObjList[_id]
+#         if _pilot.type == 'pilot' or _pilot.type == 'enemy':
+#             _pilot.beHIT = False
+
 class TimeCtrl:
     def __init__(self):
         self.sysTime = 0

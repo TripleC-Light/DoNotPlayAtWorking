@@ -51,7 +51,8 @@ class ObjCtrl{
 			_pilotHP.style.backgroundColor = '#FFC90E';
 
 		}
-		if( e.HIT ){
+		_pilotHP.innerHTML = e.HP;
+		if( e.beHIT ){
 			this.shake(e, 10);
 		}
 	}
@@ -102,7 +103,7 @@ class ObjCtrl{
 			this.pilot.css('left',0);
 			this.pilot.width(e.W);
 		}
-		if( e.HIT ){
+		if( e.beHIT ){
 			_actionStr = 'beHIT_';
 		}
 		this.pilot.css('backgroundImage',"url('./static/pilot/" + e.pic + "/" + _actionStr + e.dir + ".gif')");
