@@ -1,6 +1,7 @@
 import uuid
 import json
 import math
+import random
 
 def getUniqueID(_IDlist):
     _tryCount = 0
@@ -36,6 +37,34 @@ def rectCollision(pilot, _objList):
                 _id.append(_objList[_key].id)
 
     return _returnState, _id
+
+def getInitPosition(positionMode, mapSize, obj, gObjList):
+    _collisionState = (True, 0)
+    _tryCount = 0
+    _XY = []
+    while _collisionState[0]:
+        if positionMode == 'auto':
+            _XY = [0, 0]
+            _XY[0] = random.randint((obj.W/2), mapSize[0]-(obj.W/2))
+            _XY[1] = random.randint((obj.H/2), mapSize[1]-(obj.H/2))
+        else:
+            _initPoint = positionMode.split(',')
+            _XY = [int(_initPoint[0]), int(_initPoint[1])]
+
+        obj.X = _XY[0]
+        obj.Y = _XY[1]
+        obj.tX = _XY[0]
+        obj.tY = _XY[1]
+        if positionMode == 'auto':
+            _collisionState = rectCollision(obj, gObjList)
+            _tryCount += 1
+            if _tryCount > 1000:
+                _XY = [-100, -100]
+                print('Error: Already try 1000 times to find a position')
+                return [-1, -1]
+        else:
+            _collisionState = (False, 0)
+    return _XY
 
 def distance(P1, P2):
     _dX = P1[0] - P2[0]

@@ -47,7 +47,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _pilot.id = myFunc.getUniqueID(list(gObjList.keys()))
             _pilot.name = str(_pilot.id)
             _pilot.SP = 350 * gFrameTime
-            _XY = getInitPosition(_positionMode, gMapSize, _pilot)
+            _XY = myFunc.getInitPosition(_positionMode, gMapSize, _pilot, gObjList)
             if _XY != _getInitPositionFail:
                 _pilot.X = _XY[0]
                 _pilot.Y = _XY[1]
@@ -92,7 +92,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 enemy = Object()
                 enemy.id = myFunc.getUniqueID(list(gObjList.keys()))
                 enemy.name = enemy.id
-                _XY = getInitPosition('auto', gMapSize, enemy)
+                _XY = myFunc.getInitPosition('auto', gMapSize, enemy, gObjList)
                 if _XY != _getInitPositionFail:
                     enemy.type = 'enemy'
                     enemy.pic = 'zombie'
@@ -170,34 +170,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _returnInfo = 'setMap@' + _objToJSON
 
         self.write_message(_returnInfo)
-
-def getInitPosition(positionMode, mapSize, obj):
-    _collisionState = (True, 0)
-    _tryCount = 0
-    _XY = []
-    while _collisionState[0]:
-        if positionMode == 'auto':
-            _XY = [0, 0]
-            _XY[0] = random.randint((obj.W/2), mapSize[0]-(obj.W/2))
-            _XY[1] = random.randint((obj.H/2), mapSize[1]-(obj.H/2))
-        else:
-            _initPoint = positionMode.split(',')
-            _XY = [int(_initPoint[0]), int(_initPoint[1])]
-
-        obj.X = _XY[0]
-        obj.Y = _XY[1]
-        obj.tX = _XY[0]
-        obj.tY = _XY[1]
-        if positionMode == 'auto':
-            _collisionState = myFunc.rectCollision(obj, gObjList)
-            _tryCount += 1
-            if _tryCount > 1000:
-                _XY = [-100, -100]
-                print('Error: Already try 1000 times to find a position')
-                return [-1, -1]
-        else:
-            _collisionState = (False, 0)
-    return _XY
 
 def updateAll():
     global gFrameTime
