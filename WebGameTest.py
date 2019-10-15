@@ -44,7 +44,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             _data = _tmp[1]
             _positionMode = _data
             _pilot = Object()
-            _pilot.id = myFunc.getUniqueID()
+            _pilot.id = myFunc.getUniqueID(list(gObjList.keys()))
             _pilot.name = str(_pilot.id)
             _pilot.SP = 350 * gFrameTime
             _XY = getInitPosition(_positionMode, gMapSize, _pilot)
@@ -89,9 +89,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif _cmd == 'createEnemy':
             _getInitPositionFail = [-1, -1]
             for _i in range(1):
-                print('createEnemy' + str(_i))
                 enemy = Object()
-                enemy.id = myFunc.getUniqueID()
+                enemy.id = myFunc.getUniqueID(list(gObjList.keys()))
                 enemy.name = enemy.id
                 _XY = getInitPosition('auto', gMapSize, enemy)
                 if _XY != _getInitPositionFail:
@@ -153,7 +152,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         _X = int(_description[1])
                         _Y = int(_description[2])
                         _obj.type = 'mapObj'
-                        _obj.id = myFunc.getUniqueID()
+                        _obj.id = myFunc.getUniqueID(list(gObjList.keys()))
                         _obj.name = str(_obj.id)
                         _obj.X = _X
                         _obj.Y = _Y
