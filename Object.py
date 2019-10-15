@@ -13,6 +13,7 @@ class Object:
         self.AT = 1
         self.DEF = 0
         self.SP = 350
+        self.weapen = 'punch'
         self.beHIT = False
         self.attack = 0
         self.dir = 'right'

@@ -10,7 +10,7 @@ import tornado.websocket
 from Object import Object
 import json
 import myFunction as myFunc
-import objCtrl as objCtrl
+from ObjCtrl import ObjCtrl
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -172,154 +172,66 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.write_message(_returnInfo)
 
 def updateAll():
+    global gMapSize
     global gFrameTime
     global gPilotListInJSON
     global gMsgCtrl
     global gObjList
 
-    _offlineTime = 5    # second
     _timeCtrl = myFunc.TimeCtrl()
-    _timeCtrl.attackTime = 0.1   # second
+    _objCtrl = ObjCtrl()
+    _objCtrl.attackTime = 0.1   # second
+    _objCtrl.offlineTime = 5    # second
 
     while 1:
         _timeCtrl.sysTime = time.time()
-        # _timeCtrl.showFPS()
-
-        objCtrl.clearBeHITstate(gObjList)
-
+        _FPS = _timeCtrl.showFPS()
+        _objCtrl.mapSize = gMapSize
+        _objCtrl.sysTime = _timeCtrl.sysTime
+        _objCtrl.objList = gObjList
+        _objCtrl.clearBeHIT()
         _pilotList = []
-        for _id in list(gObjList.keys()):
+        for _id in gObjList:
+            _deleteState = False
             _pilot = gObjList[_id]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                updatePosition(_pilot)
-                _timeCtrl.clearAttackTime(_pilot)
+                _objCtrl.updatePosition(_pilot)
+                _objCtrl.clearAttack(_pilot)
 
                 if _pilot.attack != 0:
-                    _weapen = Object()
-                    _weapen.id = _pilot.id
-                    _weapen.W = _pilot.W/2
-                    _weapen.H = _pilot.H
-                    if _pilot.dir == 'right':
-                        _weapen.X = _pilot.X + _pilot.W/2 + _weapen.W/2
-                        _weapen.Y = _pilot.Y
-                    else:
-                        _weapen.X = _pilot.X - _pilot.W/2 - _weapen.W/2
-                        _weapen.Y = _pilot.Y
-                    _weapenCollision = myFunc.rectCollision(_weapen, gObjList)
-                    if _weapenCollision[0]:
-                        _pilot.attack = 0
-                        for _beHitPilot in gObjList:
-                            for _beHitID in _weapenCollision[1]:
-                                if gObjList[_beHitPilot].id == _beHitID:
-                                    gObjList[_beHitPilot].beHIT = True
-                                    _damage = _pilot.AT - gObjList[_beHitPilot].DEF
-                                    if _damage > 0:
-                                        if gObjList[_beHitPilot].HP > 0:
-                                            gObjList[_beHitPilot].HP -= _damage
-                                    break
+                    _weapen = _objCtrl.createWeapen(_pilot)
+                    _objCtrl.attackJudge(_pilot)
 
-                if (_timeCtrl.sysTime - _pilot.timeOut) > _offlineTime:
-                    if _pilot.timeOut == 0:
-                        gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
-                        del gObjList[_id]
-                        print('delete: ' + str(_id))
-                    else:
-                        _pilot.timeOut = 0
+                if _objCtrl.timeOut(_pilot):
+                    gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
+                    _deleteState = True
+                    print('delete: ' + str(_id))
 
-                if _pilot.HP == -999:
+                if _objCtrl.HPtoZero(_pilot):
                     if _pilot.type != 'pilot':
                         print('Game Over: ' + str(_pilot.id))
-                        del gObjList[_id]
+                        _deleteState = True
                     else:
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' HP歸零')
-                        _pilot.HP = -1000
-                elif _pilot.HP == -1000:
-                    _pilot.HP = -1000
-                elif _pilot.HP <= 0:
-                    _pilot.HP = -999
+
+                if _deleteState:
+                    del gObjList[_id]
 
         if _timeCtrl.oneSecondTimeOut():
-            for _pilot in list(gObjList.keys()):
+            for _id in gObjList:
+                _pilot = gObjList[_id]
+                _objCtrl.msgTimeOutCheck(_pilot)
+                _objCtrl.enemyAutoCtrl(_pilot)
+                _objCtrl.enemyTimeReflash(_pilot)
 
-                if gObjList[_pilot].msgTimeCount > 0:
-                    gObjList[_pilot].msgTimeCount -= 1
-                    if gObjList[_pilot].msgTimeCount == 0:
-                        gObjList[_pilot].msg = ''
-
-                if gObjList[_pilot].type == 'enemy':
-                    _allDistance = {}
-                    for _id in gObjList:
-                        if gObjList[_id].type == 'pilot' and gObjList[_id].HP > 0:
-                            _allDistance[_id] = int(myFunc.distance([gObjList[_pilot].X, gObjList[_pilot].Y], [gObjList[_id].X, gObjList[_id].Y]))
-                    if len(_allDistance) == 0:
-                        gObjList[_pilot].tX = random.randint(0, gMapSize[0])
-                        gObjList[_pilot].tY = random.randint(0, gMapSize[1])
-                    else:
-                        _mostCloseID = min(_allDistance, key=_allDistance.get)
-                        _targetPilot = gObjList[_mostCloseID]
-                        gObjList[_pilot].tX = _targetPilot.X
-                        gObjList[_pilot].tY = _targetPilot.Y
-
-                    _weapen = Object()
-                    _weapen.id = gObjList[_pilot].id
-                    _weapen.W = gObjList[_pilot].W / 2
-                    _weapen.H = gObjList[_pilot].H
-                    if gObjList[_pilot].dir == 'right':
-                        _weapen.X = gObjList[_pilot].X + gObjList[_pilot].W / 2 + _weapen.W / 2
-                        _weapen.Y = gObjList[_pilot].Y
-                    else:
-                        _weapen.X = gObjList[_pilot].X - gObjList[_pilot].W / 2 - _weapen.W / 2
-                        _weapen.Y = gObjList[_pilot].Y
-                    _weapenCollision = myFunc.rectCollision(_weapen, gObjList)
-
-                    if _weapenCollision[0]:
-                        for _beHitPilot in gObjList:
-                            for _beHitID in _weapenCollision[1]:
-                                if gObjList[_beHitPilot].type == 'pilot' and gObjList[_beHitPilot].id == _beHitID and gObjList[_beHitPilot].HP > 0:
-                                    gObjList[_pilot].attack = _timeCtrl.sysTime
-
-        for _id in list(gObjList.keys()):
+        for _id in gObjList:
             _pilot = gObjList[_id]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy':
-                if _pilot.type == 'enemy' and _pilot.timeOut != 0:
-                    _pilot.timeOut = round(_timeCtrl.sysTime, 3)
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON['list'] = _pilotList
+        gPilotListInJSON['FPS'] = _FPS
         time.sleep(gFrameTime)
-
-def updatePosition(pilot):
-    global gObjList
-
-    _P1 = [pilot.X, pilot.Y]
-    _P2 = [pilot.tX, pilot.tY]
-    _dX = _P1[0] - _P2[0]
-    _dY = _P1[1] - _P2[1]
-    if abs(_dX) < 1 and abs(_dY) < 1:
-        return True
-    else:
-        _step = pilot.SP
-        _d = round(myFunc.distance(_P1, _P2))
-        _howManyTimesToGo = round(_d / _step)
-        if _howManyTimesToGo == 0:
-            pilot.X = pilot.tX
-            pilot.Y = pilot.tY
-        else:
-            if pilot.tX > pilot.X:
-                pilot.dir = 'right'
-            elif pilot.tX < pilot.X:
-                pilot.dir = 'left'
-
-            pilot.X = round(pilot.X - (_dX / _howManyTimesToGo))
-            if myFunc.rectCollision(pilot, gObjList)[0]:
-                pilot.X = round(pilot.X + (_dX / _howManyTimesToGo))
-                pilot.tX = pilot.X
-
-            pilot.Y = round(pilot.Y - (_dY / _howManyTimesToGo))
-            if myFunc.rectCollision(pilot, gObjList)[0]:
-                pilot.Y = round(pilot.Y + (_dY / _howManyTimesToGo))
-                pilot.tY = pilot.Y
-        return False
 
 if __name__ == "__main__":
     global gObjList

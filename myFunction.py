@@ -74,9 +74,8 @@ def distance(P1, P2):
 class TimeCtrl:
     def __init__(self):
         self.sysTime = 0
-        self.lastsysTime = 0
+        self.lastSysTime = 0
         self.lastTime_ForOneSecond = 0
-        self.attackTime = 0
 
     def oneSecondTimeOut(self):
         if self.sysTime - self.lastTime_ForOneSecond > 1:
@@ -85,13 +84,11 @@ class TimeCtrl:
         else:
             return False
 
-    def clearAttackTime(self, _pilot):
-        if (_pilot.attack != 0) and ((self.sysTime - _pilot.attack) > self.attackTime):
-            _pilot.attack = 0
-
     def showFPS(self):
-        print('FPS: ' + str(round(1/(self.sysTime-self.lastsysTime+0.0001), 3)))
-        self.lastsysTime = self.sysTime
+        _FPS = round(1/(self.sysTime-self.lastSysTime+0.0001), 3)
+        print('FPS: ' + str(_FPS))
+        self.lastSysTime = self.sysTime
+        return _FPS
 
 class MsgCtrl:
     def __init__(self):
