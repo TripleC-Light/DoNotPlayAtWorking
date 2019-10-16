@@ -71,6 +71,23 @@ def distance(P1, P2):
     _dY = P1[1] - P2[1]
     return math.sqrt((_dX ** 2) + (_dY ** 2))
 
+def getResize(_sizeLimit, _originSize):
+    _scale = 0
+    _wL = _sizeLimit[0]
+    _hL = _sizeLimit[1]
+    _wO = _originSize[0]
+    _hO = _originSize[1]
+    _wN = 0
+    _hN = 0
+    if _wO >= _hO:
+        _scale = _wL / _wO
+    else:
+        _scale = _hL / _hO
+    _scale = round(_scale, 3)
+    _wN = round(_wO * _scale)
+    _hN = round(_hO * _scale)
+    return [_wN, _hN]
+
 class TimeCtrl:
     def __init__(self):
         self.sysTime = 0

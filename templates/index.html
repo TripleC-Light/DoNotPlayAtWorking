@@ -291,11 +291,12 @@
 		}
 		function addEnemy(){
 			WS.send('createEnemy');
-			WS.send('createItem');
 		}
-
 		function reBorn(){
 			WS.send('reBorn@' + myID);
+		}
+		function addItem(){
+			WS.send('createItem');
 		}
 	</script>
 </head>
@@ -305,6 +306,7 @@
 	<div onclick="Create.pilot('iMainMap',allObj)" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>加入</div>
 	<div onclick="addEnemy()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>敵人</div>
 	<div onclick="reBorn()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>復活</div>
+	<div onclick="addItem()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>道具</div>
 	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　線上玩家:<span id='iOnlineNum'>0</span></div>
 	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　敵人:<span id='iEnemyNum'>0</span></div>
 	<div id='iDebug' style='border:0px solid #F00;display:inline-block;'></span></div>

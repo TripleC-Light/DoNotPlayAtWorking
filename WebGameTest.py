@@ -2,6 +2,7 @@
 import tornado.ioloop
 import tornado.web
 import webbrowser
+from PIL import Image
 import os
 import time
 import random
@@ -54,8 +55,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilot.tX = _XY[0]
                 _pilot.tY = _XY[1]
                 _pilot.timeOut = round(time.time(), 3)
-                _pilot.W = random.randint(20, 150)
-                _pilot.H = _pilot.W
+                _im = Image.open('./static/pilot/' + _pilot.pic + '/right.gif')
+                _randomLimit = random.randint(20, 150)
+                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                _pilot.W = _newSize[0]
+                _pilot.H = _newSize[1]
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -102,13 +106,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     enemy.tX = _XY[0]
                     enemy.tY = _XY[1]
                     enemy.timeOut = round(time.time(), 3)
-                    enemy.W = random.randint(20, 150)
-                    enemy.H = enemy.W
+                    _im = Image.open('./static/pilot/' + enemy.pic + '/right.gif')
+                    _randomLimit = random.randint(20, 150)
+                    _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                    enemy.W = _newSize[0]
+                    enemy.H = _newSize[1]
                     gObjList[enemy.id] = enemy
 
         elif _cmd == 'createItem':
             _getInitPositionFail = [-1, -1]
-            for _i in range(10):
+            for _i in range(3):
                 _item = Object()
                 _item.id = myFunc.getUniqueID(list(gObjList.keys()))
                 _item.name = ''
@@ -122,8 +129,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     _item.tX = _XY[0]
                     _item.tY = _XY[1]
                     _item.timeOut = round(time.time(), 3)
-                    _item.W = random.randint(20, 150)
-                    _item.H = _item.W
+
+                    _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
+                    _randomLimit = random.randint(20, 150)
+                    _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                    _item.W = _newSize[0]
+                    _item.H = _newSize[1]
                     gObjList[_item.id] = _item
 
         elif _cmd == 'sendMsg':

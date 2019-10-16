@@ -46,7 +46,7 @@ class ObjCtrl{
 		}else{
 			_pilotHP.style.width = _HPlength + 'px';
 		}
-		console.log(_pilotHP.style.width);
+		// console.log(_pilotHP.style.width);
 		if( _HPlength<(_HPlengthInPx/5) ){
 			_pilotHP.style.backgroundColor = '#F00';
 		}else if( _HPlength<(_HPlengthInPx/2) ){
@@ -60,8 +60,6 @@ class ObjCtrl{
 		}else{
 			_pilotHPboarder.classList.add('hideTranslate');
 		}
-
-
 	}
 
 	updatePilotMsg(e){
