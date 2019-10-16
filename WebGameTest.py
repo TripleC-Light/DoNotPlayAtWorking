@@ -171,7 +171,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         self.write_message(_returnInfo)
 
-def updateAll():
+def loopAll():
     global gMapSize
     global gFrameTime
     global gPilotListInJSON
@@ -248,7 +248,7 @@ if __name__ == "__main__":
         gMapSize = []
 
         # 建立執行緒並執行
-        t = threading.Thread(target=updateAll)
+        t = threading.Thread(target=loopAll)
         t.start()
 
         handlers = [[r'/index', IndexHandler],

@@ -32,28 +32,32 @@ class ObjCtrl{
 	
 	updatePilotHP(e){
 		/*--- if use jquery width will not update, I don't know why ---*/
-		var _HPlengthInPx = 50;
-		var _HPmax = 10;
-		var _damage = Math.round(_HPlengthInPx/_HPmax);
 		var _pilotHP = document.getElementById('HP_' + e.id);
-		// console.log(e.id + ':' + e.HP + ', L=' + e.HP*_damage);
-		_pilotHP.style.display = 'inline-block';
-		_pilotHP.style.visibility = 'visible';
-		if( (e.HP*_damage)<0 ){
-			_pilotHP.style.width = '0px';
-		}else{
-			_pilotHP.style.width = e.HP*_damage + 'px';
-		}
-		// console.log(_pilotHP.style.width);
-		if( _pilotHP.style.width<(_HPlengthInPx/5) ){
-			_pilotHP.style.backgroundColor = '#F00';
-		}else if( _pilotHP.style.width<(_HPlengthInPx/2) ){
-			_pilotHP.style.backgroundColor = '#FFC90E';
-
-		}
-		_pilotHP.innerHTML = e.HP;
+		var _pilotHPboarder = document.getElementById('HPboarder_' + e.id);
 		if( e.beHIT ){
 			this.shake(e, 10);
+			var _HPlengthInPx = 50;
+			var _HPmax = 10;
+			var _HPlength = 0;
+			var _damage = Math.round(_HPlengthInPx/_HPmax);
+			_pilotHPboarder.classList.remove('hideTranslate');
+			_pilotHPboarder.style.opacity =  1;
+			_HPlength = e.HP * _damage;
+			if( (e.HP*_damage)<0 ){
+				_pilotHP.style.width = '0px';
+			}else{
+				_pilotHP.style.width = _HPlength + 'px';
+			}
+			if( _HPlength<(_HPlengthInPx/5) ){
+				_pilotHP.style.backgroundColor = '#F00';
+			}else if( _HPlength<(_HPlengthInPx/2) ){
+				_pilotHP.style.backgroundColor = '#FFC90E';
+			}else{
+				_pilotHP.style.backgroundColor = '#0F0';
+			}
+			// _pilotHP.innerHTML = e.HP;
+		}else{
+			_pilotHPboarder.classList.add('hideTranslate');
 		}
 	}
 

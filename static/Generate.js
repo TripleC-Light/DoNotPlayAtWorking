@@ -97,13 +97,26 @@ class Generate{
 	_createHp( parentObj, id){
 		var parent = document.getElementById(parentObj);
 		var hp = document.createElement("div");
-		hp.setAttribute("id", 'HP_' + id);
+		hp.setAttribute("id", 'HPboarder_' + id);
 		hp.setAttribute("class", "cPilotHP");
+		hp.style.border = '1px solid #000';
+		hp.style.backgroundColor = '#FFF';
 		parent.appendChild(hp);
 		var parentBound = parent.getBoundingClientRect();
 		var hpBound = hp.getBoundingClientRect();
 		var _leftOffset = (parentBound.width-hpBound.width)/2;
 		hp.style.left = _leftOffset + 'px';
+
+		var parent = document.getElementById('HPboarder_' + id);
+		var hp = document.createElement("div");
+		hp.setAttribute("id", 'HP_' + id);
+		hp.setAttribute("class", "cPilotHP");
+		hp.style.opacity = 1;
+		parent.appendChild(hp);
+		var parentBound = parent.getBoundingClientRect();
+		var hpBound = hp.getBoundingClientRect();
+		hp.style.top = '0px';
+		hp.style.left = '0px';
 	}
 	_createMain( parentObj, id){
 		var parent = document.getElementById(parentObj);

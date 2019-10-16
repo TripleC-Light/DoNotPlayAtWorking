@@ -271,6 +271,7 @@
 				var _space = 32;
 				if (e.keyCode == _z) {
 					attackState = true;
+					$('#HPboarder_'+myID).addClass('hideTranslate');
 					WS.send('attack@' + myID);
 				}
 				setTimeout(function(){
@@ -283,6 +284,8 @@
 			var _z = 90;
 			var _space = 32;
 			if (e.keyCode == _z) {
+				$('#HPboarder_'+myID).removeClass('hideTranslate');
+				$('#HPboarder_'+myID).css('opacity', '1');
 				keyUpState = true;
 			}
 		}
