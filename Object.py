@@ -1,6 +1,7 @@
 class Object:
     def __init__(self):
         self.type = 'pilot'
+        self.block = 0
         self.id = ''
         self.name = ''
         self.W = 70

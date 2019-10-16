@@ -106,6 +106,26 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     enemy.H = enemy.W
                     gObjList[enemy.id] = enemy
 
+        elif _cmd == 'createItem':
+            _getInitPositionFail = [-1, -1]
+            for _i in range(10):
+                _item = Object()
+                _item.id = myFunc.getUniqueID(list(gObjList.keys()))
+                _item.name = ''
+                _XY = myFunc.getInitPosition('auto', gMapSize, _item, gObjList)
+                if _XY != _getInitPositionFail:
+                    _item.type = 'item'
+                    _item.pic = 'fullHP'
+                    _item.SP = 0
+                    _item.X = _XY[0]
+                    _item.Y = _XY[1]
+                    _item.tX = _XY[0]
+                    _item.tY = _XY[1]
+                    _item.timeOut = round(time.time(), 3)
+                    _item.W = random.randint(20, 150)
+                    _item.H = _item.W
+                    gObjList[_item.id] = _item
+
         elif _cmd == 'sendMsg':
             _data = _tmp[1]
             _tmp = _data.split(';')
@@ -194,7 +214,7 @@ def loopAll():
         for _id in list(gObjList.keys()):
             _deleteState = False
             _pilot = gObjList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
                 _objCtrl.updatePosition(_pilot)
                 _objCtrl.clearAttack(_pilot)
 
@@ -223,10 +243,11 @@ def loopAll():
                 _objCtrl.msgTimeOutCheck(_pilot)
                 _objCtrl.enemyAutoCtrl(_pilot)
                 _objCtrl.enemyTimeReflash(_pilot)
+                _objCtrl.itemTimeReflash(_pilot)
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON['list'] = _pilotList

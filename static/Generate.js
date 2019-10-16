@@ -108,7 +108,7 @@ class Generate{
 		hp.style.left = _leftOffset + 'px';
 
 		var parent = document.getElementById('HPboarder_' + id);
-		var hp = document.createElement("div");
+		var hp = document.createElement("span");
 		hp.setAttribute("id", 'HP_' + id);
 		hp.setAttribute("class", "cPilotHP");
 		hp.style.opacity = 1;

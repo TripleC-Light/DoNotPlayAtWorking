@@ -45,7 +45,7 @@ class ObjCtrl:
     def clearBeHIT(self):
         for _id in list(self.objList.keys()):
             _pilot = self.objList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy':
+            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
                 _pilot.beHIT = False
 
     def clearAttack(self, _pilot):
@@ -72,11 +72,17 @@ class ObjCtrl:
         if _weapenCollision[0]:
             _pilot.attack = 0
             for _beHitID in _weapenCollision[1]:
-                self.objList[_beHitID].beHIT = True
-                _damage = _pilot.AT - self.objList[_beHitID].DEF
-                if _damage > 0:
-                    if self.objList[_beHitID].HP > 0:
-                        self.objList[_beHitID].HP -= _damage
+                if self.objList[_beHitID].type == 'item':
+                    if self.objList[_beHitID].pic == 'fullHP':
+                        _pilot.HP = 10
+                        self.objList[_beHitID].timeOut = 1
+                        print('Get Item')
+                else:
+                    self.objList[_beHitID].beHIT = True
+                    _damage = _pilot.AT - self.objList[_beHitID].DEF
+                    if _damage > 0:
+                        if self.objList[_beHitID].HP > 0:
+                            self.objList[_beHitID].HP -= _damage
 
     def timeOut(self, _pilot):
         if (self.sysTime - _pilot.timeOut) > self.offlineTime:
@@ -135,3 +141,7 @@ class ObjCtrl:
     def enemyTimeReflash(self, _pilot):
         if _pilot.type == 'enemy' and _pilot.timeOut != 0:
             _pilot.timeOut = round(self.sysTime, 3)
+
+    def itemTimeReflash(self, _item):
+        if _item.type == 'item' and _item.timeOut != 0:
+            _item.timeOut = round(self.sysTime, 3)

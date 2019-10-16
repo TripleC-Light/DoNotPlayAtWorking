@@ -34,31 +34,34 @@ class ObjCtrl{
 		/*--- if use jquery width will not update, I don't know why ---*/
 		var _pilotHP = document.getElementById('HP_' + e.id);
 		var _pilotHPboarder = document.getElementById('HPboarder_' + e.id);
+		var _HPlengthInPx = 50;
+		var _HPmax = 10;
+		var _HPlength = 0;
+		var _damage = Math.round(_HPlengthInPx/_HPmax);
+		_pilotHPboarder.classList.remove('hideTranslate');
+		_pilotHPboarder.style.opacity =  1;
+		_HPlength = e.HP * _damage;
+		if( (e.HP*_damage)<0 ){
+			_pilotHP.style.width = '0px';
+		}else{
+			_pilotHP.style.width = _HPlength + 'px';
+		}
+		console.log(_pilotHP.style.width);
+		if( _HPlength<(_HPlengthInPx/5) ){
+			_pilotHP.style.backgroundColor = '#F00';
+		}else if( _HPlength<(_HPlengthInPx/2) ){
+			_pilotHP.style.backgroundColor = '#FFC90E';
+		}else{
+			_pilotHP.style.backgroundColor = '#0F0';
+		}
+		// _pilotHP.innerHTML = e.HP;
 		if( e.beHIT ){
 			this.shake(e, 10);
-			var _HPlengthInPx = 50;
-			var _HPmax = 10;
-			var _HPlength = 0;
-			var _damage = Math.round(_HPlengthInPx/_HPmax);
-			_pilotHPboarder.classList.remove('hideTranslate');
-			_pilotHPboarder.style.opacity =  1;
-			_HPlength = e.HP * _damage;
-			if( (e.HP*_damage)<0 ){
-				_pilotHP.style.width = '0px';
-			}else{
-				_pilotHP.style.width = _HPlength + 'px';
-			}
-			if( _HPlength<(_HPlengthInPx/5) ){
-				_pilotHP.style.backgroundColor = '#F00';
-			}else if( _HPlength<(_HPlengthInPx/2) ){
-				_pilotHP.style.backgroundColor = '#FFC90E';
-			}else{
-				_pilotHP.style.backgroundColor = '#0F0';
-			}
-			// _pilotHP.innerHTML = e.HP;
 		}else{
 			_pilotHPboarder.classList.add('hideTranslate');
 		}
+
+
 	}
 
 	updatePilotMsg(e){
@@ -110,7 +113,11 @@ class ObjCtrl{
 		if( e.beHIT ){
 			_actionStr = 'beHIT_';
 		}
-		this.pilot.css('backgroundImage',"url('./static/pilot/" + e.pic + "/" + _actionStr + e.dir + ".gif')");
+		if( e.type == 'item' ){
+			this.pilot.css('backgroundImage',"url('./static/pilot/" + e.type + "/" + e.pic + ".gif')");	
+		}else{
+			this.pilot.css('backgroundImage',"url('./static/pilot/" + e.pic + "/" + _actionStr + e.dir + ".gif')");	
+		}
 		this.pilot.css('visibility','visible');
 	}
 

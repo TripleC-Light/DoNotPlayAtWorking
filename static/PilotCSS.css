@@ -17,6 +17,7 @@
     background-color: #0F0;
     color: #000;
     user-select: none;
+    display: 'inline-block';
     visibility: 'visible';
     opacity: 0;
     position: absolute;
