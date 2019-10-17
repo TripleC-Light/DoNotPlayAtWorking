@@ -89,6 +89,7 @@ class ObjCtrl:
             print('Get Item')
 
         if _itemType == 'button':
+            _item.beHIT = True
             _damage = _whoGet.AT - _item.DEF
             if _damage > 0:
                 if _item.HP > 0:

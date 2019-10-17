@@ -122,7 +122,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _XY = myFunc.getInitPosition('auto', gMapSize, _item, gObjList)
                 if _XY != _getInitPositionFail:
                     _item.type = 'item'
-                    _item.pic = 'button'
+                    _item.pic = 'fullHP'
                     _item.SP = 0
                     _item.X = _XY[0]
                     _item.Y = _XY[1]
