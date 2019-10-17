@@ -73,16 +73,27 @@ class ObjCtrl:
             _pilot.attack = 0
             for _beHitID in _weapenCollision[1]:
                 if self.objList[_beHitID].type == 'item':
-                    if self.objList[_beHitID].pic == 'fullHP':
-                        _pilot.HP = 10
-                        self.objList[_beHitID].timeOut = 1
-                        print('Get Item')
+                    self.itemCtrl(_pilot, self.objList[_beHitID])
                 else:
                     self.objList[_beHitID].beHIT = True
                     _damage = _pilot.AT - self.objList[_beHitID].DEF
                     if _damage > 0:
                         if self.objList[_beHitID].HP > 0:
                             self.objList[_beHitID].HP -= _damage
+
+    def itemCtrl(self, _whoGet, _item):
+        _itemType = _item.pic
+        if _itemType == 'fullHP':
+            _whoGet.HP = 10
+            _item.timeOut = 1
+            print('Get Item')
+
+        if _itemType == 'button':
+            _damage = _whoGet.AT - _item.DEF
+            if _damage > 0:
+                if _item.HP > 0:
+                    _item.HP -= _damage
+            print('Get Item')
 
     def timeOut(self, _pilot):
         if (self.sysTime - _pilot.timeOut) > self.offlineTime:

@@ -122,7 +122,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _XY = myFunc.getInitPosition('auto', gMapSize, _item, gObjList)
                 if _XY != _getInitPositionFail:
                     _item.type = 'item'
-                    _item.pic = 'fullHP'
+                    _item.pic = 'button'
                     _item.SP = 0
                     _item.X = _XY[0]
                     _item.Y = _XY[1]
@@ -234,13 +234,17 @@ def loopAll():
                     _objCtrl.attackJudge(_pilot)
 
                 if _objCtrl.timeOut(_pilot):
-                    gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
+                    if _pilot.type != 'item':
+                        gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
                     _deleteState = True
                     print('delete: ' + str(_id))
 
                 if _objCtrl.HPtoZero(_pilot):
-                    if _pilot.type != 'pilot':
+                    if _pilot.type == 'enemy':
                         print('Game Over: ' + str(_pilot.id))
+                        _deleteState = True
+                    elif _pilot.type == 'item' and _pilot.pic == 'button':
+                        print('Button be push')
                         _deleteState = True
                     else:
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' HP歸零')
