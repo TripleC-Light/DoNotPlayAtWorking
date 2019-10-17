@@ -36,6 +36,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         global gPilotListInJSON
         global gMapSize
         global gMsgCtrl
+        global gObjCtrl
 
         _getInitPositionFail = [-1, -1]
         _tmp = CMDfromWEB.split('@')
@@ -116,26 +117,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif _cmd == 'createItem':
             _getInitPositionFail = [-1, -1]
             for _i in range(3):
-                _item = Object()
-                _item.id = myFunc.getUniqueID(list(gObjList.keys()))
-                _item.name = ''
-                _XY = myFunc.getInitPosition('auto', gMapSize, _item, gObjList)
-                if _XY != _getInitPositionFail:
-                    _item.type = 'item'
-                    _item.pic = 'fullHP'
-                    _item.SP = 0
-                    _item.X = _XY[0]
-                    _item.Y = _XY[1]
-                    _item.tX = _XY[0]
-                    _item.tY = _XY[1]
-                    _item.timeOut = round(time.time(), 3)
-
-                    _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
-                    _randomLimit = random.randint(20, 150)
-                    _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-                    _item.W = _newSize[0]
-                    _item.H = _newSize[1]
-                    gObjList[_item.id] = _item
+                _item = gObjCtrl.createItem('fullHP')
+                gObjList[_item.id] = _item
 
         elif _cmd == 'sendMsg':
             _data = _tmp[1]
@@ -196,6 +179,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                             _obj.pic = './static/map/obj/' + _pic + '.png'
                         gObjList[_obj.id] = _obj
                         _mapObjList.append(_obj.__dict__)
+
+            gObjCtrl.mapSize = gMapSize
+            _item = gObjCtrl.createItem('button')
+            gObjList[_item.id] = _item
             _mapObjInJSON['ObjList'] = _mapObjList
             _objToJSON = json.dumps(_mapObjInJSON)
             _returnInfo = 'setMap@' + _objToJSON
@@ -208,38 +195,38 @@ def loopAll():
     global gPilotListInJSON
     global gMsgCtrl
     global gObjList
+    global gObjCtrl
 
     _timeCtrl = myFunc.TimeCtrl()
-    _objCtrl = ObjCtrl()
-    _objCtrl.attackTime = 0.1   # second
-    _objCtrl.offlineTime = 5    # second
+    gObjCtrl.attackTime = 0.1   # second
+    gObjCtrl.offlineTime = 5    # second
 
     while 1:
         _timeCtrl.sysTime = time.time()
         _FPS = _timeCtrl.showFPS()
-        _objCtrl.mapSize = gMapSize
-        _objCtrl.sysTime = _timeCtrl.sysTime
-        _objCtrl.objList = gObjList
-        _objCtrl.clearBeHIT()
+        gObjCtrl.mapSize = gMapSize
+        gObjCtrl.sysTime = _timeCtrl.sysTime
+        gObjCtrl.objList = gObjList
+        gObjCtrl.clearBeHIT()
         _pilotList = []
         for _id in list(gObjList.keys()):
             _deleteState = False
             _pilot = gObjList[_id]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
-                _objCtrl.updatePosition(_pilot)
-                _objCtrl.clearAttack(_pilot)
+                gObjCtrl.updatePosition(_pilot)
+                gObjCtrl.clearAttack(_pilot)
 
                 if _pilot.attack != 0:
-                    _weapen = _objCtrl.createWeapen(_pilot)
-                    _objCtrl.attackJudge(_pilot)
+                    _weapen = gObjCtrl.createWeapen(_pilot)
+                    gObjCtrl.attackJudge(_pilot)
 
-                if _objCtrl.timeOut(_pilot):
+                if gObjCtrl.timeOut(_pilot):
                     if _pilot.type != 'item':
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
                     _deleteState = True
                     print('delete: ' + str(_id))
 
-                if _objCtrl.HPtoZero(_pilot):
+                if gObjCtrl.HPtoZero(_pilot):
                     if _pilot.type == 'enemy':
                         print('Game Over: ' + str(_pilot.id))
                         _deleteState = True
@@ -255,10 +242,10 @@ def loopAll():
         if _timeCtrl.oneSecondTimeOut():
             for _id in list(gObjList.keys()):
                 _pilot = gObjList[_id]
-                _objCtrl.msgTimeOutCheck(_pilot)
-                _objCtrl.enemyAutoCtrl(_pilot)
-                _objCtrl.enemyTimeReflash(_pilot)
-                _objCtrl.itemTimeReflash(_pilot)
+                gObjCtrl.msgTimeOutCheck(_pilot)
+                gObjCtrl.enemyAutoCtrl(_pilot)
+                gObjCtrl.enemyTimeReflash(_pilot)
+                gObjCtrl.itemTimeReflash(_pilot)
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
@@ -275,6 +262,7 @@ if __name__ == "__main__":
     global gFrameTime           # Frame per second
     global gMsgCtrl
     global gMapSize
+    global gObjCtrl
 
     try:
         gObjList = {}
@@ -282,6 +270,7 @@ if __name__ == "__main__":
         gPilotListInJSON = {}
         gMsgCtrl = myFunc.MsgCtrl()
         gMapSize = []
+        gObjCtrl = ObjCtrl()
 
         # 建立執行緒並執行
         t = threading.Thread(target=loopAll)

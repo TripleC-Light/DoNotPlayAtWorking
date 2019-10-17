@@ -49,7 +49,7 @@ def getInitPosition(positionMode, mapSize, obj, gObjList):
             _XY[1] = random.randint((obj.H/2), mapSize[1]-(obj.H/2))
         else:
             _initPoint = positionMode.split(',')
-            _XY = [int(_initPoint[0]), int(_initPoint[1])]
+            _XY = [round(float(_initPoint[0])), round(float(_initPoint[1]))]
 
         obj.X = _XY[0]
         obj.Y = _XY[1]

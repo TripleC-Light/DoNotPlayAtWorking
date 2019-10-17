@@ -8,21 +8,12 @@ class Generate{
 
 	pilot(parent, allObj){
 		switch(this.state){
-			// case 'getID':
-			// 	this.state = 'checkID';
-			// 	break;
-
-			// case 'checkID':
-			// 	this.state = 'createPilotInServer';
-			// 	break;
-
 			case 'createPilotInServer':
 				var _positionMode = 'auto';
 				// var _positionMode = [35, 350];
 				WS.send('createPilot@' + _positionMode);
 				this.state = 'createPilotInWeb';
 				break;
-
 			case 'createPilotInWeb':
 				if( this.pilotObj!='' ){
 					this.newObj(parent, this.pilotObj);

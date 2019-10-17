@@ -30,13 +30,13 @@
 .cPilotName{
     height: 20px;
     border: 0px solid #000;
-    border-radius: 5px;
     color: #00F;
     font-size: 15px;
     font-weight: bolder;
     vertical-align: top;
     user-select: none;
     position: absolute;
+    white-space: nowrap;
 /*    display: none;*/
 }
 .cPilotmsg{
