@@ -27,7 +27,7 @@
 		var allObj = [];
 		var targetXY = [0, 0];
 		var myID = '';
-		var myPilot;
+		var myPilot = '';
 		var connectState = new Boolean(false);
 		var gameFPS = 0;
 		var FPScount = 0;
@@ -159,6 +159,18 @@
 	        				allObj = _objCtrl.allObj;
 	        				if( e.id == myID ){
 	        					myPilot = e;
+	        				}
+
+	        				if( e.type=='item' && e.pic=='button' ){
+	        					if( myPilot != '' ){
+		        					_distance = Com.distance(myPilot, e);
+		        					if( _distance<(e.W*2) ){
+		        						$('#iZkey').css({'left':(e.X-25), 'top':e.Y-60-(e.H/2)-20});
+		        						$('#iZkey').show();
+		        					}else{
+		        						$('#iZkey').hide();
+		        					}
+	        					}
 	        				}
 						});
 
@@ -317,6 +329,7 @@
 		 onmousemove="setTargetXY()" 
 		 class="cMainMap">
 		<div id="iSysMsg" class='cSysInfo'></div>
+		<div id="iZkey" class='cZkey'></div>
 	</div>
 
 	<table style="margin-top: 10px;"><tr>

@@ -104,4 +104,12 @@ class Common{
 		}
 		return false;
 	}
+
+	distance(e1, e2){
+		var _P1 = [e1.X, e1.Y];
+		var _P2 = [e2.X, e2.Y];
+	    var _dX = _P1[0] - _P2[0];
+	    var _dY = _P1[1] - _P2[1];
+    	return Math.sqrt(Math.pow(_dX,2) + Math.pow(_dY,2));
+	}
 }

@@ -71,3 +71,26 @@ table, tr, td{
     z-index: 1000;
 }
 
+.cZkey{
+    top: 100px;
+    left: 200px;
+    width: 50px;
+    height: 60px;
+    position: absolute;
+    border: 0px solid #F00;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url('./pilot/item/Zkey.gif');
+    display: none;
+    animation-name:startAnima;
+    animation-timing-function:ease-out;
+    animation-duration:0.5s;
+}
+@keyframes startAnima{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 0.7;
+    }
+}
