@@ -8,6 +8,7 @@ class ObjCtrl:
     def __init__(self):
         self.objList = {}
         self.sysTime = 0
+        self.frameTime = 0
         self.attackTime = 0
         self.offlineTime = 0
         self.weapen = ''
@@ -178,7 +179,7 @@ class ObjCtrl:
                 _item.timeOut = round(time.time(), 3)
 
                 _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
-                _randomLimit = random.randint(20, 150)
+                _randomLimit = random.randint(60, 60)
                 _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
                 _item.W = _newSize[0]
                 _item.H = _newSize[1]
@@ -187,7 +188,7 @@ class ObjCtrl:
         elif _itemName == 'button':
             _item = Object()
             _item.id = myFunc.getUniqueID(list(self.objList.keys()))
-            _item.name = '神秘的按鈕'
+            _item.name = ''
             _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, _item, self.objList)
             if _XY != _getInitPositionFail:
                 _item.type = 'item'
@@ -201,8 +202,32 @@ class ObjCtrl:
                 _item.timeOut = round(time.time(), 3)
 
                 _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
-                _randomLimit = 70
+                _randomLimit = 80
                 _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
                 _item.W = _newSize[0]
                 _item.H = _newSize[1]
                 return _item
+
+    def createEnemy(self, _enemyName):
+        _getInitPositionFail = [-1, -1]
+        if _enemyName == 'zombie':
+            enemy = Object()
+            enemy.id = myFunc.getUniqueID(list(self.objList.keys()))
+            enemy.name = '上班族殭屍'
+            _XY = myFunc.getInitPosition('auto', self.mapSize, enemy, self.objList)
+            if _XY != _getInitPositionFail:
+                enemy.type = 'enemy'
+                enemy.pic = 'zombie'
+                enemy.SP = random.randint(20, 100) * self.frameTime
+                enemy.X = _XY[0]
+                enemy.Y = _XY[1]
+                enemy.tX = _XY[0]
+                enemy.tY = _XY[1]
+                enemy.timeOut = round(time.time(), 3)
+                _im = Image.open('./static/pilot/' + enemy.pic + '/right.gif')
+                _randomLimit = random.randint(80, 150)
+                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                enemy.W = _newSize[0]
+                enemy.H = _newSize[1]
+
+            return enemy

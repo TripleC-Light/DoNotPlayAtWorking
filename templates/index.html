@@ -165,7 +165,7 @@
 	        					myPilot = e;
 	        				}
 
-	        				if( e.type=='item' && e.pic=='button' ){
+	        				if( e.id=='Scene00Button' ){
 	        					if( myPilot != '' ){
 		        					_distance = Com.distance(myPilot, e);
 		        					if( _distance<(e.W*2) ){
@@ -198,6 +198,10 @@
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
 	        			$('#iEnemyNum')[0].innerHTML = _enemyNum;
 	        			$('#iItemNum')[0].innerHTML = _itemNum;
+
+	        			if( !Com.idExist('Scene00Button', allObj) ){
+	        				$('#iZkey').hide();
+	        			}
 	        			break;
 
 	        		case 'SysMsg':

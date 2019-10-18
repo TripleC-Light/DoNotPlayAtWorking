@@ -58,7 +58,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilot.tY = _XY[1]
                 _pilot.timeOut = round(time.time(), 3)
                 _im = Image.open('./static/pilot/' + _pilot.pic + '/right.gif')
-                _randomLimit = random.randint(20, 150)
+                _randomLimit = random.randint(70, 70)
                 _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
                 _pilot.W = _newSize[0]
                 _pilot.H = _newSize[1]
@@ -93,30 +93,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             gObjList[_id].attack = time.time()
 
         elif _cmd == 'createEnemy':
-            _getInitPositionFail = [-1, -1]
-            for _i in range(1):
-                enemy = Object()
-                enemy.id = myFunc.getUniqueID(list(gObjList.keys()))
-                enemy.name = enemy.id
-                _XY = myFunc.getInitPosition('auto', gMapSize, enemy, gObjList)
-                if _XY != _getInitPositionFail:
-                    enemy.type = 'enemy'
-                    enemy.pic = 'zombie'
-                    enemy.SP = 30 * gFrameTime
-                    enemy.X = _XY[0]
-                    enemy.Y = _XY[1]
-                    enemy.tX = _XY[0]
-                    enemy.tY = _XY[1]
-                    enemy.timeOut = round(time.time(), 3)
-                    _im = Image.open('./static/pilot/' + enemy.pic + '/right.gif')
-                    _randomLimit = random.randint(20, 150)
-                    _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-                    enemy.W = _newSize[0]
-                    enemy.H = _newSize[1]
-                    gObjList[enemy.id] = enemy
+            for _i in range(5):
+                _enemy = gObjCtrl.createEnemy('zombie')
+                gObjList[_enemy.id] = _enemy
 
         elif _cmd == 'createItem':
-            _getInitPositionFail = [-1, -1]
             for _i in range(3):
                 _item = gObjCtrl.createItem('fullHP')
                 gObjList[_item.id] = _item
@@ -199,6 +180,7 @@ def loopAll():
     _timeCtrl = myFunc.TimeCtrl()
     gObjCtrl.attackTime = 0.1   # second
     gObjCtrl.offlineTime = 5    # second
+    gObjCtrl.frameTime = gFrameTime
 
     while 1:
         _timeCtrl.sysTime = time.time()
@@ -211,7 +193,6 @@ def loopAll():
         for _id in list(gObjList.keys()):
             _deleteState = False
             _pilot = gObjList[_id]
-            # if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
             if _pilot.type != 'mapObj':
                 gObjCtrl.updatePosition(_pilot)
                 gObjCtrl.clearAttack(_pilot)
@@ -252,9 +233,14 @@ def loopAll():
             gScript.objCtrl = gObjCtrl
             gScript.run(gObjList)
 
+            if gScript.Start:
+                if random.randint(0, 15) == 0:
+                    for _i in range(random.randint(1, 3)):
+                        _item = gObjCtrl.createItem('fullHP')
+                        gObjList[_item.id] = _item
+
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
-            # if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
             if _pilot.type != 'mapObj':
                 _pilotList.append(_pilot.__dict__)
 

@@ -42,11 +42,15 @@ def getInitPosition(positionMode, mapSize, obj, gObjList):
     _collisionState = (True, 0)
     _tryCount = 0
     _XY = []
+    _tmpW = obj.W
+    _tmpH = obj.H
+    obj.W *= 1.8
+    obj.H *= 1.8
     while _collisionState[0]:
         if positionMode == 'auto':
             _XY = [0, 0]
-            _XY[0] = random.randint((obj.W/2), mapSize[0]-(obj.W/2))
-            _XY[1] = random.randint((obj.H/2), mapSize[1]-(obj.H/2))
+            _XY[0] = random.randint((_tmpW/2), mapSize[0]-(_tmpW/2))
+            _XY[1] = random.randint((_tmpH/2), mapSize[1]-(_tmpH/2))
         else:
             _initPoint = positionMode.split(',')
             _XY = [round(float(_initPoint[0])), round(float(_initPoint[1]))]
@@ -64,6 +68,9 @@ def getInitPosition(positionMode, mapSize, obj, gObjList):
                 return [-1, -1]
         else:
             _collisionState = (False, 0)
+
+    obj.W = _tmpW
+    obj.H = _tmpH
     return _XY
 
 def distance(P1, P2):
