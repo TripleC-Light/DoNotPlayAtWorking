@@ -136,6 +136,7 @@
 	        		case 'NewData':
 	        			var _onLineNum = 0
 	        			var _enemyNum = 0;
+	        			var _itemNum = 0;
 	        			var _pilotDataInJSON = _returnData[1];
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
@@ -146,11 +147,14 @@
 								_onLineNum += 1;
 							}else if( e.type == 'enemy' ){
 								_enemyNum += 1;
+							}else if( e.type == 'item' ){
+								_itemNum += 1;
 							}
 							_objCtrl = new ObjCtrl(e);
 							_objCtrl.allObj = allObj;
 							_objCtrl.syncPilotObj(e);
 							_objCtrl.showPilot(e);
+							_objCtrl.updateName(e);
 		        			_objCtrl.updatePilotXY(e);
 	        				_objCtrl.updatePilotHP(e);
 	        				_objCtrl.updatePilotMsg(e);
@@ -193,6 +197,7 @@
 	        			$('#iDebug')[0].innerHTML = '　FPS: ' + _pilotData.FPS;
 	        			$('#iOnlineNum')[0].innerHTML = _onLineNum;
 	        			$('#iEnemyNum')[0].innerHTML = _enemyNum;
+	        			$('#iItemNum')[0].innerHTML = _itemNum;
 	        			break;
 
 	        		case 'SysMsg':
@@ -321,6 +326,7 @@
 	<div onclick="addItem()" style='border:1px solid #F00;width:80px;display:inline-block;user-select: none;'>道具</div>
 	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　線上玩家:<span id='iOnlineNum'>0</span></div>
 	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　敵人:<span id='iEnemyNum'>0</span></div>
+	<div style='border:0px solid #F00;display:inline-block;user-select: none;'>　道具:<span id='iItemNum'>0</span></div>
 	<div id='iDebug' style='border:0px solid #F00;display:inline-block;'></span></div>
 	<div id="iMainMap"
 		 onclick="setTargetXY(mouseClick)" 

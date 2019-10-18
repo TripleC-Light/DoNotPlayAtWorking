@@ -189,7 +189,6 @@ class ObjCtrl:
             _item.id = myFunc.getUniqueID(list(self.objList.keys()))
             _item.name = '神秘的按鈕'
             _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, _item, self.objList)
-            print(_XY)
             if _XY != _getInitPositionFail:
                 _item.type = 'item'
                 _item.pic = 'button'

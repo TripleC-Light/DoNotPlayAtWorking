@@ -12,6 +12,7 @@ from Object import Object
 import json
 import myFunction as myFunc
 from ObjCtrl import ObjCtrl
+from Script import Script
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -180,9 +181,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                         gObjList[_obj.id] = _obj
                         _mapObjList.append(_obj.__dict__)
 
-            gObjCtrl.mapSize = gMapSize
-            _item = gObjCtrl.createItem('button')
-            gObjList[_item.id] = _item
             _mapObjInJSON['ObjList'] = _mapObjList
             _objToJSON = json.dumps(_mapObjInJSON)
             _returnInfo = 'setMap@' + _objToJSON
@@ -196,6 +194,7 @@ def loopAll():
     global gMsgCtrl
     global gObjList
     global gObjCtrl
+    global gScript
 
     _timeCtrl = myFunc.TimeCtrl()
     gObjCtrl.attackTime = 0.1   # second
@@ -212,7 +211,8 @@ def loopAll():
         for _id in list(gObjList.keys()):
             _deleteState = False
             _pilot = gObjList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
+            # if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
+            if _pilot.type != 'mapObj':
                 gObjCtrl.updatePosition(_pilot)
                 gObjCtrl.clearAttack(_pilot)
 
@@ -247,9 +247,15 @@ def loopAll():
                 gObjCtrl.enemyTimeReflash(_pilot)
                 gObjCtrl.itemTimeReflash(_pilot)
 
+            gScript.region = '0-0'
+            gScript.mapSize = gMapSize
+            gScript.objCtrl = gObjCtrl
+            gScript.run(gObjList)
+
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
+            # if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
+            if _pilot.type != 'mapObj':
                 _pilotList.append(_pilot.__dict__)
 
         gPilotListInJSON['list'] = _pilotList
@@ -263,6 +269,7 @@ if __name__ == "__main__":
     global gMsgCtrl
     global gMapSize
     global gObjCtrl
+    global gScript
 
     try:
         gObjList = {}
@@ -271,6 +278,7 @@ if __name__ == "__main__":
         gMsgCtrl = myFunc.MsgCtrl()
         gMapSize = []
         gObjCtrl = ObjCtrl()
+        gScript = Script()
 
         # 建立執行緒並執行
         t = threading.Thread(target=loopAll)

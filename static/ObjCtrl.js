@@ -9,7 +9,7 @@ class ObjCtrl{
 
 	syncPilotObj(e){
 		if( !Com.idExist(e.id, this.allObj) ){
-			console.log('Create pilot in web: ' + e.id);
+			console.log('Create pilot in web: ' + e.type + '>' + e.id);
 			Create.newObj( 'iMainMap', e);
 		}
 		this.frameBound = $('#frame_' + e.id)[0].getBoundingClientRect();
@@ -25,11 +25,14 @@ class ObjCtrl{
 	}
 
 	updatePilotXY(e){
-		// var _pilotBound = $('#' + e.id)[0].getBoundingClientRect();
 		this.frame.css({'left': e.X-(this.frameBound.width/2)});
 		this.frame.css({'top' : this.frameBound.top - (this.pilotBound.top-e.Y) - (this.pilotBound.height/2)});
 	}
 	
+	updateName(e){
+		$('#name_' + e.id)[0].innerHTML = e.name;
+	}
+
 	updatePilotHP(e){
 		/*--- if use jquery width will not update, I don't know why ---*/
 		var _pilotHP = document.getElementById('HP_' + e.id);
@@ -121,11 +124,10 @@ class ObjCtrl{
 
 	deleteOfflinePilot(e){
 		if( e.timeOut==0){
-			console.log(e.id)
 			var _pilotFrameObj = document.getElementById('frame_' + e.id);
 			var _parentObj = document.getElementById('iMainMap');
 			_parentObj.removeChild(_pilotFrameObj);
-			console.log('Delete: ' + e.id);
+			console.log('Delete: ' + e.type + '>' + e.id);
 			for(var i=0; i<this.allObj.length; i++){
 				if( this.allObj[i].id == e.id ){
 					this.allObj.splice(i,1);
