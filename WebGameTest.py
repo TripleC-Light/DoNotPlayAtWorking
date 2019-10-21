@@ -98,6 +98,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 gObjList[_enemy.id] = _enemy
 
         elif _cmd == 'createItem':
+            gObjCtrl.mapSize = gMapSize
             for _i in range(3):
                 _item = gObjCtrl.createItem('fullHP')
                 gObjList[_item.id] = _item

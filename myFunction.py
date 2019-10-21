@@ -42,8 +42,14 @@ def getInitPosition(positionMode, mapSize, obj, gObjList):
     _collisionState = (True, 0)
     _tryCount = 0
     _XY = []
+
+    if (obj.W % 2) != 0:
+        obj.W += 1
+    if (obj.H % 2) != 0:
+        obj.H += 1
     _tmpW = obj.W
     _tmpH = obj.H
+
     obj.W *= 1.8
     obj.H *= 1.8
     while _collisionState[0]:

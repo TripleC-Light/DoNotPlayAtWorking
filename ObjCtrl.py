@@ -163,50 +163,32 @@ class ObjCtrl:
 
     def createItem(self, _itemName):
         _getInitPositionFail = [-1, -1]
-        if _itemName == 'fullHP':
-            _item = Object()
-            _item.id = myFunc.getUniqueID(list(self.objList.keys()))
-            _item.name = ''
-            _XY = myFunc.getInitPosition('auto', self.mapSize, _item, self.objList)
-            if _XY != _getInitPositionFail:
-                _item.type = 'item'
-                _item.pic = 'fullHP'
-                _item.SP = 0
-                _item.X = _XY[0]
-                _item.Y = _XY[1]
-                _item.tX = _XY[0]
-                _item.tY = _XY[1]
-                _item.timeOut = round(time.time(), 3)
+        _item = Object()
+        _item.id = myFunc.getUniqueID(list(self.objList.keys()))
+        _item.type = 'item'
+        _item.name = ''
+        _item.pic = _itemName
+        _item.SP = 0
+        _item.timeOut = round(time.time(), 3)
 
-                _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
-                _randomLimit = random.randint(60, 60)
-                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-                _item.W = _newSize[0]
-                _item.H = _newSize[1]
-                return _item
+        _sizeLimit = 60
+        _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
+        _newSize = myFunc.getResize([_sizeLimit, _sizeLimit], _im.size)
+        _item.W = _newSize[0]
+        _item.H = _newSize[1]
+        _XY = myFunc.getInitPosition('auto', self.mapSize, _item, self.objList)
 
-        elif _itemName == 'button':
-            _item = Object()
-            _item.id = myFunc.getUniqueID(list(self.objList.keys()))
-            _item.name = ''
+        if _itemName == 'button':
             _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, _item, self.objList)
-            if _XY != _getInitPositionFail:
-                _item.type = 'item'
-                _item.pic = 'button'
-                _item.SP = 0
-                _item.DEF = -1
-                _item.X = _XY[0]
-                _item.Y = _XY[1]
-                _item.tX = _XY[0]
-                _item.tY = _XY[1]
-                _item.timeOut = round(time.time(), 3)
 
-                _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
-                _randomLimit = 80
-                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-                _item.W = _newSize[0]
-                _item.H = _newSize[1]
-                return _item
+        if _XY != _getInitPositionFail:
+            _item.X = _XY[0]
+            _item.Y = _XY[1]
+            _item.tX = _XY[0]
+            _item.tY = _XY[1]
+            return _item
+        else:
+            return False
 
     def createEnemy(self, _enemyName):
         _getInitPositionFail = [-1, -1]

@@ -17,7 +17,6 @@ class Script:
         self.objList = _objList
 
         if _region == '0-0':
-
             if _scene == 0:
                 _pilotNum = 0
                 for _id in list(_objList.keys()):
@@ -42,6 +41,10 @@ class Script:
 
             elif _scene == 3:
                 self.Start = True
+                _item = self.objCtrl.createItem('Zkey')
+                _item.name = '攻擊!!'
+                self.objList[_item.id] = _item
+
                 for _i in range(20):
                     _enemy = self.objCtrl.createEnemy('zombie')
                     self.objList[_enemy.id] = _enemy
