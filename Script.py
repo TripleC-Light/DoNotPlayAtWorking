@@ -10,6 +10,7 @@ class Script:
         self.mapSize = []
         self.itemID = 0
         self.oldSysTime = 0
+        self.msgCtrl = ''
 
     def run(self, _objList):
         _region = self.region
@@ -37,6 +38,7 @@ class Script:
 
             elif _scene == 2:
                 if self.itemID not in self.objList:
+                    self.msgCtrl.add('centerInfo', '有人手癢按下了按鈕, 導致世界發生了異變')
                     self.state = 3
                     print('Push Button')
 

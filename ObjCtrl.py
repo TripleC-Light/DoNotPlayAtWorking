@@ -12,6 +12,7 @@ class ObjCtrl:
         self.attackTime = 0
         self.offlineTime = 0
         self.weapen = ''
+        self.msgCtrl = ''
         self.mapSize = []
 
     def updatePosition(self, _pilot):
