@@ -233,9 +233,8 @@ def loopAll():
             gScript.mapSize = gMapSize
             gScript.objCtrl = gObjCtrl
             gScript.run(gObjList)
-
             if gScript.Start:
-                if random.randint(0, 15) == 0:
+                if random.randint(0, 10) == 0:
                     for _i in range(random.randint(1, 3)):
                         _item = gObjCtrl.createItem('fullHP')
                         gObjList[_item.id] = _item

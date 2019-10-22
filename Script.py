@@ -18,6 +18,7 @@ class Script:
 
         if _region == '0-0':
             if _scene == 0:
+
                 _pilotNum = 0
                 for _id in list(_objList.keys()):
                     if _objList[_id].type == 'pilot':
@@ -42,15 +43,15 @@ class Script:
             elif _scene == 3:
                 self.Start = True
                 _item = self.objCtrl.createItem('Zkey')
-                _item.X = 130
-                _item.Y = 440
-                _item.tX = 130
-                _item.tY = 440
+                _item.X = self.mapSize[0]/2
+                _item.Y = _item.W*2
+                _item.tX = _item.X
+                _item.tY = _item.Y
                 _item.name = '攻擊!!'
                 self.itemID = _item.id
                 self.objList[_item.id] = _item
 
-                for _i in range(3):
+                for _i in range(1):
                     _enemy = self.objCtrl.createEnemy('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 4
@@ -65,11 +66,11 @@ class Script:
                     self.state = 5
 
             elif _scene == 5:
-                if (time.time() - self.oldSysTime) > 5:
+                if (time.time() - self.oldSysTime) > 1:
                     self.state = 6
 
             elif _scene == 6:
-                for _i in range(3):
+                for _i in range(1):
                     _enemy = self.objCtrl.createEnemy('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 7
@@ -85,7 +86,7 @@ class Script:
 
             elif _scene == 8:
                 print('Stage Clear')
-                # _objList[self.itemID].timeout = 1
+                self.objList[self.itemID].timeOut = 0
                 self.Start = False
                 self.state = 9
 

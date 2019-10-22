@@ -158,7 +158,7 @@ class ObjCtrl:
             _pilot.timeOut = round(self.sysTime, 3)
 
     def itemTimeReflash(self, _item):
-        if _item.type == 'item' and _item.timeOut != 0:
+        if _item.type == 'item' and _item.timeOut > 1:
             _item.timeOut = round(self.sysTime, 3)
 
     def createItem(self, _itemName):
