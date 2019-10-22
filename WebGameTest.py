@@ -234,10 +234,13 @@ def loopAll():
             gScript.objCtrl = gObjCtrl
             gScript.run(gObjList)
             if gScript.Start:
+                gMsgCtrl.add('centerInfo', '遊戲開始')
                 if random.randint(0, 10) == 0:
                     for _i in range(random.randint(1, 3)):
                         _item = gObjCtrl.createItem('fullHP')
                         gObjList[_item.id] = _item
+            else:
+                gMsgCtrl.add('centerInfo', '遊戲結束')
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]

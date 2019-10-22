@@ -122,6 +122,7 @@ class TimeCtrl:
 
 class MsgCtrl:
     def __init__(self):
+        self.centerInfo = ['centerInfo', '']
         self.box = [['系統公告', '遊戲開始']]
         self.maxNum = 6
 
@@ -129,10 +130,13 @@ class MsgCtrl:
         if len(self.box) >= self.maxNum:
             _tmp = self.box[1:]
             self.box = _tmp
+        if _name == 'centerInfo':
+            self.centerInfo = ['centerInfo', _msg]
         self.box.append([_name, _msg])
 
     def returnToWeb(self):
         _returnDataInJSON = {}
+        _returnDataInJSON['centerInfo'] = self.centerInfo
         _returnDataInJSON['list'] = self.box
         _returnData = 'SysMsg@' + json.dumps(_returnDataInJSON)
         return _returnData

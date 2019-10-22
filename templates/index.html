@@ -31,6 +31,7 @@
 		var connectState = new Boolean(false);
 		var gameFPS = 0;
 		var FPScount = 0;
+		var oldCenterInfo = '';
 
 		// System setting
 		var milliSecondPerFrame = 50;
@@ -211,6 +212,18 @@
 							_msg.list.forEach(function(e) {
 								_msgHTMLStr += e[0] + ' : ' + e[1] + '<br>';
 							})
+
+							if( oldCenterInfo != _msg.centerInfo[1]){
+								console.log(_msg.centerInfo);
+								$('#iCenterInfo')[0].innerHTML = _msg.centerInfo[1];
+								$('#iCenterInfo').fadeTo('normal', 1);
+								oldCenterInfo = _msg.centerInfo[1];
+							}else{
+								if( $('#iCenterInfo').css('opacity') == 1 ){
+									$('#iCenterInfo').fadeTo('normal', 0);
+								}
+							}
+
 							$('#iSysMsg')[0].innerHTML = _msgHTMLStr;
 		        		}
 	        			break;
@@ -338,6 +351,7 @@
 		 onmouseup="mouseUp()" 
 		 onmousemove="setTargetXY()" 
 		 class="cMainMap">
+		<div id="iCenterInfo" class='cCenterInfo'>GGGG</div>
 		<div id="iSysMsg" class='cSysInfo'></div>
 		<div id="iZkey" class='cZkey'></div>
 	</div>
