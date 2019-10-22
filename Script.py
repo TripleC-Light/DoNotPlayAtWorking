@@ -42,10 +42,15 @@ class Script:
             elif _scene == 3:
                 self.Start = True
                 _item = self.objCtrl.createItem('Zkey')
+                _item.X = 130
+                _item.Y = 440
+                _item.tX = 130
+                _item.tY = 440
                 _item.name = '攻擊!!'
+                self.itemID = _item.id
                 self.objList[_item.id] = _item
 
-                for _i in range(20):
+                for _i in range(3):
                     _enemy = self.objCtrl.createEnemy('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 4
@@ -64,7 +69,7 @@ class Script:
                     self.state = 6
 
             elif _scene == 6:
-                for _i in range(20):
+                for _i in range(3):
                     _enemy = self.objCtrl.createEnemy('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 7
@@ -80,6 +85,7 @@ class Script:
 
             elif _scene == 8:
                 print('Stage Clear')
+                # _objList[self.itemID].timeout = 1
                 self.Start = False
                 self.state = 9
 
