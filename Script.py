@@ -45,11 +45,13 @@ class Script:
             elif _scene == 3:
                 self.Start = True
                 _item = self.objCtrl.createItem('Zkey')
+                _item.W = _item.W * 1.5
+                _item.H = _item.H * 1.5
                 _item.X = self.mapSize[0]/2
-                _item.Y = _item.W*2
+                _item.Y = _item.H - 20
                 _item.tX = _item.X
                 _item.tY = _item.Y
-                _item.name = '攻擊!!'
+                _item.name = '按[Z]進行攻擊!!'
                 self.itemID = _item.id
                 self.objList[_item.id] = _item
 
@@ -88,8 +90,9 @@ class Script:
 
             elif _scene == 8:
                 print('Stage Clear')
+                self.msgCtrl.add('centerInfo', '敵人已全部消滅, 世界暫時恢復了和平')
                 self.objList[self.itemID].timeOut = 0
                 self.Start = False
-                self.state = 9
+                self.state = 0
 
             # print('Scene: ' + str(_scene))

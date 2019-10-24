@@ -95,7 +95,6 @@ table, tr, td{
     }
 }
 
-
 .cCenterInfo{
     top: 40px;
     left: 0px;
@@ -111,15 +110,15 @@ table, tr, td{
     text-align: center;
     word-wrap: break-word;
     user-select: none;
-    opacity: 1;
+    opacity: 0;
     position: absolute;
     z-index: 1000;
 }
-.cCenterInfo.showTranslate{
+/*.cCenterInfo.showTranslate{
     transition: 5s;
     opacity: 1 !important;
 }
 .cCenterInfo.hideTranslate{
     transition: 10s;
     opacity: 0 !important;
-}
+}*/
