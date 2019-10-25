@@ -214,3 +214,51 @@ class ObjCtrl:
                 enemy.H = _newSize[1]
 
             return enemy
+
+    def createCharacter(self, _name):
+        _getInitPositionFail = [-1, -1]
+        if _name == 'zombie':
+            enemy = Object()
+            enemy.id = myFunc.getUniqueID(list(self.objList.keys()))
+            enemy.name = '上班族殭屍'
+            _XY = myFunc.getInitPosition('auto', self.mapSize, enemy, self.objList)
+            if _XY != _getInitPositionFail:
+                enemy.type = 'enemy'
+                enemy.pic = 'zombie'
+                enemy.SP = random.randint(20, 100) * self.frameTime
+                enemy.X = _XY[0]
+                enemy.Y = _XY[1]
+                enemy.tX = _XY[0]
+                enemy.tY = _XY[1]
+                enemy.timeOut = round(time.time(), 3)
+                _im = Image.open('./static/pilot/' + enemy.pic + '/right.gif')
+                _randomLimit = random.randint(80, 150)
+                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                enemy.W = _newSize[0]
+                enemy.H = _newSize[1]
+
+        elif _name == 'pilot':
+            # _data = _tmp[1]
+            # _positionMode = _data
+            _pilot = Object()
+            _pilot.id = myFunc.getUniqueID(list(self.objList.keys()))
+            _pilot.name = str(_pilot.id)
+            _pilot.SP = 350 * self.frameTime
+            _XY = myFunc.getInitPosition('auto', self.mapSize, _pilot, self.objList)
+            if _XY != _getInitPositionFail:
+                _pilot.X = _XY[0]
+                _pilot.Y = _XY[1]
+                _pilot.tX = _XY[0]
+                _pilot.tY = _XY[1]
+                _pilot.timeOut = round(time.time(), 3)
+                _im = Image.open('./static/pilot/' + _pilot.pic + '/right.gif')
+                _randomLimit = random.randint(70, 70)
+                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
+                _pilot.W = _newSize[0]
+                _pilot.H = _newSize[1]
+                self.objList[_pilot.id] = _pilot
+                gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
+                _pilotInJSON = _pilot.__dict__
+                _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
+
+        return character
