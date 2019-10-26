@@ -44,24 +44,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         _cmd = _tmp[0]
         _returnInfo = ''
         if _cmd == 'createPilot':
-            _data = _tmp[1]
-            _positionMode = _data
-            _pilot = Object()
-            _pilot.id = myFunc.getUniqueID(list(gObjList.keys()))
-            _pilot.name = str(_pilot.id)
-            _pilot.SP = 350 * gFrameTime
-            _XY = myFunc.getInitPosition(_positionMode, gMapSize, _pilot, gObjList)
-            if _XY != _getInitPositionFail:
-                _pilot.X = _XY[0]
-                _pilot.Y = _XY[1]
-                _pilot.tX = _XY[0]
-                _pilot.tY = _XY[1]
-                _pilot.timeOut = round(time.time(), 3)
-                _im = Image.open('./static/pilot/' + _pilot.pic + '/right.gif')
-                _randomLimit = random.randint(70, 70)
-                _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-                _pilot.W = _newSize[0]
-                _pilot.H = _newSize[1]
+            _pilot = gObjCtrl.createCharacter('pilot')
+            if _pilot != False:
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -94,7 +78,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'createEnemy':
             for _i in range(5):
-                _enemy = gObjCtrl.createEnemy('zombie')
+                _enemy = gObjCtrl.createCharacter('zombie')
                 gObjList[_enemy.id] = _enemy
 
         elif _cmd == 'createItem':

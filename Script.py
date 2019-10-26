@@ -28,6 +28,7 @@ class Script:
                     self.state = 1
 
             elif _scene == 1:
+                self.msgCtrl.add('centerInfo', '出現了一個令人好奇的神祕按鈕')
                 self.objCtrl.mapSize = self.mapSize
                 _item = self.objCtrl.createItem('button')
                 _item.id = 'Scene00Button'
@@ -56,7 +57,7 @@ class Script:
                 self.objList[_item.id] = _item
 
                 for _i in range(1):
-                    _enemy = self.objCtrl.createEnemy('zombie')
+                    _enemy = self.objCtrl.createCharacter('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 4
 
@@ -75,7 +76,7 @@ class Script:
 
             elif _scene == 6:
                 for _i in range(1):
-                    _enemy = self.objCtrl.createEnemy('zombie')
+                    _enemy = self.objCtrl.createCharacter('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 7
 
