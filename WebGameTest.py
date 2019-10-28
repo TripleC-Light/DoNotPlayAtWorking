@@ -188,6 +188,7 @@ def loopAll():
                     gObjCtrl.attackJudge(_pilot)
 
                 if gObjCtrl.timeOut(_pilot):
+                    print(_pilot.type)
                     if _pilot.type != 'item':
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
                     _deleteState = True

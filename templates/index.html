@@ -212,6 +212,7 @@
 							_msg.list.forEach(function(e) {
 								_msgHTMLStr += e[0] + ' : ' + e[1] + '<br>';
 							})
+							$('#iSysMsg')[0].innerHTML = _msgHTMLStr;
 
 							if( oldCenterInfo != _msg.centerInfo[1]){
 								$('#iCenterInfo')[0].innerHTML = _msg.centerInfo[1];
@@ -226,8 +227,6 @@
 									}, 3000);
 								}
 							}
-
-							$('#iSysMsg')[0].innerHTML = _msgHTMLStr;
 		        		}
 	        			break;
 

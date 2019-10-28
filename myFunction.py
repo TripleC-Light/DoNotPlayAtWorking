@@ -130,10 +130,10 @@ class MsgCtrl:
         if len(self.box) >= self.maxNum:
             _tmp = self.box[1:]
             self.box = _tmp
-            self.box.append([_name, _msg])
         if _name == 'centerInfo':
             self.centerInfo = ['centerInfo', _msg]
-
+        else:
+            self.box.append([_name, _msg])
 
     def returnToWeb(self):
         _returnDataInJSON = {}
