@@ -122,3 +122,11 @@ table, tr, td{
     transition: 10s;
     opacity: 0 !important;
 }*/
+
+.cMapPoint{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    border: 0px solid #F00;
+    background-color: #B55A00;
+}

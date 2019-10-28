@@ -237,7 +237,24 @@
 							var _mainMap = $('#iMainMap');
 							_mainMap.width(_map.size[0]);
 							_mainMap.height(_map.size[1]);
-							_mainMap.css('background-image','url(' + _map.background + ')');
+							// _mainMap.css('background-image','url(' + _map.background + ')');
+							_mainMap.css('background-color','#B97A57');
+							// _mainMap.css('background-color','#845237');
+							var parent = document.getElementById('iMainMap');
+							for(var i=0; i<200; i++){
+								var mapPoint = document.createElement("div");
+								mapPoint.setAttribute("class", "cMapPoint");
+								mapPoint.setAttribute("id", 'mapPoint_' + i);
+								_randomPlaceX = Math.floor(Math.random()*_map.size[0]);
+								_randomPlaceY = Math.floor(Math.random()*_map.size[1]);
+								_randomSize = Math.floor(Math.random()*10 + 5);
+								mapPoint.style.left = _randomPlaceX + 'px';
+								mapPoint.style.top = _randomPlaceY + 'px';
+								mapPoint.style.width = _randomSize + 'px';
+								mapPoint.style.height = _randomSize + 'px';
+								mapPoint.style.borderRadius = (_randomSize/2) + 'px';
+								parent.appendChild(mapPoint);
+							}
 							_map.ObjList.forEach(function(e) {
 		        				if( !Com.idExist(e.id, allObj) ){
 									Create.newObj('iMainMap', e);
