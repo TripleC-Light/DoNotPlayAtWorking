@@ -149,13 +149,6 @@ class ObjCtrl{
 	}
 
 	shake(obj, shakeLevel){
-		var _this = this;
-		var _X = this.frame.position().left;
-		_X += shakeLevel;
-		this.frame.css('left', _X);
-		setTimeout(function(){
-			_X -= shakeLevel;
-			_this.frame.css('left', _X);
-		},30);
+	    this.frame.effect('shake', { times:1, distance:10 }, 100);
 	}
 }

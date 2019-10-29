@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <html lang="zh-Hant">
 <head>
 	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,6 +113,7 @@
 			if(gameStart){
 				if(Com.timeToUpdateMsg()){
 					WS.send('getMsg');
+					WS.send('updateMap');
 				}
 				WS.send('getNewData@' + myID);
 				setTimeout(function(){
@@ -230,6 +233,13 @@
 		        		}
 	        			break;
 
+	        		case 'mapCtrl':
+	        			var _cmd = _returnData[1].split(',');
+	        			if( _cmd[0] == 'shake' ){
+	      					$('#iMainMap').effect('shake', { times:10, distance:_cmd[1] }, 1500);
+	        			}
+	      				break;
+
 	        		case 'setMap':
 		        		if( _returnData[1] != ''){
 							var _map = JSON.parse(_returnData[1]);
@@ -245,8 +255,8 @@
 								var mapPoint = document.createElement("div");
 								mapPoint.setAttribute("class", "cMapPoint");
 								mapPoint.setAttribute("id", 'mapPoint_' + i);
-								_randomPlaceX = Math.floor(Math.random()*_map.size[0]);
-								_randomPlaceY = Math.floor(Math.random()*_map.size[1]);
+								_randomPlaceX = Math.floor(Math.random()*(_map.size[0]-25));
+								_randomPlaceY = Math.floor(Math.random()*(_map.size[1]-25));
 								_randomSize = Math.floor(Math.random()*10 + 5);
 								mapPoint.style.left = _randomPlaceX + 'px';
 								mapPoint.style.top = _randomPlaceY + 'px';

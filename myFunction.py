@@ -152,3 +152,16 @@ class MsgCtrl:
         _msg = _msg.replace('>', "")
         _msg = _msg.replace('<', "")
         return _msg
+
+class MapCtrl:
+    def __init__(self):
+        self.CMD = ''
+
+    def shake(self, level):
+        self.CMD = 'mapCtrl@shake,' + str(level)
+
+    def returnToWeb(self):
+        _CMD = self.CMD
+        self.CMD = ''
+        print(_CMD)
+        return _CMD

@@ -38,6 +38,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         global gMapSize
         global gMsgCtrl
         global gObjCtrl
+        global gMapCtrl
 
         _getInitPositionFail = [-1, -1]
         _tmp = CMDfromWEB.split('@')
@@ -99,6 +100,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'getMsg':
             _returnInfo = gMsgCtrl.returnToWeb()
+
+        elif _cmd == 'updateMap':
+            _returnInfo = gMapCtrl.returnToWeb()
 
         elif _cmd == 'setMap':
             _reserveList = {}
@@ -218,6 +222,7 @@ def loopAll():
             gScript.region = '0-0'
             gScript.mapSize = gMapSize
             gScript.objCtrl = gObjCtrl
+            gScript.mapCtrl = gMapCtrl
             gScript.run(gObjList)
             if gScript.Start:
                 if random.randint(0, 10) == 0:
@@ -242,6 +247,7 @@ if __name__ == "__main__":
     global gMapSize
     global gObjCtrl
     global gScript
+    global gMapCtrl
 
     try:
         gObjList = {}
@@ -251,6 +257,7 @@ if __name__ == "__main__":
         gMapSize = []
         gObjCtrl = ObjCtrl()
         gScript = Script()
+        gMapCtrl = myFunc.MapCtrl()
 
         # 建立執行緒並執行
         t = threading.Thread(target=loopAll)
