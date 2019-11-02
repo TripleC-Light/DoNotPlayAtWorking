@@ -213,7 +213,7 @@ class ObjCtrl:
             _character.name = str(_character.id)
             if _XY != _getInitPositionFail:
                 _character.type = 'pilot'
-                _character.pic = 'slimeWater'
+                _character.pic = 'slimeGrass'
                 _character.SP = 350 * self.frameTime
                 _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
                 _randomLimit = random.randint(70, 70)
