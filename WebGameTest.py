@@ -15,8 +15,12 @@ from ObjCtrl import ObjCtrl
 from Script import Script
 
 class IndexHandler(tornado.web.RequestHandler):
-    def get(self):
+    def post(self):
         self.render('index.html')
+
+class LoginHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('login.html')
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
@@ -263,7 +267,8 @@ if __name__ == "__main__":
         t = threading.Thread(target=loopAll)
         t.start()
 
-        handlers = [[r'/index', IndexHandler],
+        handlers = [[r'/', LoginHandler],
+                    [r'/index', IndexHandler],
                     [r'/ws', WebSocketHandler],
                     [r'/favicon.ico', tornado.web.StaticFileHandler, {'path': './static/favicon.ico'}]]
 
