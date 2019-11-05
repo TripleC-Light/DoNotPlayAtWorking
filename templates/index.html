@@ -224,7 +224,6 @@
 								oldCenterInfo = _msg.centerInfo[1];
 							}else{
 								if( $('#iCenterInfo').css('opacity') == 1 ){
-									// $('#iCenterInfo').fadeTo('slow', 0);
 									setTimeout(function(){
 										$('#iCenterInfo').fadeTo('slow', 0);
 									}, 3000);
@@ -247,9 +246,7 @@
 							var _mainMap = $('#iMainMap');
 							_mainMap.width(_map.size[0]);
 							_mainMap.height(_map.size[1]);
-							// _mainMap.css('background-image','url(' + _map.background + ')');
 							_mainMap.css('background-color','#B97A57');
-							// _mainMap.css('background-color','#845237');
 							var parent = document.getElementById('iMainMap');
 							for(var i=0; i<200; i++){
 								var mapPoint = document.createElement("div");
