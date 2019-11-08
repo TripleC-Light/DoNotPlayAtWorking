@@ -163,5 +163,4 @@ class MapCtrl:
     def returnToWeb(self):
         _CMD = self.CMD
         self.CMD = ''
-        print(_CMD)
         return _CMD

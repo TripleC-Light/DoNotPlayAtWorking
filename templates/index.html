@@ -34,6 +34,7 @@
 		var gameFPS = 0;
 		var FPScount = 0;
 		var oldCenterInfo = '';
+		var startGameState = 'checkWebSocket';
 
 		// System setting
 		var milliSecondPerFrame = 50;
@@ -67,23 +68,40 @@
 		}
 
 		function startGame(){
-			if(gameStart){
+			if(gameStart && startGameState=='finish'){
 				gameStart = false;
 				startGameStep = 'checkWebSocket';
 				document.getElementById('iStartFlag').innerHTML = '開始';
 				WS.close();
 			}else{
-				if( !checkWebSocket() ){
+				switch(startGameState){
+					case 'checkWebSocket':
+						if(checkWebSocket()){
+							startGameState = 'setupEnvironment';
+						}
+						break;
+
+					case 'setupEnvironment':
+						gameStart = true;
+						startWebConnection();
+						setMap('0-0');
+						getNewData();
+						document.getElementById('iMainMap').style.display = 'flex';
+						document.getElementById('iStartFlag').innerHTML = '結束';
+						startGameState = 'setupUserPilot';
+						break;
+
+					case 'setupUserPilot':
+						WS.send('pilotLoing@' + "{{userKey}}");
+						startGameState = 'finish';
+						break;
+				}
+
+				if( startGameState != 'finish' ){
+					console.log(startGameState);
 					setTimeout(function(){
 						startGame();
 					}, milliSecondPerFrame*2);
-				}else{
-					gameStart = true;
-					startWebConnection();
-					setMap('0-0');
-					getNewData();
-					document.getElementById('iMainMap').style.display = 'flex';
-					document.getElementById('iStartFlag').innerHTML = '結束';
 				}
 			}
 		}

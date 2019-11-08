@@ -15,8 +15,37 @@ from ObjCtrl import ObjCtrl
 from Script import Script
 
 class IndexHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('login.html')
+
     def post(self):
-        self.render('index.html')
+        userKey = 'ASDFG'
+        userName = self.get_argument('userName')
+        passWord = self.get_argument('password')
+        userData = []
+        filename = './static/userData.txt'
+        with open(filename, 'r', encoding='utf-8') as fRead:
+            for line in fRead:
+                line = line.split(',')
+                userData.append(line)
+
+        nowUser = []
+        _loginState = False
+        for ind, user in enumerate(userData):
+            if user[1] == userName and user[2] in passWord:
+                nowUser = user
+                _loginState = True
+                break
+
+        if _loginState:
+            print(nowUser[2], 'Wellcome!!')
+            userKey = nowUser[0]
+            # self.render('index.html', userKey=userKey)
+        else:
+            userKey = 'd2f7af50'
+            # self.render('loginFail.html')
+
+        self.render('index.html', userKey=userKey)
 
 class LoginHandler(tornado.web.RequestHandler):
     def get(self):
@@ -51,6 +80,33 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         if _cmd == 'createPilot':
             _pilot = gObjCtrl.createCharacter('pilot')
             if _pilot != False:
+                gObjList[_pilot.id] = _pilot
+                gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
+                _pilotInJSON = _pilot.__dict__
+                _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
+
+        elif _cmd == 'pilotLoing':
+            print(_tmp[1])
+            userKey = _tmp[1]
+            userData = []
+            filename = './static/userData.txt'
+            with open(filename, 'r', encoding='utf-8') as fRead:
+                for line in fRead:
+                    line = line.split(',')
+                    userData.append(line)
+
+            nowUser = []
+            _loginState = False
+            for ind, user in enumerate(userData):
+                if user[0] == userKey:
+                    nowUser = user
+                    break
+
+            _pilot = gObjCtrl.createCharacter('pilot')
+            if _pilot != False:
+                _pilot.id = nowUser[0]
+                _pilot.name = nowUser[3]
+                _pilot.pic = nowUser[4]
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -196,7 +252,6 @@ def loopAll():
                     gObjCtrl.attackJudge(_pilot)
 
                 if gObjCtrl.timeOut(_pilot):
-                    print(_pilot.type)
                     if _pilot.type != 'item':
                         gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
                     _deleteState = True

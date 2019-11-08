@@ -112,7 +112,7 @@ table, tr, td{
 }
 
 .cLoginFrame{
-    width: 30%;
+    width: 450px;
     height: 50%;
     border: 2px solid #F00;
     border-radius: 10px;
