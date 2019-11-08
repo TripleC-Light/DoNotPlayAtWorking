@@ -13,10 +13,12 @@ import json
 import myFunction as myFunc
 from ObjCtrl import ObjCtrl
 from Script import Script
+from os import listdir
+from os.path import isfile, isdir, join
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('login.html')
+        self.render('login.html', msg='')
 
     def post(self):
         userKey = 'ASDFG'
@@ -40,16 +42,30 @@ class IndexHandler(tornado.web.RequestHandler):
         if _loginState:
             print(nowUser[2], 'Wellcome!!')
             userKey = nowUser[0]
-            # self.render('index.html', userKey=userKey)
+            self.render('index.html', userKey=userKey)
         else:
             userKey = 'd2f7af50'
-            # self.render('loginFail.html')
+            msg = 'loginFail'
+            self.render('login.html', msg=msg)
 
-        self.render('index.html', userKey=userKey)
+        # self.render('index.html', userKey=userKey)
 
-class LoginHandler(tornado.web.RequestHandler):
+class SignUpHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('login.html')
+        path = "static/pilot"   # 指定要列出所有檔案的目錄
+        files = listdir(path)   # 取得所有檔案與子目錄名稱
+        allPilot = []
+        _pilotInJSON = {}
+        msg = ''
+        for f in files:
+            fullpath = join(path, f)    # 產生檔案的絕對路徑
+            if isdir(fullpath) and f != 'item' and f != 'zombie' and f != 'robot':
+                allPilot.append(f)
+        print(allPilot)
+        # _pilotInJSON['pilotList'] = allPilot
+        # msg = json.dumps(_pilotInJSON)
+        # self.render('signup.html', msg=msg)
+        self.render('signup.html', allPilot=allPilot)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
@@ -322,7 +338,7 @@ if __name__ == "__main__":
         t = threading.Thread(target=loopAll)
         t.start()
 
-        handlers = [[r'/', LoginHandler],
+        handlers = [[r'/signup', SignUpHandler],
                     [r'/index', IndexHandler],
                     [r'/ws', WebSocketHandler],
                     [r'/favicon.ico', tornado.web.StaticFileHandler, {'path': './static/favicon.ico'}]]

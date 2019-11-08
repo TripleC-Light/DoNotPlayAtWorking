@@ -156,3 +156,26 @@ table, tr, td{
     color: #444;
     font-weight: bolder;
 }
+
+.cPickPilot{
+    height: 90px;
+    width: 90px;
+    margin: 10px;
+    border: 0px solid #00F;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.cPickPilot:hover{
+    background-color: #FDD;
+    border: 2px solid #F00;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(10, 10, 10, 0.9);
+}
+
+.cCheckPilot{
+    background-color: #FDD;
+    border: 2px solid #F00;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(10, 10, 10, 0.9);
+}

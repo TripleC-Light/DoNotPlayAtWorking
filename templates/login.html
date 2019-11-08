@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <html lang="zh-Hant">
 <head>
 	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +9,35 @@
         table, tr, td{
             border: solid 0px #000;
         }
+
+		hr.style-two {
+		    border: 0;
+		    height: 1px;
+		    background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.75), rgba(255,0,0,0));
+		}
+
     </style>
 	<script language=javascript>
+        $(document).ready(function (){
+        	var msg = "{{msg}}";
+        	if( msg=='' ){
+        		$('#iMsg').css('display', 'none');
+        	}else{
+        		if( msg=='loginFail' ){
+        			msg = '[ 帳號 或 密碼 錯誤 ]'
+        		}
+        		$('#iMsg').css('display', 'inline');
+        		$('#iMsg')[0].innerHTML = msg;
+        	}
+        });
 	</script>
 </head>
 <body class="cBody">
 <center>
 	<div id='iLogin' class="cLoginFrame"><center>
 		登入資訊
-		<hr />
+		<hr class="style-two" />
+		<div id='iMsg' style="border:0px solid #000;"></div>
 		<form action="/index" method="post">
 			<table style="width:70%">
 				<tr style="height:80px">
@@ -29,7 +50,7 @@
 			<table>
 				<tr style="height:80px">
 					<td style="width:100px"><center><input type="submit" value="登　入" class="cSubmit"></center></td>
-					<td style="width:100px; color:#00F;" ><center>註冊</center></td>
+					<td style="width:100px; color:#00F;" ><center><a href="signup">註冊</a></center></td>
 				</tr>
 			</table>			
 		</form>
