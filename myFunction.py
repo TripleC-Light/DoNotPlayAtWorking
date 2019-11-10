@@ -164,3 +164,31 @@ class MapCtrl:
         _CMD = self.CMD
         self.CMD = ''
         return _CMD
+
+class databaseCtrl:
+    def __init__(self):
+        self.databasePath = './static/userData.txt'
+        self.userData = []
+
+    def _reflashUserData(self):
+        with open(self.databasePath, 'r', encoding='utf-8') as fRead:
+            for line in fRead:
+                line = line.split(',')
+                _data = {'key': line[0], 'id': line[1], 'password': line[2], 'name': line[3], 'pilot': line[4]}
+                self.userData.append(_data)
+
+    def loginCheck(self, userID, password):
+        self._reflashUserData()
+        for ind, user in enumerate(self.userData):
+            if user['id'] == userID and user['password'] in password:
+                return user
+
+        return False
+
+    def checkIDexist(self, userID):
+        self._reflashUserData()
+        for user in self.userData:
+            if user['id'] == userID:
+                return True
+
+        return False

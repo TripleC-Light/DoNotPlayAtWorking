@@ -21,34 +21,17 @@ class IndexHandler(tornado.web.RequestHandler):
         self.render('login.html', msg='')
 
     def post(self):
-        userKey = 'ASDFG'
-        userName = self.get_argument('userName')
+        userID = self.get_argument('userName')
         passWord = self.get_argument('password')
-        userData = []
-        filename = './static/userData.txt'
-        with open(filename, 'r', encoding='utf-8') as fRead:
-            for line in fRead:
-                line = line.split(',')
-                userData.append(line)
-
-        nowUser = []
-        _loginState = False
-        for ind, user in enumerate(userData):
-            if user[1] == userName and user[2] in passWord:
-                nowUser = user
-                _loginState = True
-                break
-
-        if _loginState:
-            print(nowUser[2], 'Wellcome!!')
-            userKey = nowUser[0]
+        dbCtrl = myFunc.databaseCtrl()
+        user = dbCtrl.loginCheck(userID, passWord)
+        if user:
+            print(user['name'], 'Wellcome!!')
+            userKey = user['key']
             self.render('index.html', userKey=userKey)
         else:
-            userKey = 'd2f7af50'
             msg = 'loginFail'
             self.render('login.html', msg=msg)
-
-        # self.render('index.html', userKey=userKey)
 
 class SignUpHandler(tornado.web.RequestHandler):
     def get(self):
@@ -56,16 +39,28 @@ class SignUpHandler(tornado.web.RequestHandler):
         files = listdir(path)   # 取得所有檔案與子目錄名稱
         allPilot = []
         _pilotInJSON = {}
-        msg = ''
         for f in files:
             fullpath = join(path, f)    # 產生檔案的絕對路徑
             if isdir(fullpath) and f != 'item' and f != 'zombie' and f != 'robot':
                 allPilot.append(f)
         print(allPilot)
-        # _pilotInJSON['pilotList'] = allPilot
-        # msg = json.dumps(_pilotInJSON)
-        # self.render('signup.html', msg=msg)
         self.render('signup.html', allPilot=allPilot)
+
+    def post(self):
+        signupData = {}
+        signupData['userID'] = self.get_argument('userName')
+        signupData['password'] = self.get_argument('password')
+        signupData['name'] = self.get_argument('name')
+        signupData['pilot'] = self.get_argument('checkPilot')
+        print(signupData)
+        dbCtrl = myFunc.databaseCtrl()
+        if dbCtrl.checkIDexist(signupData['userID']):
+            msg = 'IDexist'
+            self.render('signup.html', msg=msg)
+        else:
+            # dbCtrl.addData(signupData)
+            self.render('reDirect.html', page='index')
+
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
