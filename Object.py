@@ -11,6 +11,7 @@ class Object:
         self.tX = 0
         self.tY = 0
         self.HP = 10
+        self.HPmax = 10
         self.AT = 1
         self.DEF = 0
         self.SP = 350

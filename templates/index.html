@@ -35,6 +35,7 @@
 		var FPScount = 0;
 		var oldCenterInfo = '';
 		var startGameState = 'checkWebSocket';
+		var tmpUID = '';
 
 		// System setting
 		var milliSecondPerFrame = 50;
@@ -162,7 +163,7 @@
 	        			var _pilotDataInJSON = _returnData[1];
 	        			var _pilotData = JSON.parse(_pilotDataInJSON);
 	        			serverTime = _pilotData.serverTime;
-	        			console.log(_pilotData.list);
+	        			// console.log(_pilotData.list);
 
 						_pilotData.list.forEach(function(e) {
 							if( e.type == 'pilot' ){
@@ -252,8 +253,9 @@
 
 	        		case 'mapCtrl':
 	        			var _cmd = _returnData[1].split(',');
-	        			if( _cmd[0] == 'shake' ){
-	      					$('#iMainMap').effect('shake', { times:10, distance:_cmd[1] }, 1500);
+	        			if( _cmd[0] == 'shake' && tmpUID != _cmd[1]){
+	        				tmpUID = _cmd[1];
+	      					$('#iMainMap').effect('shake', { times:10, distance:_cmd[2] }, 1500);
 	        			}
 	      				break;
 

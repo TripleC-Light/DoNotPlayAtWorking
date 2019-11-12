@@ -145,7 +145,7 @@ class ObjCtrl:
 
     def enemyAutoCtrl(self, _pilot):
         if _pilot.type == 'enemy':
-            if _pilot.pic == 'zombie':
+            if _pilot.pic == 'zombie' or _pilot.pic == 'robot':
                 self.enemySetTargetXY(_pilot)
                 _weapen = self.createWeapen(_pilot)
                 _weapenCollision = myFunc.rectCollision(_weapen, self.objList)
@@ -161,6 +161,15 @@ class ObjCtrl:
     def itemTimeReflash(self, _item):
         if _item.type == 'item' and _item.timeOut > 1:
             _item.timeOut = round(self.sysTime, 3)
+
+    def createItemInRandom(self, _itemName, _probability, _quantity):
+        _probability = _probability * 100
+        _itemProbability = random.randint(0, 100)
+        if _itemProbability <= _probability:
+            for _i in range(random.randint(1, _quantity)):
+                _item = self.createItem(_itemName)
+                if _item:
+                    self.objList[_item.id] = _item
 
     def createItem(self, _itemName):
         _getInitPositionFail = [-1, -1]
@@ -206,6 +215,20 @@ class ObjCtrl:
                 _character.SP = random.randint(20, 100) * self.frameTime
                 _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
                 _randomLimit = random.randint(80, 150)
+            else:
+                return False
+
+        elif _name == 'robot':
+            _character.name = '自走型殺人機械'
+            if _XY != _getInitPositionFail:
+                _character.type = 'enemy'
+                _character.pic = 'robot'
+                _character.HP = 50
+                _character.HPmax = 50
+                _character.AT = 3
+                _character.SP = 400 * self.frameTime
+                _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
+                _randomLimit = random.randint(120, 120)
             else:
                 return False
 

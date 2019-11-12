@@ -1,3 +1,5 @@
 d2f7af50,chou_0131,0521aa,愛德華,slimeSun
 548f963a,AA,sss,dfff,slimeDark
 44494246,BB,sss,BBman,slimeWater
+8cf29476,CC,sss,CcCcCc,slimeFire
+2d9cb5a4,DD,sss,Im'DD~~!!,slimeGrass

@@ -170,11 +170,12 @@ class MapCtrl:
         self.CMD = ''
 
     def shake(self, level):
-        self.CMD = 'mapCtrl@shake,' + str(level)
+        _UID = str(uuid.uuid1())[0:8]
+        self.CMD = 'mapCtrl@shake,' + _UID + ',' + str(level)
 
     def returnToWeb(self):
         _CMD = self.CMD
-        self.CMD = ''
+        # self.CMD = ''
         return _CMD
 
 class databaseCtrl:

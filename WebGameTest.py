@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import tornado.ioloop
 import tornado.web
-import webbrowser
-from PIL import Image
 import os
 import time
-import random
 import threading
 import tornado.websocket
 from Object import Object
@@ -13,8 +10,6 @@ import json
 import myFunction as myFunc
 from ObjCtrl import ObjCtrl
 from Script import Script
-from os import listdir
-from os.path import isfile, isdir, join
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -35,11 +30,11 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class SignUpHandler(tornado.web.RequestHandler):
     def get(self):
+        msg = ''
         allPilot = myFunc.getAllPilot()
-        self.render('signup.html', allPilot=allPilot)
+        self.render('signup.html', msg=msg, allPilot=allPilot)
 
     def post(self):
-        msg = ''
         allPilot = myFunc.getAllPilot()
         signupData = {}
         signupData['userID'] = self.get_argument('userName')
@@ -53,9 +48,8 @@ class SignUpHandler(tornado.web.RequestHandler):
             self.render('signup.html', msg=msg, allPilot=allPilot)
         else:
             dbCtrl.addData(signupData)
-            # self.render('reDirect.html', page='index')
-
-        # self.render('signup.html', msg=msg, allPilot=allPilot)
+            msg = 'signupOK'
+            self.render('login.html', msg=msg)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
@@ -85,7 +79,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         _returnInfo = ''
         if _cmd == 'createPilot':
             _pilot = gObjCtrl.createCharacter('pilot')
-            if _pilot != False:
+            if _pilot:
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -97,7 +91,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             dbCtrl = myFunc.databaseCtrl()
             nowUser = dbCtrl.getUser(userKey)
             _pilot = gObjCtrl.createCharacter('pilot')
-            if _pilot != False:
+            if _pilot:
                 _pilot.id = nowUser['id']
                 _pilot.name = nowUser['name']
                 _pilot.pic = nowUser['pilot']
@@ -277,11 +271,6 @@ def loopAll():
             gScript.objCtrl = gObjCtrl
             gScript.mapCtrl = gMapCtrl
             gScript.run(gObjList)
-            if gScript.Start:
-                if random.randint(0, 10) == 0:
-                    for _i in range(random.randint(1, 3)):
-                        _item = gObjCtrl.createItem('fullHP')
-                        gObjList[_item.id] = _item
 
         for _id in list(gObjList.keys()):
             _pilot = gObjList[_id]

@@ -18,6 +18,19 @@
 
     </style>
 	<script language=javascript>
+        $(document).ready(function (){
+        	var msg = "{{msg}}";
+        	if( msg=='' ){
+        		$('#iMsg').css('display', 'none');
+        	}else{
+        		if( msg=='IDexist' ){
+        			msg = '[ 帳號已存在, 請更換 ]'
+        		}
+        		$('#iMsg').css('display', 'inline');
+        		$('#iMsg')[0].innerHTML = msg;
+        	}
+        });
+
 		function pickPilot(pilot){
 			console.log(pilot);
 			var pilotCSS = document.getElementsByName('pilot');

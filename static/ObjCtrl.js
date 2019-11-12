@@ -39,7 +39,7 @@ class ObjCtrl{
 		var _pilotHP = document.getElementById('HP_' + e.id);
 		var _pilotHPboarder = document.getElementById('HPboarder_' + e.id);
 		var _HPlengthInPx = 50;
-		var _HPmax = 10;
+		var _HPmax = e.HPmax;
 		var _HPlength = 0;
 		var _damage = Math.round(_HPlengthInPx/_HPmax);
 		_pilotHPboarder.classList.remove('hideTranslate');
