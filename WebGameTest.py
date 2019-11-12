@@ -35,18 +35,12 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class SignUpHandler(tornado.web.RequestHandler):
     def get(self):
-        path = "static/pilot"   # 指定要列出所有檔案的目錄
-        files = listdir(path)   # 取得所有檔案與子目錄名稱
-        allPilot = []
-        _pilotInJSON = {}
-        for f in files:
-            fullpath = join(path, f)    # 產生檔案的絕對路徑
-            if isdir(fullpath) and f != 'item' and f != 'zombie' and f != 'robot':
-                allPilot.append(f)
-        print(allPilot)
+        allPilot = myFunc.getAllPilot()
         self.render('signup.html', allPilot=allPilot)
 
     def post(self):
+        msg = ''
+        allPilot = myFunc.getAllPilot()
         signupData = {}
         signupData['userID'] = self.get_argument('userName')
         signupData['password'] = self.get_argument('password')
@@ -56,11 +50,12 @@ class SignUpHandler(tornado.web.RequestHandler):
         dbCtrl = myFunc.databaseCtrl()
         if dbCtrl.checkIDexist(signupData['userID']):
             msg = 'IDexist'
-            self.render('signup.html', msg=msg)
+            self.render('signup.html', msg=msg, allPilot=allPilot)
         else:
-            # dbCtrl.addData(signupData)
-            self.render('reDirect.html', page='index')
+            dbCtrl.addData(signupData)
+            # self.render('reDirect.html', page='index')
 
+        # self.render('signup.html', msg=msg, allPilot=allPilot)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
@@ -99,25 +94,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         elif _cmd == 'pilotLoing':
             print(_tmp[1])
             userKey = _tmp[1]
-            userData = []
-            filename = './static/userData.txt'
-            with open(filename, 'r', encoding='utf-8') as fRead:
-                for line in fRead:
-                    line = line.split(',')
-                    userData.append(line)
-
-            nowUser = []
-            _loginState = False
-            for ind, user in enumerate(userData):
-                if user[0] == userKey:
-                    nowUser = user
-                    break
-
+            dbCtrl = myFunc.databaseCtrl()
+            nowUser = dbCtrl.getUser(userKey)
             _pilot = gObjCtrl.createCharacter('pilot')
             if _pilot != False:
-                _pilot.id = nowUser[0]
-                _pilot.name = nowUser[3]
-                _pilot.pic = nowUser[4]
+                _pilot.id = nowUser['id']
+                _pilot.name = nowUser['name']
+                _pilot.pic = nowUser['pilot']
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__

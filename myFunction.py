@@ -2,6 +2,8 @@ import uuid
 import json
 import math
 import random
+from os import listdir
+from os.path import isfile, isdir, join
 
 def getUniqueID(_IDlist):
     _tryCount = 0
@@ -101,6 +103,16 @@ def getResize(_sizeLimit, _originSize):
     _hN = round(_hO * _scale)
     return [_wN, _hN]
 
+def getAllPilot():
+    path = "static/pilot"  # 指定要列出所有檔案的目錄
+    files = listdir(path)  # 取得所有檔案與子目錄名稱
+    allPilot = []
+    for f in files:
+        fullpath = join(path, f)  # 產生檔案的絕對路徑
+        if isdir(fullpath) and f != 'item' and f != 'zombie' and f != 'robot':
+            allPilot.append(f)
+    return allPilot
+
 class TimeCtrl:
     def __init__(self):
         self.sysTime = 0
@@ -173,7 +185,11 @@ class databaseCtrl:
     def _reflashUserData(self):
         with open(self.databasePath, 'r', encoding='utf-8') as fRead:
             for line in fRead:
+                print(1, line)
+                line = line.replace('\n', '')
+                print(2, line)
                 line = line.split(',')
+                print(3, line)
                 _data = {'key': line[0], 'id': line[1], 'password': line[2], 'name': line[3], 'pilot': line[4]}
                 self.userData.append(_data)
 
@@ -182,7 +198,13 @@ class databaseCtrl:
         for ind, user in enumerate(self.userData):
             if user['id'] == userID and user['password'] in password:
                 return user
+        return False
 
+    def getUser(self, key):
+        self._reflashUserData()
+        for ind, user in enumerate(self.userData):
+            if user['key'] == key:
+                return user
         return False
 
     def checkIDexist(self, userID):
@@ -190,5 +212,27 @@ class databaseCtrl:
         for user in self.userData:
             if user['id'] == userID:
                 return True
-
         return False
+
+    def _checkKeyexist(self, userID):
+        self._reflashUserData()
+        for user in self.userData:
+            if user['id'] == userID:
+                return True
+        return False
+
+    def addData(self, signupData):
+        _userData = ''
+        _file = open(self.databasePath, 'a')
+
+        _UID = ''
+        while self._checkKeyexist(_UID) or _UID == '':
+            _UID = str(uuid.uuid1())[0:8]
+        _userData += _UID + ','
+        _userData += signupData['userID'] + ','
+        _userData += signupData['password'] + ','
+        _userData += signupData['name'] + ','
+        _userData += signupData['pilot']
+
+        _file.write(_userData + '\n')
+        _file.close()

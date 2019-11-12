@@ -10,6 +10,7 @@ class ObjCtrl{
 	syncPilotObj(e){
 		if( !Com.idExist(e.id, this.allObj) ){
 			console.log('Create pilot in web: ' + e.type + '>' + e.id);
+			console.log(e);
 			Create.newObj( 'iMainMap', e);
 		}
 		this.frameBound = $('#frame_' + e.id)[0].getBoundingClientRect();
