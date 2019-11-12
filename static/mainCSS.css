@@ -136,24 +136,24 @@ table, tr, td{
 }
 .cSubmit{
     font-family: 'Noto Sans TC', sans-serif;
-    border: solid 1px #000;
+    border: solid 1px #00F;
     border-radius: 5px;
     width: 100px;
     height: 40px;
     font-size: 20px;
     padding: 0px;
-    color: #000;
+    color: #00F;
 }
 .cSubmit:hover{
-    border: solid 2px #000;
+    border: solid 2px #00F;
     background-color: #CCC;
-    color: #555;
+    color: #00F;
     font-weight: bolder;
 }
 .cSubmit:active{
-    border: solid 2px #555;
+    border: solid 2px #55F;
     background-color: #AAA;
-    color: #444;
+    color: #00A;
     font-weight: bolder;
 }
 

@@ -252,3 +252,22 @@ class ObjCtrl:
         _character.H = _newSize[1]
 
         return _character
+
+    def createMapItem(self, _description):
+        _obj = Object()
+        _pic = _description[0]
+        _X = int(_description[1])
+        _Y = int(_description[2])
+        _obj.type = 'mapObj'
+        _obj.id = myFunc.getUniqueID(list(self.objList.keys()))
+        _obj.name = str(_obj.id)
+        _obj.X = _X
+        _obj.Y = _Y
+        _obj.tX = _X
+        _obj.tY = _Y
+        if _pic == 'bud':
+            _obj.HP = 1000
+            _obj.W = 70
+            _obj.H = 70
+            _obj.pic = './static/map/obj/' + _pic + '.png'
+        return _obj

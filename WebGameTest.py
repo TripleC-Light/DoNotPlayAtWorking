@@ -16,40 +16,34 @@ class IndexHandler(tornado.web.RequestHandler):
         self.render('login.html', msg='')
 
     def post(self):
-        userID = self.get_argument('userName')
+        userID = self.get_argument('userID')
         passWord = self.get_argument('password')
-        dbCtrl = myFunc.databaseCtrl()
+        dbCtrl = myFunc.DatabaseCtrl()
         user = dbCtrl.loginCheck(userID, passWord)
         if user:
-            print(user['name'], 'Wellcome!!')
             userKey = user['key']
             self.render('index.html', userKey=userKey)
         else:
-            msg = 'loginFail'
-            self.render('login.html', msg=msg)
+            self.render('login.html', msg='loginFail')
 
 class SignUpHandler(tornado.web.RequestHandler):
     def get(self):
-        msg = ''
         allPilot = myFunc.getAllPilot()
-        self.render('signup.html', msg=msg, allPilot=allPilot)
+        self.render('signup.html', msg='', allPilot=allPilot)
 
     def post(self):
         allPilot = myFunc.getAllPilot()
         signupData = {}
-        signupData['userID'] = self.get_argument('userName')
+        signupData['userID'] = self.get_argument('userID')
         signupData['password'] = self.get_argument('password')
         signupData['name'] = self.get_argument('name')
         signupData['pilot'] = self.get_argument('checkPilot')
-        print(signupData)
-        dbCtrl = myFunc.databaseCtrl()
+        dbCtrl = myFunc.DatabaseCtrl()
         if dbCtrl.checkIDexist(signupData['userID']):
-            msg = 'IDexist'
-            self.render('signup.html', msg=msg, allPilot=allPilot)
+            self.render('signup.html', msg='IDexist', allPilot=allPilot)
         else:
             dbCtrl.addData(signupData)
-            msg = 'signupOK'
-            self.render('login.html', msg=msg)
+            self.render('login.html', msg='signupOK')
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用
@@ -85,16 +79,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 _pilotInJSON = _pilot.__dict__
                 _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
 
-        elif _cmd == 'pilotLoing':
-            print(_tmp[1])
-            userKey = _tmp[1]
-            dbCtrl = myFunc.databaseCtrl()
-            nowUser = dbCtrl.getUser(userKey)
+        elif _cmd == 'pilotLoging':
+            _userKey = _tmp[1]
+            _dbCtrl = myFunc.DatabaseCtrl()
+            _nowUser = _dbCtrl.getUser(_userKey)
             _pilot = gObjCtrl.createCharacter('pilot')
             if _pilot:
-                _pilot.id = nowUser['id']
-                _pilot.name = nowUser['name']
-                _pilot.pic = nowUser['pilot']
+                _pilot.id = _nowUser['id']
+                _pilot.name = _nowUser['name']
+                _pilot.pic = _nowUser['pilot']
                 gObjList[_pilot.id] = _pilot
                 gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
                 _pilotInJSON = _pilot.__dict__
@@ -102,21 +95,19 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
         elif _cmd == 'reBorn':
             _id = _tmp[1]
-            gObjList[_id].HP = 10
+            gObjList[_id].HP = gObjList[_id].HPmax
 
         elif _cmd == 'getNewData':
-            _data = _tmp[1]
-            _id = _data
+            _id = _tmp[1]
             if _id in gObjList:
                 gObjList[_id].timeOut = round(time.time(), 3)
             gPilotListInJSON['serverTime'] = time.time()
             _returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
 
         elif _cmd == 'move':
-            _data = _tmp[1]
-            _tmp = _data.split(';')
-            _id = _tmp[0]
-            _XY = _tmp[1]
+            _data = _tmp[1].split(';')
+            _id = _data[0]
+            _XY = _data[1]
             _XY = _XY.split(',')
             gObjList[_id].tX = int(_XY[0])
             gObjList[_id].tY = int(_XY[1])
@@ -137,10 +128,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 gObjList[_item.id] = _item
 
         elif _cmd == 'sendMsg':
-            _data = _tmp[1]
-            _tmp = _data.split(';')
-            _id = _tmp[0]
-            _msg = _tmp[1]
+            _data = _tmp[1].split(';')
+            _id = _data[0]
+            _msg = _data[1]
             _msg = gMsgCtrl.filter(_msg)
             gObjList[_id].msgTimeCount = 5
             gObjList[_id].msg = _msg
@@ -169,7 +159,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     line = line.strip()
                     line = line.split(':')
                     _type = line[0]
-
                     if _type == 'region':
                         _mapObjInJSON['region'] = line[1]
                     elif _type == 'size':
@@ -179,23 +168,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                     elif _type == 'background':
                         _mapObjInJSON['background'] = './static/map/background/' + line[1]
                     elif _type == 'mapObj':
-                        _obj = Object()
                         _description = line[1].split(',')
-                        _pic = _description[0]
-                        _X = int(_description[1])
-                        _Y = int(_description[2])
-                        _obj.type = 'mapObj'
-                        _obj.id = myFunc.getUniqueID(list(gObjList.keys()))
-                        _obj.name = str(_obj.id)
-                        _obj.X = _X
-                        _obj.Y = _Y
-                        _obj.tX = _X
-                        _obj.tY = _Y
-                        if _pic == 'bud':
-                            _obj.HP = 1000
-                            _obj.W = 70
-                            _obj.H = 70
-                            _obj.pic = './static/map/obj/' + _pic + '.png'
+                        _obj = gObjCtrl.createMapItem(_description)
                         gObjList[_obj.id] = _obj
                         _mapObjList.append(_obj.__dict__)
 

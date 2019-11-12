@@ -178,7 +178,7 @@ class MapCtrl:
         # self.CMD = ''
         return _CMD
 
-class databaseCtrl:
+class DatabaseCtrl:
     def __init__(self):
         self.databasePath = './static/userData.txt'
         self.userData = []
@@ -186,11 +186,8 @@ class databaseCtrl:
     def _reflashUserData(self):
         with open(self.databasePath, 'r', encoding='utf-8') as fRead:
             for line in fRead:
-                print(1, line)
                 line = line.replace('\n', '')
-                print(2, line)
                 line = line.split(',')
-                print(3, line)
                 _data = {'key': line[0], 'id': line[1], 'password': line[2], 'name': line[3], 'pilot': line[4]}
                 self.userData.append(_data)
 
