@@ -32,12 +32,22 @@ class SignUpHandler(tornado.web.RequestHandler):
         self.render('signup.html', msg='', allPilot=allPilot)
 
     def post(self):
+        msg = ''
         allPilot = myFunc.getAllPilot()
         signupData = {}
         signupData['userID'] = self.get_argument('userID')
         signupData['password'] = self.get_argument('password')
         signupData['name'] = self.get_argument('name')
         signupData['pilot'] = self.get_argument('checkPilot')
+
+        if len(signupData['userID']) > 20:
+            msg = 'userIDtooLong'
+        elif len(signupData['name']) > 10:
+            msg = 'nametooLong'
+
+        if msg != '':
+            self.render('signup.html', msg=msg, allPilot=allPilot)
+
         dbCtrl = myFunc.DatabaseCtrl()
         if dbCtrl.checkIDexist(signupData['userID']):
             self.render('signup.html', msg='IDexist', allPilot=allPilot)

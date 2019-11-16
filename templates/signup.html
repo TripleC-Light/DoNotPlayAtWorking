@@ -23,6 +23,19 @@
         	if( msg=='' ){
         		$('#iMsg').css('display', 'none');
         	}else{
+        		switch(msg){
+        			case 'IDexist':
+        				msg = '[ 帳號已存在, 請更換 ]';
+        				break;
+
+        			case 'userIDtooLong':
+        				msg = '[ 帳號長度請在20個字元以內 ]';
+        				break;
+
+        			case 'nametooLong':
+        				msg = '[ 暱稱長度請在10個字元以內 ]';
+        				break;
+        		}
         		if( msg=='IDexist' ){
         			msg = '[ 帳號已存在, 請更換 ]'
         		}
