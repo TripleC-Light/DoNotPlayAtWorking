@@ -33,6 +33,7 @@ class SignUpHandler(tornado.web.RequestHandler):
 
     def post(self):
         msg = ''
+        webLink = 'signup.html'
         allPilot = myFunc.getAllPilot()
         signupData = {}
         signupData['userID'] = self.get_argument('userID')
@@ -42,18 +43,23 @@ class SignUpHandler(tornado.web.RequestHandler):
 
         if len(signupData['userID']) > 20:
             msg = 'userIDtooLong'
+
         elif len(signupData['name']) > 10:
             msg = 'nametooLong'
 
-        if msg != '':
-            self.render('signup.html', msg=msg, allPilot=allPilot)
+        elif myFunc.haveIllegalChar(signupData['name']):
+            msg = 'illegalName'
 
-        dbCtrl = myFunc.DatabaseCtrl()
-        if dbCtrl.checkIDexist(signupData['userID']):
-            self.render('signup.html', msg='IDexist', allPilot=allPilot)
         else:
-            dbCtrl.addData(signupData)
-            self.render('login.html', msg='signupOK')
+            dbCtrl = myFunc.DatabaseCtrl()
+            if dbCtrl.checkIDexist(signupData['userID']):
+                msg = 'IDexist'
+            else:
+                dbCtrl.addData(signupData)
+                msg = 'signupOK'
+                webLink = 'login.html'
+
+        self.render(webLink, msg=msg, allPilot=allPilot)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):     # 允許跨來源資源共用

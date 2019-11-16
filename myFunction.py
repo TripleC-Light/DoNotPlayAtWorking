@@ -113,6 +113,14 @@ def getAllPilot():
             allPilot.append(f)
     return allPilot
 
+def haveIllegalChar(inputStr):
+    illegalCharList = ['\\', '@', ';', '"', '>', '<']
+    for illegalChar in illegalCharList:
+        if illegalChar in inputStr:
+            return True
+
+    return False
+
 class TimeCtrl:
     def __init__(self):
         self.sysTime = 0
