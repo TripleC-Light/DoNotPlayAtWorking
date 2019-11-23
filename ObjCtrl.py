@@ -13,6 +13,7 @@ class ObjCtrl:
         self.offlineTime = 0
         self.weapen = ''
         self.msgCtrl = ''
+        self.msgTimeOut = 5
         self.mapSize = []
 
     def updatePosition(self, _pilot):
@@ -119,10 +120,9 @@ class ObjCtrl:
         return False
 
     def msgTimeOutCheck(self, _pilot):
-        if _pilot.msgTimeCount > 0:
-            _pilot.msgTimeCount -= 1
-            if _pilot.msgTimeCount == 0:
-                _pilot.msg = ''
+        if self.sysTime - _pilot.msgTimeCount > self.msgTimeOut and _pilot.msgTimeCount != 0:
+            _pilot.msgTimeCount = 0
+            _pilot.msg = ''
 
     def enemySetTargetXY(self, _enemy):
         _allDistance = self._getAlldistance(_enemy)

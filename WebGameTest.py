@@ -5,7 +5,6 @@ import os
 import time
 import threading
 import tornado.websocket
-from Object import Object
 import json
 import myFunction as myFunc
 from ObjCtrl import ObjCtrl
@@ -32,7 +31,6 @@ class SignUpHandler(tornado.web.RequestHandler):
         self.render('signup.html', msg='', allPilot=allPilot)
 
     def post(self):
-        msg = ''
         webLink = 'signup.html'
         allPilot = myFunc.getAllPilot()
         signupData = {}
@@ -83,117 +81,116 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         global gObjCtrl
         global gMapCtrl
 
-        _getInitPositionFail = [-1, -1]
-        _tmp = CMDfromWEB.split('@')
-        _cmd = _tmp[0]
-        _returnInfo = ''
-        if _cmd == 'createPilot':
-            _pilot = gObjCtrl.createCharacter('pilot')
-            if _pilot:
-                gObjList[_pilot.id] = _pilot
-                gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
-                _pilotInJSON = _pilot.__dict__
-                _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
+        tmp = CMDfromWEB.split('@')
+        CMD = tmp[0]
+        returnInfo = ''
+        if CMD == 'createPilot':
+            pilot = gObjCtrl.createCharacter('pilot')
+            if pilot:
+                gObjList[pilot.id] = pilot
+                gMsgCtrl.add('系統公告', '玩家 ' + pilot.name + '進入遊戲')
+                pilotInJSON = pilot.__dict__
+                returnInfo = 'newPilot@' + json.dumps(pilotInJSON)
 
-        elif _cmd == 'pilotLoging':
-            _userKey = _tmp[1]
-            _dbCtrl = myFunc.DatabaseCtrl()
-            _nowUser = _dbCtrl.getUser(_userKey)
-            _pilot = gObjCtrl.createCharacter('pilot')
-            if _pilot:
-                _pilot.id = _nowUser['id']
-                _pilot.name = _nowUser['name']
-                _pilot.pic = _nowUser['pilot']
-                gObjList[_pilot.id] = _pilot
-                gMsgCtrl.add('系統公告', '玩家 ' + _pilot.name + '進入遊戲')
-                _pilotInJSON = _pilot.__dict__
-                _returnInfo = 'newPilot@' + json.dumps(_pilotInJSON)
+        elif CMD == 'pilotLoging':
+            userKey = tmp[1]
+            dbCtrl = myFunc.DatabaseCtrl()
+            nowUser = dbCtrl.getUser(userKey)
+            pilot = gObjCtrl.createCharacter('pilot')
+            if pilot:
+                pilot.id = nowUser['id']
+                pilot.name = nowUser['name']
+                pilot.pic = nowUser['pilot']
+                gObjList[pilot.id] = pilot
+                gMsgCtrl.add('系統公告', '玩家 ' + pilot.name + '進入遊戲')
+                pilotInJSON = pilot.__dict__
+                returnInfo = 'newPilot@' + json.dumps(pilotInJSON)
 
-        elif _cmd == 'reBorn':
-            _id = _tmp[1]
-            gObjList[_id].HP = gObjList[_id].HPmax
+        elif CMD == 'reBorn':
+            id_ = tmp[1]
+            gObjList[id_].HP = gObjList[id_].HPmax
 
-        elif _cmd == 'getNewData':
-            _id = _tmp[1]
-            if _id in gObjList:
-                gObjList[_id].timeOut = round(time.time(), 3)
+        elif CMD == 'getNewData':
+            id_ = tmp[1]
+            if id_ in gObjList:
+                gObjList[id_].timeOut = round(time.time(), 3)
             gPilotListInJSON['serverTime'] = time.time()
-            _returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
+            returnInfo = 'NewData@' + json.dumps(gPilotListInJSON)
 
-        elif _cmd == 'move':
-            _data = _tmp[1].split(';')
-            _id = _data[0]
-            _XY = _data[1]
-            _XY = _XY.split(',')
-            gObjList[_id].tX = int(_XY[0])
-            gObjList[_id].tY = int(_XY[1])
+        elif CMD == 'move':
+            data = tmp[1].split(';')
+            id_ = data[0]
+            XY = data[1]
+            XY = XY.split(',')
+            gObjList[id_].tX = int(XY[0])
+            gObjList[id_].tY = int(XY[1])
 
-        elif _cmd == 'attack':
-            _id = _tmp[1]
-            gObjList[_id].attack = time.time()
+        elif CMD == 'attack':
+            id_ = tmp[1]
+            gObjList[id_].attack = time.time()
 
-        elif _cmd == 'createEnemy':
-            for _i in range(5):
-                _enemy = gObjCtrl.createCharacter('zombie')
-                gObjList[_enemy.id] = _enemy
+        elif CMD == 'createEnemy':
+            for _ in range(5):
+                enemy = gObjCtrl.createCharacter('zombie')
+                gObjList[enemy.id] = enemy
 
-        elif _cmd == 'createItem':
+        elif CMD == 'createItem':
             gObjCtrl.mapSize = gMapSize
-            for _i in range(3):
-                _item = gObjCtrl.createItem('fullHP')
-                gObjList[_item.id] = _item
+            for _ in range(3):
+                item_ = gObjCtrl.createItem('fullHP')
+                gObjList[item_.id] = item_
 
-        elif _cmd == 'sendMsg':
-            _data = _tmp[1].split(';')
-            _id = _data[0]
-            _msg = _data[1]
-            _msg = gMsgCtrl.filter(_msg)
-            gObjList[_id].msgTimeCount = 5
-            gObjList[_id].msg = _msg
-            gMsgCtrl.add(gObjList[_id].name, _msg)
+        elif CMD == 'sendMsg':
+            data = tmp[1].split(';')
+            id_ = data[0]
+            msg = data[1]
+            msg = gMsgCtrl.filter(msg)
+            gObjList[id_].msgTimeCount = time.time()
+            gObjList[id_].msg = msg
+            gMsgCtrl.add(gObjList[id_].name, msg)
 
-        elif _cmd == 'getMsg':
-            _returnInfo = gMsgCtrl.returnToWeb()
+        elif CMD == 'getMsg':
+            returnInfo = gMsgCtrl.returnToWeb()
 
-        elif _cmd == 'updateMap':
-            _returnInfo = gMapCtrl.returnToWeb()
+        elif CMD == 'updateMap':
+            returnInfo = gMapCtrl.returnToWeb()
 
-        elif _cmd == 'setMap':
-            _reserveList = {}
-            for _mapObj in gObjList:
-                if gObjList[_mapObj].type != 'mapObj':
-                    _reserveList[_mapObj] = gObjList[_mapObj]
-            gObjList = _reserveList.copy()
+        elif CMD == 'setMap':
+            reserveList = {}
+            for mapObj in gObjList:
+                if gObjList[mapObj].type != 'mapObj':
+                    reserveList[mapObj] = gObjList[mapObj]
+            gObjList = reserveList.copy()
 
-            _data = _tmp[1]
-            _mapRegion = _data
-            _mapObjInJSON = {}
-            _mapObjList = []
-            filename = './static/map/setting/' + _mapRegion + '.map'
+            data = tmp[1]
+            mapRegion = data
+            mapObjInJSON = {}
+            mapObjList = []
+            filename = './static/map/setting/' + mapRegion + '.map'
             with open(filename, 'r', encoding='utf-8') as fRead:
                 for line in fRead:
                     line = line.strip()
                     line = line.split(':')
-                    _type = line[0]
-                    if _type == 'region':
-                        _mapObjInJSON['region'] = line[1]
-                    elif _type == 'size':
-                        _description = line[1].split(',')
-                        gMapSize = [int(_description[0]), int(_description[1])]
-                        _mapObjInJSON['size'] = gMapSize
-                    elif _type == 'background':
-                        _mapObjInJSON['background'] = './static/map/background/' + line[1]
-                    elif _type == 'mapObj':
-                        _description = line[1].split(',')
-                        _obj = gObjCtrl.createMapItem(_description)
+                    type_ = line[0]
+                    if type_ == 'region':
+                        mapObjInJSON['region'] = line[1]
+                    elif type_ == 'size':
+                        description = line[1].split(',')
+                        gMapSize = [int(description[0]), int(description[1])]
+                        mapObjInJSON['size'] = gMapSize
+                    elif type_ == 'background':
+                        mapObjInJSON['background'] = './static/map/background/' + line[1]
+                    elif type_ == 'mapObj':
+                        description = line[1].split(',')
+                        _obj = gObjCtrl.createMapItem(description)
                         gObjList[_obj.id] = _obj
-                        _mapObjList.append(_obj.__dict__)
+                        mapObjList.append(_obj.__dict__)
 
-            _mapObjInJSON['ObjList'] = _mapObjList
-            _objToJSON = json.dumps(_mapObjInJSON)
-            _returnInfo = 'setMap@' + _objToJSON
+            mapObjInJSON['ObjList'] = mapObjList
+            objToJSON = json.dumps(mapObjInJSON)
+            returnInfo = 'setMap@' + objToJSON
 
-        self.write_message(_returnInfo)
+        self.write_message(returnInfo)
 
 def loopAll():
     global gMapSize
@@ -204,57 +201,57 @@ def loopAll():
     global gObjCtrl
     global gScript
 
-    _timeCtrl = myFunc.TimeCtrl()
+    timeCtrl = myFunc.TimeCtrl()
     gObjCtrl.attackTime = 0.1   # second
     gObjCtrl.offlineTime = 5    # second
     gObjCtrl.frameTime = gFrameTime
 
     while 1:
-        _timeCtrl.sysTime = time.time()
-        _FPS = _timeCtrl.showFPS()
+        timeCtrl.sysTime = time.time()
+        FPS = timeCtrl.showFPS()
         gObjCtrl.mapSize = gMapSize
-        gObjCtrl.sysTime = _timeCtrl.sysTime
+        gObjCtrl.sysTime = timeCtrl.sysTime
         gObjCtrl.objList = gObjList
         gObjCtrl.clearBeHIT()
         gScript.msgCtrl = gMsgCtrl
-        _pilotList = []
-        for _id in list(gObjList.keys()):
-            _deleteState = False
-            _pilot = gObjList[_id]
-            if _pilot.type != 'mapObj':
-                gObjCtrl.updatePosition(_pilot)
-                gObjCtrl.clearAttack(_pilot)
+        pilotList = []
+        for id_ in list(gObjList.keys()):
+            deleteState = False
+            pilot = gObjList[id_]
+            if pilot.type != 'mapObj':
+                gObjCtrl.updatePosition(pilot)
+                gObjCtrl.clearAttack(pilot)
 
-                if _pilot.attack != 0:
-                    _weapen = gObjCtrl.createWeapen(_pilot)
-                    gObjCtrl.attackJudge(_pilot)
+                if pilot.attack != 0:
+                    gObjCtrl.createWeapen(pilot)
+                    gObjCtrl.attackJudge(pilot)
 
-                if gObjCtrl.timeOut(_pilot):
-                    if _pilot.type != 'item':
-                        gMsgCtrl.add('系統公告', str(_pilot.name) + ' 離開遊戲')
-                    _deleteState = True
-                    print('delete: ' + str(_id))
+                if gObjCtrl.timeOut(pilot):
+                    if pilot.type != 'item':
+                        gMsgCtrl.add('系統公告', str(pilot.name) + ' 離開遊戲')
+                    deleteState = True
+                    print('delete: ' + str(id_))
 
-                if gObjCtrl.HPtoZero(_pilot):
-                    if _pilot.type == 'enemy':
-                        print('Game Over: ' + str(_pilot.id))
-                        _deleteState = True
-                    elif _pilot.type == 'item' and _pilot.pic == 'button':
+                if gObjCtrl.HPtoZero(pilot):
+                    if pilot.type == 'enemy':
+                        print('Game Over: ' + str(pilot.id))
+                        deleteState = True
+                    elif pilot.type == 'item' and pilot.pic == 'button':
                         print('Button be push')
-                        _deleteState = True
+                        deleteState = True
                     else:
-                        gMsgCtrl.add('系統公告', str(_pilot.name) + ' HP歸零')
+                        gMsgCtrl.add('系統公告', str(pilot.name) + ' HP歸零')
 
-                if _deleteState:
-                    del gObjList[_id]
+                if deleteState:
+                    del gObjList[id_]
 
-        if _timeCtrl.oneSecondTimeOut():
-            for _id in list(gObjList.keys()):
-                _pilot = gObjList[_id]
-                gObjCtrl.msgTimeOutCheck(_pilot)
-                gObjCtrl.enemyAutoCtrl(_pilot)
-                gObjCtrl.enemyTimeReflash(_pilot)
-                gObjCtrl.itemTimeReflash(_pilot)
+        if timeCtrl.oneSecondTimeOut():
+            for id_ in list(gObjList.keys()):
+                pilot = gObjList[id_]
+                gObjCtrl.msgTimeOutCheck(pilot)
+                gObjCtrl.enemyAutoCtrl(pilot)
+                gObjCtrl.enemyTimeReflash(pilot)
+                gObjCtrl.itemTimeReflash(pilot)
 
             gScript.region = '0-0'
             gScript.mapSize = gMapSize
@@ -262,13 +259,13 @@ def loopAll():
             gScript.mapCtrl = gMapCtrl
             gScript.run(gObjList)
 
-        for _id in list(gObjList.keys()):
-            _pilot = gObjList[_id]
-            if _pilot.type != 'mapObj':
-                _pilotList.append(_pilot.__dict__)
+        for id_ in list(gObjList.keys()):
+            pilot = gObjList[id_]
+            if pilot.type != 'mapObj':
+                pilotList.append(pilot.__dict__)
 
-        gPilotListInJSON['list'] = _pilotList
-        gPilotListInJSON['FPS'] = _FPS
+        gPilotListInJSON['list'] = pilotList
+        gPilotListInJSON['FPS'] = FPS
         time.sleep(gFrameTime)
 
 if __name__ == "__main__":
