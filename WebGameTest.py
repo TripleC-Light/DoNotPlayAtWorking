@@ -161,37 +161,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
                 if gObjList[mapObj].type != 'mapObj':
                     reserveList[mapObj] = gObjList[mapObj]
             gObjList = reserveList.copy()
-
             mapRegion = tmp[1]
-            # mapRegion = data
-            # mapObjInJSON = {}
-            # mapObjList = []
-            gMapCtrl.mapRegion = mapRegion
-            mapObjInJSON =
-            # filename = './static/map/setting/' + mapRegion + '.map'
-            # with open(filename, 'r', encoding='utf-8') as fRead:
-            #     for line in fRead:
-            #         line = line.strip()
-            #         line = line.split(':')
-            #         type_ = line[0]
-            #         if type_ == 'region':
-            #             mapObjInJSON['region'] = line[1]
-            #         elif type_ == 'size':
-            #             description = line[1].split(',')
-            #             gMapSize = [int(description[0]), int(description[1])]
-            #             mapObjInJSON['size'] = gMapSize
-            #         elif type_ == 'background':
-            #             mapObjInJSON['background'] = './static/map/background/' + line[1]
-            #         elif type_ == 'mapObj':
-            #             description = line[1].split(',')
-            #             _obj = gObjCtrl.createMapItem(description)
-            #             gObjList[_obj.id] = _obj
-            #             mapObjList.append(_obj.__dict__)
-
-            mapObjInJSON['ObjList'] = mapObjList
+            gMapCtrl.objCtrl = gObjCtrl
+            gMapCtrl.objList = gObjList
+            mapObjInJSON = gMapCtrl.set(mapRegion)
+            gMapSize = mapObjInJSON['size']
             objToJSON = json.dumps(mapObjInJSON)
             returnInfo = 'setMap@' + objToJSON
-
         self.write_message(returnInfo)
 
 def loopAll():

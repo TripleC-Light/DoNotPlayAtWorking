@@ -176,11 +176,14 @@ class MsgCtrl:
 class MapCtrl:
     def __init__(self):
         self.CMD = ''
+        self.objCtrl = ''
+        self.objList = ''
         self.mapRegion = ''
         self.mapObjInJSON = {}
         self.mapObjList = []
 
-    def set(self):
+    def set(self, mapRegion):
+        self.mapRegion = mapRegion
         filename = './static/map/setting/' + self.mapRegion + '.map'
         with open(filename, 'r', encoding='utf-8') as fRead:
             for line in fRead:
@@ -191,15 +194,20 @@ class MapCtrl:
                     self.mapObjInJSON['region'] = line[1]
                 elif type_ == 'size':
                     description = line[1].split(',')
-                    gMapSize = [int(description[0]), int(description[1])]
+                    # gMapSize = [int(description[0]), int(description[1])]
                     self.mapObjInJSON['size'] = [int(description[0]), int(description[1])]
                 elif type_ == 'background':
                     self.mapObjInJSON['background'] = './static/map/background/' + line[1]
                 elif type_ == 'mapObj':
                     description = line[1].split(',')
-                    _obj = gObjCtrl.createMapItem(description)
-                    self.mapObjList[_obj.id] = _obj
+                    _obj = self.objCtrl.createMapItem(description)
+                    print(_obj.id)
+                    self.objList[_obj.id] = _obj
                     self.mapObjList.append(_obj.__dict__)
+
+        self.mapObjInJSON['ObjList'] = self.mapObjList
+        return self.mapObjInJSON
+
 
     def shake(self, level):
         _UID = str(uuid.uuid1())[0:8]
