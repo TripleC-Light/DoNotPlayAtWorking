@@ -176,6 +176,30 @@ class MsgCtrl:
 class MapCtrl:
     def __init__(self):
         self.CMD = ''
+        self.mapRegion = ''
+        self.mapObjInJSON = {}
+        self.mapObjList = []
+
+    def set(self):
+        filename = './static/map/setting/' + self.mapRegion + '.map'
+        with open(filename, 'r', encoding='utf-8') as fRead:
+            for line in fRead:
+                line = line.strip()
+                line = line.split(':')
+                type_ = line[0]
+                if type_ == 'region':
+                    self.mapObjInJSON['region'] = line[1]
+                elif type_ == 'size':
+                    description = line[1].split(',')
+                    gMapSize = [int(description[0]), int(description[1])]
+                    self.mapObjInJSON['size'] = [int(description[0]), int(description[1])]
+                elif type_ == 'background':
+                    self.mapObjInJSON['background'] = './static/map/background/' + line[1]
+                elif type_ == 'mapObj':
+                    description = line[1].split(',')
+                    _obj = gObjCtrl.createMapItem(description)
+                    self.mapObjList[_obj.id] = _obj
+                    self.mapObjList.append(_obj.__dict__)
 
     def shake(self, level):
         _UID = str(uuid.uuid1())[0:8]
@@ -183,7 +207,6 @@ class MapCtrl:
 
     def returnToWeb(self):
         _CMD = self.CMD
-        # self.CMD = ''
         return _CMD
 
 class DatabaseCtrl:
