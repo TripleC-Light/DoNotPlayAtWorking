@@ -6,17 +6,17 @@ from os import listdir
 from os.path import isfile, isdir, join
 
 def getUniqueID(_IDlist):
-    _tryCount = 0
-    _UID = ''
-    _getUID = False
-    while not _getUID:
-        _UID = str(uuid.uuid1())[0:8]
-        _tryCount += 1
-        if _UID not in _IDlist:
-            print('New ID >' + _UID + ': Try ' + str(_tryCount) + ' times')
-            _tryCount = 0
-            _getUID = True
-    return _UID
+    tryCount = 0
+    UID = ''
+    getUID = False
+    while not getUID:
+        UID = str(uuid.uuid1())[0:8]
+        tryCount += 1
+        if UID not in _IDlist:
+            print('New ID >' + UID + ': Try ' + str(tryCount) + ' times')
+            tryCount = 0
+            getUID = True
+    return UID
 
 def rectCollision(pilot, _objList):
     _id = []
@@ -82,26 +82,26 @@ def getInitPosition(positionMode, mapSize, obj, gObjList):
     return _XY
 
 def distance(P1, P2):
-    _dX = P1[0] - P2[0]
-    _dY = P1[1] - P2[1]
-    return math.sqrt((_dX ** 2) + (_dY ** 2))
+    dX = P1[0] - P2[0]
+    dY = P1[1] - P2[1]
+    return math.sqrt((dX ** 2) + (dY ** 2))
 
 def getResize(_sizeLimit, _originSize):
-    _scale = 0
-    _wL = _sizeLimit[0]
-    _hL = _sizeLimit[1]
-    _wO = _originSize[0]
-    _hO = _originSize[1]
-    _wN = 0
-    _hN = 0
-    if _wO >= _hO:
-        _scale = _wL / _wO
+    scale = 0
+    wL = _sizeLimit[0]
+    hL = _sizeLimit[1]
+    wO = _originSize[0]
+    hO = _originSize[1]
+    wN = 0
+    hN = 0
+    if wO >= hO:
+        scale = wL / wO
     else:
-        _scale = _hL / _hO
-    _scale = round(_scale, 3)
-    _wN = round(_wO * _scale)
-    _hN = round(_hO * _scale)
-    return [_wN, _hN]
+        scale = hL / hO
+    scale = round(scale, 3)
+    wN = round(wO * scale)
+    hN = round(hO * scale)
+    return [wN, hN]
 
 def getAllPilot():
     path = "static/pilot"  # 指定要列出所有檔案的目錄
@@ -118,7 +118,6 @@ def haveIllegalChar(inputStr):
     for illegalChar in illegalCharList:
         if illegalChar in inputStr:
             return True
-
     return False
 
 class TimeCtrl:
@@ -135,10 +134,10 @@ class TimeCtrl:
             return False
 
     def showFPS(self):
-        _FPS = round(1/(self.sysTime-self.lastSysTime+0.0001), 2)
+        FPS = round(1/(self.sysTime-self.lastSysTime+0.0001), 2)
         # print('FPS: ' + str(_FPS))
         self.lastSysTime = self.sysTime
-        return _FPS
+        return FPS
 
 class MsgCtrl:
     def __init__(self):
@@ -146,32 +145,32 @@ class MsgCtrl:
         self.box = [['系統公告', '遊戲開始']]
         self.maxNum = 6
 
-    def add(self, _name, _msg):
+    def add(self, name, msg):
         if len(self.box) >= self.maxNum:
-            _tmp = self.box[1:]
-            self.box = _tmp
-        if _name == 'centerInfo':
-            self.centerInfo = ['centerInfo', _msg]
+            tmp = self.box[1:]
+            self.box = tmp
+        if name == 'centerInfo':
+            self.centerInfo = ['centerInfo', msg]
         else:
-            self.box.append([_name, _msg])
+            self.box.append([name, msg])
 
     def returnToWeb(self):
-        _returnDataInJSON = {}
-        _returnDataInJSON['centerInfo'] = self.centerInfo
-        _returnDataInJSON['list'] = self.box
-        _returnData = 'SysMsg@' + json.dumps(_returnDataInJSON)
-        return _returnData
+        returnDataInJSON = {}
+        returnDataInJSON['centerInfo'] = self.centerInfo
+        returnDataInJSON['list'] = self.box
+        returnData = 'SysMsg@' + json.dumps(returnDataInJSON)
+        return returnData
 
-    def filter(self, _msg):
-        _msg = _msg.replace('\t', "")
-        _msg = _msg.replace('\T', "")
-        _msg = _msg.replace('\\', "")
-        _msg = _msg.replace('@', '')
-        _msg = _msg.replace(';', '')
-        _msg = _msg.replace('"', '\'')
-        _msg = _msg.replace('>', "")
-        _msg = _msg.replace('<', "")
-        return _msg
+    def filter(self, msg):
+        msg = msg.replace('\t', "")
+        msg = msg.replace('\T', "")
+        msg = msg.replace('\\', "")
+        msg = msg.replace('@', '')
+        msg = msg.replace(';', '')
+        msg = msg.replace('"', '\'')
+        msg = msg.replace('>', "")
+        msg = msg.replace('<', "")
+        return msg
 
 class MapCtrl:
     def __init__(self):
@@ -200,22 +199,19 @@ class MapCtrl:
                     self.mapObjInJSON['background'] = './static/map/background/' + line[1]
                 elif type_ == 'mapObj':
                     description = line[1].split(',')
-                    _obj = self.objCtrl.createMapItem(description)
-                    print(_obj.id)
-                    self.objList[_obj.id] = _obj
-                    self.mapObjList.append(_obj.__dict__)
-
+                    obj = self.objCtrl.createMapItem(description)
+                    self.objList[obj.id] = obj
+                    self.mapObjList.append(obj.__dict__)
         self.mapObjInJSON['ObjList'] = self.mapObjList
         return self.mapObjInJSON
 
-
     def shake(self, level):
-        _UID = str(uuid.uuid1())[0:8]
-        self.CMD = 'mapCtrl@shake,' + _UID + ',' + str(level)
+        UID = str(uuid.uuid1())[0:8]
+        self.CMD = 'mapCtrl@shake,' + UID + ',' + str(level)
 
     def returnToWeb(self):
-        _CMD = self.CMD
-        return _CMD
+        CMD = self.CMD
+        return CMD
 
 class DatabaseCtrl:
     def __init__(self):
@@ -227,8 +223,8 @@ class DatabaseCtrl:
             for line in fRead:
                 line = line.replace('\n', '')
                 line = line.split(',')
-                _data = {'key': line[0], 'id': line[1], 'password': line[2], 'name': line[3], 'pilot': line[4]}
-                self.userData.append(_data)
+                data = {'key': line[0], 'id': line[1], 'password': line[2], 'name': line[3], 'pilot': line[4]}
+                self.userData.append(data)
 
     def loginCheck(self, userID, password):
         self._reflashUserData()
@@ -259,17 +255,17 @@ class DatabaseCtrl:
         return False
 
     def addData(self, signupData):
-        _userData = ''
-        _file = open(self.databasePath, 'a')
+        userData = ''
+        file = open(self.databasePath, 'a')
 
-        _UID = ''
-        while self._checkKeyexist(_UID) or _UID == '':
-            _UID = str(uuid.uuid1())[0:8]
-        _userData += _UID + ','
-        _userData += signupData['userID'] + ','
-        _userData += signupData['password'] + ','
-        _userData += signupData['name'] + ','
-        _userData += signupData['pilot']
+        UID = ''
+        while self._checkKeyexist(UID) or UID == '':
+            UID = str(uuid.uuid1())[0:8]
+        userData += UID + ','
+        userData += signupData['userID'] + ','
+        userData += signupData['password'] + ','
+        userData += signupData['name'] + ','
+        userData += signupData['pilot']
 
-        _file.write(_userData + '\n')
-        _file.close()
+        file.write(userData + '\n')
+        file.close()
