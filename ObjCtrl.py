@@ -48,8 +48,8 @@ class ObjCtrl:
             return False
 
     def clearBeHIT(self):
-        for _id in list(self.objList.keys()):
-            _pilot = self.objList[_id]
+        for id_ in list(self.objList.keys()):
+            _pilot = self.objList[id_]
             if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
                 _pilot.beHIT = False
 
@@ -137,10 +137,10 @@ class ObjCtrl:
 
     def _getAlldistance(self, _pilot1):
         _allDistance = {}
-        for _id in list(self.objList.keys()):
-            _pilot2 = self.objList[_id]
+        for id_ in list(self.objList.keys()):
+            _pilot2 = self.objList[id_]
             if _pilot2.type == 'pilot' and _pilot2.HP > 0:
-                _allDistance[_id] = int(myFunc.distance([_pilot1.X, _pilot1.Y], [_pilot2.X, _pilot2.Y]))
+                _allDistance[id_] = int(myFunc.distance([_pilot1.X, _pilot1.Y], [_pilot2.X, _pilot2.Y]))
         return _allDistance
 
     def enemyAutoCtrl(self, _pilot):
