@@ -49,39 +49,39 @@ class ObjCtrl:
 
     def clearBeHIT(self):
         for id_ in list(self.objList.keys()):
-            _pilot = self.objList[id_]
-            if _pilot.type == 'pilot' or _pilot.type == 'enemy' or _pilot.type == 'item':
-                _pilot.beHIT = False
+            pilot = self.objList[id_]
+            if pilot.type == 'pilot' or pilot.type == 'enemy' or pilot.type == 'item':
+                pilot.beHIT = False
 
-    def clearAttack(self, _pilot):
-        if (_pilot.attack != 0) and ((self.sysTime - _pilot.attack) > self.attackTime):
-            _pilot.attack = 0
+    def clearAttack(self, pilot):
+        if (pilot.attack != 0) and ((self.sysTime - pilot.attack) > self.attackTime):
+            pilot.attack = 0
 
-    def createWeapen(self, _pilot):
+    def createWeapen(self, pilot):
         _weapen = Object()
-        _weapen.id = _pilot.id
-        if _pilot.weapen == 'punch':
-            _weapen.W = _pilot.W / 2
-            _weapen.H = _pilot.H
-            if _pilot.dir == 'right':
-                _weapen.X = _pilot.X + _pilot.W / 2 + _weapen.W / 2
-                _weapen.Y = _pilot.Y
+        _weapen.id = pilot.id
+        if pilot.weapen == 'punch':
+            _weapen.W = pilot.W / 2
+            _weapen.H = pilot.H
+            if pilot.dir == 'right':
+                _weapen.X = pilot.X + pilot.W / 2 + _weapen.W / 2
+                _weapen.Y = pilot.Y
             else:
-                _weapen.X = _pilot.X - _pilot.W / 2 - _weapen.W / 2
-                _weapen.Y = _pilot.Y
+                _weapen.X = pilot.X - pilot.W / 2 - _weapen.W / 2
+                _weapen.Y = pilot.Y
         self.weapen = _weapen
         return _weapen
 
-    def attackJudge(self, _pilot):
+    def attackJudge(self, pilot):
         _weapenCollision = myFunc.rectCollision(self.weapen, self.objList)
         if _weapenCollision[0]:
-            _pilot.attack = 0
+            pilot.attack = 0
             for _beHitID in _weapenCollision[1]:
                 if self.objList[_beHitID].type == 'item':
-                    self.itemCtrl(_pilot, self.objList[_beHitID])
+                    self.itemCtrl(pilot, self.objList[_beHitID])
                 else:
                     self.objList[_beHitID].beHIT = True
-                    _damage = _pilot.AT - self.objList[_beHitID].DEF
+                    _damage = pilot.AT - self.objList[_beHitID].DEF
                     if _damage > 0:
                         if self.objList[_beHitID].HP > 0:
                             self.objList[_beHitID].HP -= _damage
@@ -101,28 +101,28 @@ class ObjCtrl:
                     _item.HP -= _damage
             print('Get Item')
 
-    def timeOut(self, _pilot):
-        if (self.sysTime - _pilot.timeOut) > self.offlineTime:
-            if _pilot.timeOut == 0:
+    def timeOut(self, pilot):
+        if (self.sysTime - pilot.timeOut) > self.offlineTime:
+            if pilot.timeOut == 0:
                 return True
             else:
-                _pilot.timeOut = 0
+                pilot.timeOut = 0
                 return False
 
-    def HPtoZero(self, _pilot):
-        if _pilot.HP == -999:
-            _pilot.HP = -1000
+    def HPtoZero(self, pilot):
+        if pilot.HP == -999:
+            pilot.HP = -1000
             return True
-        elif _pilot.HP == -1000:
-            _pilot.HP = -1000
-        elif _pilot.HP <= 0:
-            _pilot.HP = -999
+        elif pilot.HP == -1000:
+            pilot.HP = -1000
+        elif pilot.HP <= 0:
+            pilot.HP = -999
         return False
 
-    def msgTimeOutCheck(self, _pilot):
-        if self.sysTime - _pilot.msgTimeCount > self.msgTimeOut and _pilot.msgTimeCount != 0:
-            _pilot.msgTimeCount = 0
-            _pilot.msg = ''
+    def msgTimeOutCheck(self, pilot):
+        if self.sysTime - pilot.msgTimeCount > self.msgTimeOut and pilot.msgTimeCount != 0:
+            pilot.msgTimeCount = 0
+            pilot.msg = ''
 
     def enemySetTargetXY(self, _enemy):
         _allDistance = self._getAlldistance(_enemy)
@@ -143,20 +143,20 @@ class ObjCtrl:
                 _allDistance[id_] = int(myFunc.distance([_pilot1.X, _pilot1.Y], [_pilot2.X, _pilot2.Y]))
         return _allDistance
 
-    def enemyAutoCtrl(self, _pilot):
-        if _pilot.type == 'enemy':
-            if _pilot.pic == 'zombie' or _pilot.pic == 'robot':
-                self.enemySetTargetXY(_pilot)
-                _weapen = self.createWeapen(_pilot)
+    def enemyAutoCtrl(self, pilot):
+        if pilot.type == 'enemy':
+            if pilot.pic == 'zombie' or pilot.pic == 'robot':
+                self.enemySetTargetXY(pilot)
+                _weapen = self.createWeapen(pilot)
                 _weapenCollision = myFunc.rectCollision(_weapen, self.objList)
                 if _weapenCollision[0]:
                     for _beHitID in _weapenCollision[1]:
                         if self.objList[_beHitID].type == 'pilot' and self.objList[_beHitID].HP > 0:
-                            _pilot.attack = self.sysTime
+                            pilot.attack = self.sysTime
 
-    def enemyTimeReflash(self, _pilot):
-        if _pilot.type == 'enemy' and _pilot.timeOut != 0:
-            _pilot.timeOut = round(self.sysTime, 3)
+    def enemyTimeReflash(self, pilot):
+        if pilot.type == 'enemy' and pilot.timeOut != 0:
+            pilot.timeOut = round(self.sysTime, 3)
 
     def itemTimeReflash(self, _item):
         if _item.type == 'item' and _item.timeOut > 1:
