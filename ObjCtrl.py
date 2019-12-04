@@ -58,33 +58,33 @@ class ObjCtrl:
             pilot.attack = 0
 
     def createWeapen(self, pilot):
-        _weapen = Object()
-        _weapen.id = pilot.id
+        weapen = Object()
+        weapen.id = pilot.id
         if pilot.weapen == 'punch':
-            _weapen.W = pilot.W / 2
-            _weapen.H = pilot.H
+            weapen.W = pilot.W / 2
+            weapen.H = pilot.H
             if pilot.dir == 'right':
-                _weapen.X = pilot.X + pilot.W / 2 + _weapen.W / 2
-                _weapen.Y = pilot.Y
+                weapen.X = pilot.X + pilot.W / 2 + weapen.W / 2
+                weapen.Y = pilot.Y
             else:
-                _weapen.X = pilot.X - pilot.W / 2 - _weapen.W / 2
-                _weapen.Y = pilot.Y
-        self.weapen = _weapen
-        return _weapen
+                weapen.X = pilot.X - pilot.W / 2 - weapen.W / 2
+                weapen.Y = pilot.Y
+        self.weapen = weapen
+        return weapen
 
     def attackJudge(self, pilot):
-        _weapenCollision = myFunc.rectCollision(self.weapen, self.objList)
-        if _weapenCollision[0]:
+        weapenCollision = myFunc.rectCollision(self.weapen, self.objList)
+        if weapenCollision[0]:
             pilot.attack = 0
-            for _beHitID in _weapenCollision[1]:
-                if self.objList[_beHitID].type == 'item':
-                    self.itemCtrl(pilot, self.objList[_beHitID])
+            for beHitID in weapenCollision[1]:
+                if self.objList[beHitID].type == 'item':
+                    self.itemCtrl(pilot, self.objList[beHitID])
                 else:
-                    self.objList[_beHitID].beHIT = True
-                    _damage = pilot.AT - self.objList[_beHitID].DEF
+                    self.objList[beHitID].beHIT = True
+                    _damage = pilot.AT - self.objList[beHitID].DEF
                     if _damage > 0:
-                        if self.objList[_beHitID].HP > 0:
-                            self.objList[_beHitID].HP -= _damage
+                        if self.objList[beHitID].HP > 0:
+                            self.objList[beHitID].HP -= _damage
 
     def itemCtrl(self, _whoGet, _item):
         _itemType = _item.pic
@@ -147,11 +147,11 @@ class ObjCtrl:
         if pilot.type == 'enemy':
             if pilot.pic == 'zombie' or pilot.pic == 'robot':
                 self.enemySetTargetXY(pilot)
-                _weapen = self.createWeapen(pilot)
-                _weapenCollision = myFunc.rectCollision(_weapen, self.objList)
-                if _weapenCollision[0]:
-                    for _beHitID in _weapenCollision[1]:
-                        if self.objList[_beHitID].type == 'pilot' and self.objList[_beHitID].HP > 0:
+                weapen = self.createWeapen(pilot)
+                weapenCollision = myFunc.rectCollision(weapen, self.objList)
+                if weapenCollision[0]:
+                    for beHitID in weapenCollision[1]:
+                        if self.objList[beHitID].type == 'pilot' and self.objList[beHitID].HP > 0:
                             pilot.attack = self.sysTime
 
     def enemyTimeReflash(self, pilot):
