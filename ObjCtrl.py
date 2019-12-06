@@ -86,19 +86,19 @@ class ObjCtrl:
                         if self.objList[beHitID].HP > 0:
                             self.objList[beHitID].HP -= _damage
 
-    def itemCtrl(self, _whoGet, _item):
-        _itemType = _item.pic
+    def itemCtrl(self, _whoGet, item_):
+        _itemType = item_.pic
         if _itemType == 'fullHP':
             _whoGet.HP = 10
-            _item.timeOut = 1
+            item_.timeOut = 1
             print('Get Item')
 
         if _itemType == 'button':
-            _item.beHIT = True
-            _damage = _whoGet.AT - _item.DEF
+            item_.beHIT = True
+            _damage = _whoGet.AT - item_.DEF
             if _damage > 0:
-                if _item.HP > 0:
-                    _item.HP -= _damage
+                if item_.HP > 0:
+                    item_.HP -= _damage
             print('Get Item')
 
     def timeOut(self, pilot):
@@ -158,45 +158,45 @@ class ObjCtrl:
         if pilot.type == 'enemy' and pilot.timeOut != 0:
             pilot.timeOut = round(self.sysTime, 3)
 
-    def itemTimeReflash(self, _item):
-        if _item.type == 'item' and _item.timeOut > 1:
-            _item.timeOut = round(self.sysTime, 3)
+    def itemTimeReflash(self, item_):
+        if item_.type == 'item' and item_.timeOut > 1:
+            item_.timeOut = round(self.sysTime, 3)
 
     def createItemInRandom(self, _itemName, _probability, _quantity):
         _probability = _probability * 100
         _itemProbability = random.randint(0, 100)
         if _itemProbability <= _probability:
             for _i in range(random.randint(1, _quantity)):
-                _item = self.createItem(_itemName)
-                if _item:
-                    self.objList[_item.id] = _item
+                item_ = self.createItem(_itemName)
+                if item_:
+                    self.objList[item_.id] = item_
 
     def createItem(self, _itemName):
         _getInitPositionFail = [-1, -1]
-        _item = Object()
-        _item.id = myFunc.getUniqueID(list(self.objList.keys()))
-        _item.type = 'item'
-        _item.name = ''
-        _item.pic = _itemName
-        _item.SP = 0
-        _item.timeOut = round(time.time(), 3)
+        item_ = Object()
+        item_.id = myFunc.getUniqueID(list(self.objList.keys()))
+        item_.type = 'item'
+        item_.name = ''
+        item_.pic = _itemName
+        item_.SP = 0
+        item_.timeOut = round(time.time(), 3)
 
         _sizeLimit = 60
-        _im = Image.open('./static/pilot/' + _item.type + '/' + _item.pic + '.gif')
+        _im = Image.open('./static/pilot/' + item_.type + '/' + item_.pic + '.gif')
         _newSize = myFunc.getResize([_sizeLimit, _sizeLimit], _im.size)
-        _item.W = _newSize[0]
-        _item.H = _newSize[1]
-        _XY = myFunc.getInitPosition('auto', self.mapSize, _item, self.objList)
+        item_.W = _newSize[0]
+        item_.H = _newSize[1]
+        _XY = myFunc.getInitPosition('auto', self.mapSize, item_, self.objList)
 
         if _itemName == 'button':
-            _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, _item, self.objList)
+            _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, item_, self.objList)
 
         if _XY != _getInitPositionFail:
-            _item.X = _XY[0]
-            _item.Y = _XY[1]
-            _item.tX = _XY[0]
-            _item.tY = _XY[1]
-            return _item
+            item_.X = _XY[0]
+            item_.Y = _XY[1]
+            item_.tX = _XY[0]
+            item_.tY = _XY[1]
+            return item_
         else:
             return False
 
