@@ -81,24 +81,24 @@ class ObjCtrl:
                     self.itemCtrl(pilot, self.objList[beHitID])
                 else:
                     self.objList[beHitID].beHIT = True
-                    _damage = pilot.AT - self.objList[beHitID].DEF
-                    if _damage > 0:
+                    damage = pilot.AT - self.objList[beHitID].DEF
+                    if damage > 0:
                         if self.objList[beHitID].HP > 0:
-                            self.objList[beHitID].HP -= _damage
+                            self.objList[beHitID].HP -= damage
 
     def itemCtrl(self, _whoGet, item_):
-        _itemType = item_.pic
-        if _itemType == 'fullHP':
+        itemType = item_.pic
+        if itemType == 'fullHP':
             _whoGet.HP = 10
             item_.timeOut = 1
             print('Get Item')
 
-        if _itemType == 'button':
+        if itemType == 'button':
             item_.beHIT = True
-            _damage = _whoGet.AT - item_.DEF
-            if _damage > 0:
+            damage = _whoGet.AT - item_.DEF
+            if damage > 0:
                 if item_.HP > 0:
-                    item_.HP -= _damage
+                    item_.HP -= damage
             print('Get Item')
 
     def timeOut(self, pilot):
@@ -125,23 +125,23 @@ class ObjCtrl:
             pilot.msg = ''
 
     def enemySetTargetXY(self, _enemy):
-        _allDistance = self._getAlldistance(_enemy)
-        if len(_allDistance) == 0:
+        allDistance = self._getAlldistance(_enemy)
+        if len(allDistance) == 0:
             _enemy.tX = random.randint(0, self.mapSize[0])
             _enemy.tY = random.randint(0, self.mapSize[1])
         else:
-            _mostCloseID = min(_allDistance, key=_allDistance.get)
+            _mostCloseID = min(allDistance, key=allDistance.get)
             _targetPilot = self.objList[_mostCloseID]
             _enemy.tX = _targetPilot.X
             _enemy.tY = _targetPilot.Y
 
-    def _getAlldistance(self, _pilot1):
-        _allDistance = {}
+    def _getAlldistance(self, pilot1):
+        allDistance = {}
         for id_ in list(self.objList.keys()):
-            _pilot2 = self.objList[id_]
-            if _pilot2.type == 'pilot' and _pilot2.HP > 0:
-                _allDistance[id_] = int(myFunc.distance([_pilot1.X, _pilot1.Y], [_pilot2.X, _pilot2.Y]))
-        return _allDistance
+            pilot2 = self.objList[id_]
+            if pilot2.type == 'pilot' and pilot2.HP > 0:
+                allDistance[id_] = int(myFunc.distance([pilot1.X, pilot1.Y], [pilot2.X, pilot2.Y]))
+        return allDistance
 
     def enemyAutoCtrl(self, pilot):
         if pilot.type == 'enemy':
