@@ -162,96 +162,96 @@ class ObjCtrl:
         if item_.type == 'item' and item_.timeOut > 1:
             item_.timeOut = round(self.sysTime, 3)
 
-    def createItemInRandom(self, _itemName, _probability, _quantity):
-        _probability = _probability * 100
-        _itemProbability = random.randint(0, 100)
-        if _itemProbability <= _probability:
-            for _i in range(random.randint(1, _quantity)):
-                item_ = self.createItem(_itemName)
+    def createItemInRandom(self, itemName, probability, quantity):
+        probability = probability * 100
+        itemProbability = random.randint(0, 100)
+        if itemProbability <= probability:
+            for _ in range(random.randint(1, quantity)):
+                item_ = self.createItem(itemName)
                 if item_:
                     self.objList[item_.id] = item_
 
-    def createItem(self, _itemName):
-        _getInitPositionFail = [-1, -1]
+    def createItem(self, itemName):
+        getInitPositionFail = [-1, -1]
         item_ = Object()
         item_.id = myFunc.getUniqueID(list(self.objList.keys()))
         item_.type = 'item'
         item_.name = ''
-        item_.pic = _itemName
+        item_.pic = itemName
         item_.SP = 0
         item_.timeOut = round(time.time(), 3)
 
-        _sizeLimit = 60
-        _im = Image.open('./static/pilot/' + item_.type + '/' + item_.pic + '.gif')
-        _newSize = myFunc.getResize([_sizeLimit, _sizeLimit], _im.size)
-        item_.W = _newSize[0]
-        item_.H = _newSize[1]
-        _XY = myFunc.getInitPosition('auto', self.mapSize, item_, self.objList)
+        sizeLimit = 60
+        im = Image.open('./static/pilot/' + item_.type + '/' + item_.pic + '.gif')
+        newSize = myFunc.getResize([sizeLimit, sizeLimit], im.size)
+        item_.W = newSize[0]
+        item_.H = newSize[1]
+        XY = myFunc.getInitPosition('auto', self.mapSize, item_, self.objList)
 
-        if _itemName == 'button':
-            _XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, item_, self.objList)
+        if itemName == 'button':
+            XY = myFunc.getInitPosition(str(self.mapSize[0]/2) + ',' + str(self.mapSize[1]/2), self.mapSize, item_, self.objList)
 
-        if _XY != _getInitPositionFail:
-            item_.X = _XY[0]
-            item_.Y = _XY[1]
-            item_.tX = _XY[0]
-            item_.tY = _XY[1]
+        if XY != getInitPositionFail:
+            item_.X = XY[0]
+            item_.Y = XY[1]
+            item_.tX = XY[0]
+            item_.tY = XY[1]
             return item_
         else:
             return False
 
-    def createCharacter(self, _name):
-        _getInitPositionFail = [-1, -1]
-        _character = Object()
-        _character.id = myFunc.getUniqueID(list(self.objList.keys()))
-        _character.timeOut = round(time.time(), 3)
-        _XY = myFunc.getInitPosition('auto', self.mapSize, _character, self.objList)
+    def createCharacter(self, name_):
+        getInitPositionFail = [-1, -1]
+        character = Object()
+        character.id = myFunc.getUniqueID(list(self.objList.keys()))
+        character.timeOut = round(time.time(), 3)
+        XY = myFunc.getInitPosition('auto', self.mapSize, character, self.objList)
 
-        if _name == 'zombie':
-            _character.name = '上班族殭屍'
-            if _XY != _getInitPositionFail:
-                _character.type = 'enemy'
-                _character.pic = 'zombie'
-                _character.SP = random.randint(20, 100) * self.frameTime
-                _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
-                _randomLimit = random.randint(80, 150)
+        if name_ == 'zombie':
+            character.name = '上班族殭屍'
+            if XY != getInitPositionFail:
+                character.type = 'enemy'
+                character.pic = 'zombie'
+                character.SP = random.randint(20, 100) * self.frameTime
+                im = Image.open('./static/pilot/' + character.pic + '/right.gif')
+                randomLimit = random.randint(80, 150)
             else:
                 return False
 
-        elif _name == 'robot':
-            _character.name = '自走型殺人機械'
-            if _XY != _getInitPositionFail:
-                _character.type = 'enemy'
-                _character.pic = 'robot'
-                _character.HP = 50
-                _character.HPmax = 50
-                _character.AT = 3
-                _character.SP = 400 * self.frameTime
-                _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
-                _randomLimit = random.randint(120, 120)
+        elif name_ == 'robot':
+            character.name = '自走型殺人機械'
+            if XY != getInitPositionFail:
+                character.type = 'enemy'
+                character.pic = 'robot'
+                character.HP = 50
+                character.HPmax = 50
+                character.AT = 3
+                character.SP = 400 * self.frameTime
+                im = Image.open('./static/pilot/' + character.pic + '/right.gif')
+                randomLimit = random.randint(120, 120)
             else:
                 return False
 
-        elif _name == 'pilot':
-            _character.name = str(_character.id)
-            if _XY != _getInitPositionFail:
-                _character.type = 'pilot'
-                _character.pic = 'slimeUnknow'
-                _character.SP = 350 * self.frameTime
-                _im = Image.open('./static/pilot/' + _character.pic + '/right.gif')
-                _randomLimit = random.randint(70, 70)
+        elif name_ == 'pilot':
+            character.name = str(character.id)
+            if XY != getInitPositionFail:
+                character.type = 'pilot'
+                character.pic = 'slimeUnknow'
+                character.SP = 350 * self.frameTime
+                im = Image.open('./static/pilot/' + character.pic + '/right.gif')
+                randomLimit = random.randint(70, 70)
             else:
                 return False
 
-        _character.X = _XY[0]
-        _character.Y = _XY[1]
-        _character.tX = _XY[0]
-        _character.tY = _XY[1]
-        _newSize = myFunc.getResize([_randomLimit, _randomLimit], _im.size)
-        _character.W = _newSize[0]
-        _character.H = _newSize[1]
+        character.X = XY[0]
+        character.Y = XY[1]
+        character.tX = XY[0]
+        character.tY = XY[1]
+        newSize = myFunc.getResize([randomLimit, randomLimit], im.size)
+        character.W = newSize[0]
+        character.H = newSize[1]
 
-        return _character
+        return character
 
     def createMapItem(self, _description):
         _obj = Object()
