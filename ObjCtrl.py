@@ -16,35 +16,35 @@ class ObjCtrl:
         self.msgTimeOut = 5
         self.mapSize = []
 
-    def updatePosition(self, _pilot):
-        _P1 = [_pilot.X, _pilot.Y]
-        _P2 = [_pilot.tX, _pilot.tY]
-        _dX = _P1[0] - _P2[0]
-        _dY = _P1[1] - _P2[1]
-        if abs(_dX) < 1 and abs(_dY) < 1:
+    def updatePosition(self, pilot):
+        P1 = [pilot.X, pilot.Y]
+        P2 = [pilot.tX, pilot.tY]
+        dX = P1[0] - P2[0]
+        dY = P1[1] - P2[1]
+        if abs(dX) < 1 and abs(dY) < 1:
             return True
         else:
-            _step = _pilot.SP
-            _d = round(myFunc.distance(_P1, _P2))
-            _howManyTimesToGo = round(_d / _step)
-            if _howManyTimesToGo == 0:
-                _pilot.X = _pilot.tX
-                _pilot.Y = _pilot.tY
+            step = pilot.SP
+            d = round(myFunc.distance(P1, P2))
+            howManyTimesToGo = round(d / step)
+            if howManyTimesToGo == 0:
+                pilot.X = pilot.tX
+                pilot.Y = pilot.tY
             else:
-                if _pilot.tX > _pilot.X:
-                    _pilot.dir = 'right'
-                elif _pilot.tX < _pilot.X:
-                    _pilot.dir = 'left'
+                if pilot.tX > pilot.X:
+                    pilot.dir = 'right'
+                elif pilot.tX < pilot.X:
+                    pilot.dir = 'left'
 
-                _pilot.X = round(_pilot.X - (_dX / _howManyTimesToGo))
-                if myFunc.rectCollision(_pilot, self.objList)[0]:
-                    _pilot.X = round(_pilot.X + (_dX / _howManyTimesToGo))
-                    _pilot.tX = _pilot.X
+                pilot.X = round(pilot.X - (dX / howManyTimesToGo))
+                if myFunc.rectCollision(pilot, self.objList)[0]:
+                    pilot.X = round(pilot.X + (dX / howManyTimesToGo))
+                    pilot.tX = pilot.X
 
-                _pilot.Y = round(_pilot.Y - (_dY / _howManyTimesToGo))
-                if myFunc.rectCollision(_pilot, self.objList)[0]:
-                    _pilot.Y = round(_pilot.Y + (_dY / _howManyTimesToGo))
-                    _pilot.tY = _pilot.Y
+                pilot.Y = round(pilot.Y - (dY / howManyTimesToGo))
+                if myFunc.rectCollision(pilot, self.objList)[0]:
+                    pilot.Y = round(pilot.Y + (dY / howManyTimesToGo))
+                    pilot.tY = pilot.Y
             return False
 
     def clearBeHIT(self):
@@ -253,21 +253,21 @@ class ObjCtrl:
 
         return character
 
-    def createMapItem(self, _description):
-        _obj = Object()
-        _pic = _description[0]
-        _X = int(_description[1])
-        _Y = int(_description[2])
-        _obj.type = 'mapObj'
-        _obj.id = myFunc.getUniqueID(list(self.objList.keys()))
-        _obj.name = str(_obj.id)
-        _obj.X = _X
-        _obj.Y = _Y
-        _obj.tX = _X
-        _obj.tY = _Y
-        if _pic == 'bud':
-            _obj.HP = 1000
-            _obj.W = 70
-            _obj.H = 70
-            _obj.pic = './static/map/obj/' + _pic + '.png'
-        return _obj
+    def createMapItem(self, description):
+        obj = Object()
+        pic = description[0]
+        X = int(description[1])
+        Y = int(description[2])
+        obj.type = 'mapObj'
+        obj.id = myFunc.getUniqueID(list(self.objList.keys()))
+        obj.name = str(obj.id)
+        obj.X = X
+        obj.Y = Y
+        obj.tX = X
+        obj.tY = Y
+        if pic == 'bud':
+            obj.HP = 1000
+            obj.W = 70
+            obj.H = 70
+            obj.pic = './static/map/obj/' + pic + '.png'
+        return obj
