@@ -39,6 +39,10 @@
         			case 'nametooLong':
         				msg = '[ 暱稱長度請在10個字元以內 ]';
         				break;
+
+        			case 'somethingEmpty':
+        				msg = '[ 帳號、密碼或暱稱請勿空白 ]';
+        				break;
         		}
         		if( msg=='IDexist' ){
         			msg = '[ 帳號已存在, 請更換 ]'

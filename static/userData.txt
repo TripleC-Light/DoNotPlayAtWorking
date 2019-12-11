@@ -1,9 +1,6 @@
 d2f7af50,chou_0131,0521aa,愛德華,slimeSun
 548f963a,AA,sss,dfff,slimeDark
-44494246,BB,sss,BBman,slimeWater
-8cf29476,CC,sss,CcCcCc,slimeFire
-2d9cb5a4,DD,sss,Im'DD~~!!,slimeGrasse
-656f0158,XXX,sss,X men,slimeWater
-b37d672c,AAA,sss,XXX,slimeFire
-e066d094,ZZ,sss,ZZZ,slimeFire
-8c75476e,QQ,sss,QQ,slimeSun
+f7c9f4a6,BB,sss,vv,slimeFire
+dd28c47a,John,***,John,slimeUnknow
+afe72640,fox,ng1986,Nigel,slimeUnknow
+c8af81a6,John1,john1,John,slimeFire

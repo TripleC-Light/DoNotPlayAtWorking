@@ -48,6 +48,9 @@ class SignUpHandler(tornado.web.RequestHandler):
         elif myFunc.haveIllegalChar(signupData['name']):
             msg = 'illegalName'
 
+        elif signupData['userID'] == '' or signupData['password'] == '' or signupData['name'] == '':
+            msg = 'somethingEmpty'
+
         else:
             dbCtrl = myFunc.DatabaseCtrl()
             if dbCtrl.checkIDexist(signupData['userID']):
