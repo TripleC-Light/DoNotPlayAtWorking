@@ -124,16 +124,16 @@ class ObjCtrl:
             pilot.msgTimeCount = 0
             pilot.msg = ''
 
-    def enemySetTargetXY(self, _enemy):
-        allDistance = self._getAlldistance(_enemy)
+    def enemySetTargetXY(self, enemy):
+        allDistance = self._getAlldistance(enemy)
         if len(allDistance) == 0:
-            _enemy.tX = random.randint(0, self.mapSize[0])
-            _enemy.tY = random.randint(0, self.mapSize[1])
+            enemy.tX = random.randint(0, self.mapSize[0])
+            enemy.tY = random.randint(0, self.mapSize[1])
         else:
-            _mostCloseID = min(allDistance, key=allDistance.get)
-            _targetPilot = self.objList[_mostCloseID]
-            _enemy.tX = _targetPilot.X
-            _enemy.tY = _targetPilot.Y
+            mostCloseID = min(allDistance, key=allDistance.get)
+            targetPilot = self.objList[mostCloseID]
+            enemy.tX = targetPilot.X
+            enemy.tY = targetPilot.Y
 
     def _getAlldistance(self, pilot1):
         allDistance = {}

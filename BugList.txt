@@ -1,3 +1,0 @@
-V #1 Pilot name not align to center
-V #2 Even can't find a position to place pilot, onlinenum still +1
-#3 No any information if create pilot fail

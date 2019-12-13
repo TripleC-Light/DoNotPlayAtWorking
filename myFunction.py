@@ -13,73 +13,73 @@ def getUniqueID(_IDlist):
         UID = str(uuid.uuid1())[0:8]
         tryCount += 1
         if UID not in _IDlist:
-            print('New ID >' + UID + ': Try ' + str(tryCount) + ' times')
+            # print('New ID >' + UID + ': Try ' + str(tryCount) + ' times')
             tryCount = 0
             getUID = True
     return UID
 
-def rectCollision(pilot, _objList):
-    _id = []
-    _margin = 5
-    _returnState = False
-    _ObjIDs = list(_objList.keys())
-    _minX1 = pilot.X - pilot.W / 2 + _margin
-    _maxX1 = pilot.X + pilot.W / 2 - _margin
-    _minY1 = pilot.Y - pilot.H / 2 + _margin
-    _maxY1 = pilot.Y + pilot.H / 2 - _margin
+def rectCollision(pilot, objList):
+    id_ = []
+    margin = 5
+    returnState = False
+    objIDs = list(objList.keys())
+    minX1 = pilot.X - pilot.W / 2 + margin
+    maxX1 = pilot.X + pilot.W / 2 - margin
+    minY1 = pilot.Y - pilot.H / 2 + margin
+    maxY1 = pilot.Y + pilot.H / 2 - margin
 
-    for _key in _ObjIDs:
-        if pilot.id != _objList[_key].id:
-            _minX2 = _objList[_key].X - _objList[_key].W / 2 + _margin
-            _maxX2 = _objList[_key].X + _objList[_key].W / 2 - _margin
-            _minY2 = _objList[_key].Y - _objList[_key].H / 2 + _margin
-            _maxY2 = _objList[_key].Y + _objList[_key].H / 2 - _margin
-            if _maxX1 > _minX2 and _maxX2 > _minX1 and _maxY1 > _minY2 and _maxY2 > _minY1:
-                _returnState = True
-                _id.append(_objList[_key].id)
+    for key in objIDs:
+        if pilot.id != objList[key].id:
+            minX2 = objList[key].X - objList[key].W / 2 + margin
+            maxX2 = objList[key].X + objList[key].W / 2 - margin
+            minY2 = objList[key].Y - objList[key].H / 2 + margin
+            maxY2 = objList[key].Y + objList[key].H / 2 - margin
+            if maxX1 > minX2 and maxX2 > minX1 and maxY1 > minY2 and maxY2 > minY1:
+                returnState = True
+                id_.append(objList[key].id)
 
-    return _returnState, _id
+    return returnState, id_
 
 def getInitPosition(positionMode, mapSize, obj, gObjList):
-    _collisionState = (True, 0)
-    _tryCount = 0
-    _XY = []
+    collisionState = (True, 0)
+    tryCount = 0
+    XY = []
 
     if (obj.W % 2) != 0:
         obj.W += 1
     if (obj.H % 2) != 0:
         obj.H += 1
-    _tmpW = obj.W
-    _tmpH = obj.H
+    tmpW = obj.W
+    tmpH = obj.H
 
     obj.W *= 1.8
     obj.H *= 1.8
-    while _collisionState[0]:
+    while collisionState[0]:
         if positionMode == 'auto':
-            _XY = [0, 0]
-            _XY[0] = random.randint((_tmpW/2), mapSize[0]-(_tmpW/2))
-            _XY[1] = random.randint((_tmpH/2), mapSize[1]-(_tmpH/2))
+            XY = [0, 0]
+            XY[0] = random.randint((tmpW/2), mapSize[0]-(tmpW/2))
+            XY[1] = random.randint((tmpH/2), mapSize[1]-(tmpH/2))
         else:
-            _initPoint = positionMode.split(',')
-            _XY = [round(float(_initPoint[0])), round(float(_initPoint[1]))]
+            initPoint = positionMode.split(',')
+            XY = [round(float(initPoint[0])), round(float(initPoint[1]))]
 
-        obj.X = _XY[0]
-        obj.Y = _XY[1]
-        obj.tX = _XY[0]
-        obj.tY = _XY[1]
+        obj.X = XY[0]
+        obj.Y = XY[1]
+        obj.tX = XY[0]
+        obj.tY = XY[1]
         if positionMode == 'auto':
-            _collisionState = rectCollision(obj, gObjList)
-            _tryCount += 1
-            if _tryCount > 1000:
-                _XY = [-100, -100]
+            collisionState = rectCollision(obj, gObjList)
+            tryCount += 1
+            if tryCount > 1000:
+                XY = [-100, -100]
                 print('Error: Already try 1000 times to find a position')
                 return [-1, -1]
         else:
-            _collisionState = (False, 0)
+            collisionState = (False, 0)
 
-    obj.W = _tmpW
-    obj.H = _tmpH
-    return _XY
+    obj.W = tmpW
+    obj.H = tmpH
+    return XY
 
 def distance(P1, P2):
     dX = P1[0] - P2[0]
