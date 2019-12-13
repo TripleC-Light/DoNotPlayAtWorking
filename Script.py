@@ -107,7 +107,7 @@ class Script:
                     self.state = 10
 
             elif scene == 10:
-                for _i in range(1):
+                for _i in range(3):
                     _enemy = self.objCtrl.createCharacter('robot')
                     self.objList[_enemy.id] = _enemy
                 self.state = 11
