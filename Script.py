@@ -65,7 +65,7 @@ class Script:
                     _item.name = '按[Z]進行攻擊!!'
                     self.itemID = _item.id
                     self.objList[_item.id] = _item
-                    for _i in range(1):
+                    for _i in range(10):
                         _enemy = self.objCtrl.createCharacter('zombie')
                         self.objList[_enemy.id] = _enemy
                     self.state = 5
@@ -86,7 +86,7 @@ class Script:
                     self.state = 7
 
             elif scene == 7:
-                for _i in range(1):
+                for _i in range(20):
                     _enemy = self.objCtrl.createCharacter('zombie')
                     self.objList[_enemy.id] = _enemy
                 self.state = 8

@@ -86,12 +86,12 @@ def distance(P1, P2):
     dY = P1[1] - P2[1]
     return math.sqrt((dX ** 2) + (dY ** 2))
 
-def getResize(_sizeLimit, _originSize):
+def getResize(sizeLimit, originSize):
     scale = 0
-    wL = _sizeLimit[0]
-    hL = _sizeLimit[1]
-    wO = _originSize[0]
-    hO = _originSize[1]
+    wL = sizeLimit[0]
+    hL = sizeLimit[1]
+    wO = originSize[0]
+    hO = originSize[1]
     wN = 0
     hN = 0
     if wO >= hO:
