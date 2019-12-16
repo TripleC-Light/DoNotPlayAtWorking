@@ -22,6 +22,7 @@ class IndexHandler(tornado.web.RequestHandler):
         if user:
             userKey = user['key']
             self.render('index.html', userKey=userKey)
+            
         else:
             self.render('login.html', msg='loginFail')
 

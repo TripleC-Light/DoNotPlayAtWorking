@@ -21,11 +21,11 @@ class Script:
 
         if region == '0-0':
             if scene == 0:
-                _pilotNum = 0
-                for _id in list(objList.keys()):
-                    if objList[_id].type == 'pilot':
-                        _pilotNum += 1
-                if _pilotNum >= 3:
+                pilotNum = 0
+                for id_ in list(objList.keys()):
+                    if objList[id_].type == 'pilot':
+                        pilotNum += 1
+                if pilotNum >= 3:
                     self.state = 1
 
             elif scene == 1:
@@ -55,28 +55,28 @@ class Script:
             elif scene == 4:
                 if (time.time()-self.oldSysTime) > 2:
                     self.Start = True
-                    _item = self.objCtrl.createItem('Zkey')
-                    _item.W = _item.W * 1.5
-                    _item.H = _item.H * 1.5
-                    _item.X = self.mapSize[0]/2
-                    _item.Y = _item.H - 20
-                    _item.tX = _item.X
-                    _item.tY = _item.Y
-                    _item.name = '按[Z]進行攻擊!!'
-                    self.itemID = _item.id
-                    self.objList[_item.id] = _item
-                    for _i in range(10):
-                        _enemy = self.objCtrl.createCharacter('zombie')
-                        self.objList[_enemy.id] = _enemy
+                    item_ = self.objCtrl.createItem('Zkey')
+                    item_.W = item_.W * 1.5
+                    item_.H = item_.H * 1.5
+                    item_.X = self.mapSize[0]/2
+                    item_.Y = item_.H - 20
+                    item_.tX = item_.X
+                    item_.tY = item_.Y
+                    item_.name = '按[Z]進行攻擊!!'
+                    self.itemID = item_.id
+                    self.objList[item_.id] = item_
+                    for _ in range(10):
+                        enemy = self.objCtrl.createCharacter('zombie')
+                        self.objList[enemy.id] = enemy
                     self.state = 5
 
             elif scene == 5:
-                _enemyNum = 0
+                enemyNum = 0
                 self.objCtrl.createItemInRandom('fullHP', 0.1, 2)
-                for _id in list(objList.keys()):
-                    if objList[_id].type == 'enemy':
-                        _enemyNum += 1
-                if _enemyNum == 0:
+                for id_ in list(objList.keys()):
+                    if objList[id_].type == 'enemy':
+                        enemyNum += 1
+                if enemyNum == 0:
                     self.oldSysTime = time.time()
                     self.state = 6
 
@@ -87,17 +87,17 @@ class Script:
 
             elif scene == 7:
                 for _i in range(20):
-                    _enemy = self.objCtrl.createCharacter('zombie')
-                    self.objList[_enemy.id] = _enemy
+                    enemy = self.objCtrl.createCharacter('zombie')
+                    self.objList[enemy.id] = enemy
                 self.state = 8
 
             elif scene == 8:
-                _enemyNum = 0
+                enemyNum = 0
                 self.objCtrl.createItemInRandom('fullHP', 0.1, 2)
-                for _id in list(objList.keys()):
-                    if objList[_id].type == 'enemy':
-                        _enemyNum += 1
-                if _enemyNum == 0:
+                for id_ in list(objList.keys()):
+                    if objList[id_].type == 'enemy':
+                        enemyNum += 1
+                if enemyNum == 0:
                     self.oldSysTime = time.time()
                     self.state = 9
 
@@ -108,17 +108,17 @@ class Script:
 
             elif scene == 10:
                 for _i in range(3):
-                    _enemy = self.objCtrl.createCharacter('robot')
-                    self.objList[_enemy.id] = _enemy
+                    enemy = self.objCtrl.createCharacter('robot')
+                    self.objList[enemy.id] = enemy
                 self.state = 11
 
             elif scene == 11:
-                _enemyNum = 0
+                enemyNum = 0
                 self.objCtrl.createItemInRandom('fullHP', 0.1, 2)
-                for _id in list(objList.keys()):
-                    if objList[_id].type == 'enemy':
-                        _enemyNum += 1
-                if _enemyNum == 0:
+                for id_ in list(objList.keys()):
+                    if objList[id_].type == 'enemy':
+                        enemyNum += 1
+                if enemyNum == 0:
                     self.oldSysTime = time.time()
                     self.state = 12
 
