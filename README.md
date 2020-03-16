@@ -18,7 +18,7 @@ You can download and play, but I can't promise this is a good game, after all it
 6. Try to log in aleast three person, then you will come into enemy
 7. Have fun~!
 
-<center><img src="" width=490>https://github.com/TripleC-Light/WebGameTest/blob/master/static/GamePic.png?raw=true</center>
+<center><img src="https://github.com/TripleC-Light/WebGameTest/blob/master/static/GamePic.png?raw=true" width=490></center>
 
 ## About Me
  - My Blog : [愛德華空想科學誌](https://triplec-light.000webhostapp.com)
