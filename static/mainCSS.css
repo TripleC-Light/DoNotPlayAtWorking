@@ -181,62 +181,6 @@ table, tr, td{
 }
 
 .cPreloaderImages {
-/*    background-image: url('./static/pilot/slimeSun/attack_left.gif');
-    background-image: url('./static/pilot/slimeSun/attack_right.gif');
-    background-image: url('./static/pilot/slimeSun/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeSun/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeSun/left.gif');
-    background-image: url('./static/pilot/slimeSun/right.gif');
-
-    background-image: url('./static/pilot/slimeDark/attack_left.gif');
-    background-image: url('./static/pilot/slimeDark/attack_right.gif');
-    background-image: url('./static/pilot/slimeDark/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeDark/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeDark/left.gif');
-    background-image: url('./static/pilot/slimeDark/right.gif');
-
-    background-image: url('./static/pilot/slimeFire/attack_left.gif');
-    background-image: url('./static/pilot/slimeFire/attack_right.gif');
-    background-image: url('./static/pilot/slimeFire/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeFire/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeFire/left.gif');
-    background-image: url('./static/pilot/slimeFire/right.gif');
-
-    background-image: url('./static/pilot/slimeGrass/attack_left.gif');
-    background-image: url('./static/pilot/slimeGrass/attack_right.gif');
-    background-image: url('./static/pilot/slimeGrass/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeGrass/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeGrass/left.gif');
-    background-image: url('./static/pilot/slimeGrass/right.gif');
-
-    background-image: url('./static/pilot/slimeUnknow/attack_left.gif');
-    background-image: url('./static/pilot/slimeUnknow/attack_right.gif');
-    background-image: url('./static/pilot/slimeUnknow/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeUnknow/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeUnknow/left.gif');
-    background-image: url('./static/pilot/slimeUnknow/right.gif');
-
-    background-image: url('./static/pilot/slimeWater/attack_left.gif');
-    background-image: url('./static/pilot/slimeWater/attack_right.gif');
-    background-image: url('./static/pilot/slimeWater/beHIT_left.gif');
-    background-image: url('./static/pilot/slimeWater/beHIT_right.gif');
-    background-image: url('./static/pilot/slimeWater/left.gif');
-    background-image: url('./static/pilot/slimeWater/right.gif');
-
-    background-image: url('./static/pilot/zombie/attack_left.gif');
-    background-image: url('./static/pilot/zombie/attack_right.gif');
-    background-image: url('./static/pilot/zombie/beHIT_left.gif');
-    background-image: url('./static/pilot/zombie/beHIT_right.gif');
-    background-image: url('./static/pilot/zombie/left.gif');
-    background-image: url('./static/pilot/zombie/right.gif');
-
-    background-image: url('./static/pilot/robot/attack_left.gif');
-    background-image: url('./static/pilot/robot/attack_right.gif');
-    background-image: url('./static/pilot/robot/beHIT_left.gif');
-    background-image: url('./static/pilot/robot/beHIT_right.gif');
-    background-image: url('./static/pilot/robot/left.gif');
-    background-image: url('./static/pilot/robot/right.gif');*/
-    width: 1px;
-    height: 1px;
-/*    display: inline;*/
+    width: 0px;
+    height: 0px;
 }
