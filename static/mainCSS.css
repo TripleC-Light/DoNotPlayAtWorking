@@ -179,3 +179,15 @@ table, tr, td{
     border-radius: 5px;
     box-shadow: 5px 5px 5px rgba(10, 10, 10, 0.9);
 }
+
+.cPreloaderImages {
+    background-image: url('./static/pilot/slimeSun/attack_left.gif');
+    background-image: url('./static/pilot/slimeSun/attack_right.gif');
+    background-image: url('./static/pilot/slimeSun/beHIT_left.gif');
+    background-image: url('./static/pilot/slimeSun/beHIT_right.gif');
+    background-image: url('./static/pilot/slimeSun/left.gif');
+    background-image: url('./static/pilot/slimeSun/right.gif');
+    width: 10px;
+    height: 10px;
+    display: inline;
+}
