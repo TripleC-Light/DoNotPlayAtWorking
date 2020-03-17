@@ -285,7 +285,11 @@ if __name__ == "__main__":
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             debug=True
         )
-        webApp.listen(8888)
+
+        port = int(os.getenv('PORT', 8888))
+        webApp.listen(port, address='0.0.0.0')      # You have to create a variable named "port" to heroku
+
+        # webApp.listen(8888)
         url = 'http://localhost:8888/index'
         # webbrowser.open(url=url, new=0)
         print('Server open in: ' + url)
