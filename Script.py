@@ -25,7 +25,7 @@ class Script:
                 for id_ in list(objList.keys()):
                     if objList[id_].type == 'pilot':
                         pilotNum += 1
-                if pilotNum >= 3:
+                if pilotNum >= 1:
                     self.state = 1
 
             elif scene == 1:
