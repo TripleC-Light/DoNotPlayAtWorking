@@ -9,6 +9,8 @@ I only test for three person, so I don't know what will happen if there are too 
 
 You can download and play, but I can't promise this is a good game, after all it's just a test.
 
+You can play this game on Heroku: https://webgametest.herokuapp.com/index
+
 ## Usage
 1. Run the **DoNotPlayAtWorking.py**
 2. Open browser and go to **localhost:8888/index**
